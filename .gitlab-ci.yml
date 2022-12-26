@@ -1,0 +1,79 @@
+stages:
+  - codecheck
+  - mem_test
+  - test
+
+# WORKFLOW RULES
+# ------------------------------------------------------------------------------------------------------
+workflow:
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+    - if: '$CI_COMMIT_BRANCH && $CI_OPEN_MERGE_REQUESTS && $CI_PIPELINE_SOURCE == "push"'
+      when: never
+    - if: '$CI_COMMIT_BRANCH'
+# ------------------------------------------------------------------------------------------------------
+
+
+# TEMPLATES
+# ------------------------------------------------------------------------------------------------------
+.mem_test_template:
+  image: "espressif/idf:latest"
+  tags:
+    - build
+    - internet
+  before_script:
+    - pip install -e .[dev] --prefer-binary
+
+.base_template:
+  image: python:3.7-bullseye
+  tags:
+    - build
+    - internet
+  before_script:
+    - pip install -e .[dev] --prefer-binary
+
+# --------------------------------------------------------------------------------------------------
+
+
+# JOBS
+# ------------------------------------------------------------------------------------------------------
+
+# CODE CHECK BY PRE-COMMIT HOOKS
+pre-commit_hooks_MR:
+  extends: .base_template
+  stage: codecheck
+  script:
+    - apt-get update && apt-get install -y -q git
+    - git diff-tree --no-commit-id --name-only -r $CI_COMMIT_SHA | xargs pre-commit run --files
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+# ------------------------------------------------------------------------------------------------------
+
+# TESTS
+mem_test:
+  extends: .mem_test_template
+  stage: mem_test
+  artifacts:
+    when: always
+    paths:
+      - test/output
+      - test/.coverage
+    expire_in: 1 week
+  script:
+    - cd test
+    - ./mem_test.sh
+
+test:
+  extends: .base_template
+  stage: test
+  needs:
+    - mem_test
+  artifacts:
+    when: on_failure
+    paths:
+      - test/output
+      - test/.coverage
+    expire_in: 1 week
+  script:
+    - cd test
+    - ./test.sh

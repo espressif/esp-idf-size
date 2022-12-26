@@ -6,7 +6,7 @@
 # Includes information which is not shown in "xtensa-esp32-elf-size",
 # or easy to parse from "xtensa-esp32-elf-objdump" or raw map files.
 #
-# SPDX-FileCopyrightText: 2017-2022 Espressif Systems (Shanghai) CO LTD
+# SPDX-FileCopyrightText: 2017-2023 Espressif Systems (Shanghai) CO LTD
 # SPDX-License-Identifier: Apache-2.0
 #
 import argparse
@@ -15,7 +15,8 @@ import json
 import os.path
 import re
 import sys
-from typing import Any, Callable, Collection, Dict, Iterable, List, Optional, TextIO, Tuple, Union
+from typing import (Any, Callable, Collection, Dict, Iterable, List, Optional,
+                    TextIO, Tuple, Union)
 
 import yaml
 
@@ -85,7 +86,7 @@ class MemRegions(object):
             return MemRegDef(chip_info[memory_reg]['primary_address'], change_to_proper_format(chip_info[memory_reg]['length']),
                              getattr(MemRegions, memory_reg.strip('_12') + '_ID'), chip_info[memory_reg]['secondary_address'])
         try:
-            with open(os.path.join(os.path.dirname(__file__), 'idf_size_yaml', target + '_data_info.yaml'), 'r') as stream:
+            with open(os.path.join(os.path.dirname(__file__), 'chip_info', target + '.yaml'), 'r') as stream:
                 chip_info = (yaml.safe_load(stream))
         except FileNotFoundError:
             raise RuntimeError('Target not detected.')
@@ -103,7 +104,7 @@ class MemRegions(object):
             if region.secondary_addr and region.secondary_addr <= start < region.secondary_addr + region.length:
                 return (region, length)
         print('WARNING: Given section not found in any memory region.')
-        print('Check whether the LD file is compatible with the definitions in get_mem_regions in idf_size.py')
+        print('Check whether the LD file is compatible with the definitions in get_mem_regions in idf_size')
         return (None, length)
 
     def _get_regions(self, start: int, length: int, name: Optional[str]=None) -> List:
@@ -1220,7 +1221,3 @@ def get_archive_symbols(sections: Dict, archive: str, output_format: str, sectio
         else:
             output += _get_output(current)
     return output
-
-
-if __name__ == '__main__':
-    main()

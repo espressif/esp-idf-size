@@ -1,6 +1,6 @@
 {
     "$schema": "http://json-schema.org/draft-07/schema#",
-    "$id": "https://github.com/espressif/esp-idf/blob/master/tools/size-schema.json",
+    "$id": "https://github.com/espressif/esp-idf-size/blob/master/test/size-schema.json",
     "type": "object",
     "oneOf": [
         {

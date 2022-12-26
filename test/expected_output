@@ -28,7 +28,7 @@ Running mem_test.py for esp32c3...
 Test complete without errors
 
 ***
-Running idf_size.py...
+Running idf_size...
 Total sizes:
 Used static DRAM:   17620 bytes ( 163116 remain, 9.7% used)
       .data size:    9324 bytes
@@ -42,7 +42,7 @@ Used Flash size :  186524 bytes
 Total image size:  234780 bytes (.bin may be padded larger)
 
 ***
-Running idf_size.py on bootloader...
+Running idf_size on bootloader...
 Total sizes:
 Used static DRAM:    7212 bytes (  58324 remain, 11.0% used)
       .data size:       4 bytes
@@ -53,7 +53,7 @@ Used static IRAM:   18796 bytes (  78484 remain, 19.3% used)
 Total image size:   25960 bytes (.bin may be padded larger)
 
 ***
-Running idf_size.py with overflow...
+Running idf_size with overflow...
 Total sizes:
 Used static DRAM:   33464 bytes ( 147272 remain, 18.5% used)
       .data size:   17464 bytes
@@ -67,7 +67,7 @@ Used Flash size :  531135 bytes
 Total image size:  730117 bytes (.bin may be padded larger)
 
 ***
-Running idf_size.py --archives...
+Running idf_size --archives...
 Total sizes:
 Used static DRAM:   17620 bytes ( 163116 remain, 9.7% used)
       .data size:    9324 bytes
@@ -121,7 +121,7 @@ libxtensa-debug-module.a          0       0           8           0            8
                 libwps.a          0       0           0           0            0           0         0           0
 
 ***
-Running idf_size.py --files...
+Running idf_size --files...
 Total sizes:
 Used static DRAM:   17620 bytes ( 163116 remain, 9.7% used)
       .data size:    9324 bytes
@@ -418,7 +418,7 @@ ieee80211_action_vendor.          0       0           0           0            0
           wps_internal.o          0       0           0           0            0           0         0           0
 
 ***
-Running idf_size.py --archive_details...
+Running idf_size --archive_details...
 Total sizes:
 Used static DRAM:   17620 bytes ( 163116 remain, 9.7% used)
       .data size:    9324 bytes
@@ -492,7 +492,7 @@ Symbols from section: .rtc_noinit
 Section total: 0
 
 ***
-Running idf_size.py diff with bootloader...
+Running idf_size diff with bootloader...
 <CURRENT> MAP file: app.map
 <REFERENCE> MAP file: bootloader.map
 Difference is counted as <CURRENT> - <REFERENCE>,           i.e. a positive number means that <CURRENT> is larger.
@@ -510,7 +510,7 @@ Used Flash size :  186524 bytes                                           0     
 Total image size:  234780 bytes (.bin may be padded larger)           25960        +208820
 
 ***
-Running idf_size.py diff with itself...
+Running idf_size diff with itself...
 <CURRENT> MAP file: app.map
 <REFERENCE> MAP file: app.map
 Difference is counted as <CURRENT> - <REFERENCE>,           i.e. a positive number means that <CURRENT> is larger.
@@ -527,7 +527,7 @@ Used Flash size :  186524 bytes                                      186524
 Total image size:  234780 bytes (.bin may be padded larger)          234780
 
 ***
-Running idf_size.py diff with another app...
+Running idf_size diff with another app...
 <CURRENT> MAP file: app.map
 <REFERENCE> MAP file: app2.map
 Difference is counted as <CURRENT> - <REFERENCE>,           i.e. a positive number means that <CURRENT> is larger.
@@ -544,7 +544,7 @@ Used Flash size :  186524 bytes                                       99551     
 Total image size:  234780 bytes (.bin may be padded larger)          147087         +87693
 
 ***
-Running idf_size.py diff with app in reverse order...
+Running idf_size diff with app in reverse order...
 <CURRENT> MAP file: app2.map
 <REFERENCE> MAP file: app.map
 Difference is counted as <CURRENT> - <REFERENCE>,           i.e. a positive number means that <CURRENT> is larger.
@@ -561,7 +561,7 @@ Used Flash size :   99551 bytes                                      186524     
 Total image size:  147087 bytes (.bin may be padded larger)          234780         -87693
 
 ***
-Running idf_size.py diff --archives with bootloader...
+Running idf_size diff --archives with bootloader...
 <CURRENT> MAP file: app.map
 <REFERENCE> MAP file: bootloader.map
 Difference is counted as <CURRENT> - <REFERENCE>,           i.e. a positive number means that <CURRENT> is larger.
@@ -627,7 +627,7 @@ The following entries are present in <REFERENCE> only:
           libsoc_esp32.a          0       0          0          0        0           0              0            0           0         0           0
 
 ***
-Running idf_size.py diff --archives with itself...
+Running idf_size diff --archives with itself...
 <CURRENT> MAP file: app.map
 <REFERENCE> MAP file: app.map
 Difference is counted as <CURRENT> - <REFERENCE>,           i.e. a positive number means that <CURRENT> is larger.
@@ -686,7 +686,7 @@ libxtensa-debug-module.a|       |       |       |       |       |       |      8
                 libwps.a|       |       |       |       |       |       |       |       |       |       |       |       |       |       |       |       |       |       |       |       |       |       |       |
 
 ***
-Running idf_size.py diff --archives with another app...
+Running idf_size diff --archives with another app...
 <CURRENT> MAP file: app.map
 <REFERENCE> MAP file: app2.map
 Difference is counted as <CURRENT> - <REFERENCE>,           i.e. a positive number means that <CURRENT> is larger.
@@ -757,7 +757,7 @@ The following entries are present in <REFERENCE> only:
          libmbedcrypto.a          0       0           0           0            0           0         0           0
 
 ***
-Running idf_size.py diff --archives with app in reverse order...
+Running idf_size diff --archives with app in reverse order...
 <CURRENT> MAP file: app2.map
 <REFERENCE> MAP file: app.map
 Difference is counted as <CURRENT> - <REFERENCE>,           i.e. a positive number means that <CURRENT> is larger.
@@ -828,7 +828,7 @@ libxtensa-debug-module.a          0       0           8           0            8
                 libwps.a          0       0           0           0            0           0         0           0
 
 ***
-Running idf_size.py diff --files with bootloader...
+Running idf_size diff --files with bootloader...
 <CURRENT> MAP file: app.map
 <REFERENCE> MAP file: bootloader.map
 Difference is counted as <CURRENT> - <REFERENCE>,           i.e. a positive number means that <CURRENT> is larger.
@@ -1173,7 +1173,7 @@ bootloader_efuse_esp32.c          0       0          0          0        0      
        gpio_periph.c.obj          0       0          0          0        0           0              0            0           0         0           0
 
 ***
-Running idf_size.py diff --files with itself...
+Running idf_size diff --files with itself...
 <CURRENT> MAP file: app.map
 <REFERENCE> MAP file: app.map
 Difference is counted as <CURRENT> - <REFERENCE>,           i.e. a positive number means that <CURRENT> is larger.
@@ -1475,7 +1475,7 @@ ieee80211_action_vendor.|       |       |       |       |       |       |       
           wps_internal.o|       |       |       |       |       |       |       |       |       |       |       |       |       |       |       |       |       |       |       |       |       |       |       |
 
 ***
-Running idf_size.py diff --files with another app...
+Running idf_size diff --files with another app...
 <CURRENT> MAP file: app.map
 <REFERENCE> MAP file: app2.map
 Difference is counted as <CURRENT> - <REFERENCE>,           i.e. a positive number means that <CURRENT> is larger.
@@ -1964,7 +1964,7 @@ spi_flash_rom_patch.c.ob          0       0           0           0            0
  debug_helpers_asm.S.obj          0       0           0           0            0           0         0           0
 
 ***
-Running idf_size.py diff --files with app in reverse order...
+Running idf_size diff --files with app in reverse order...
 <CURRENT> MAP file: app2.map
 <REFERENCE> MAP file: app.map
 Difference is counted as <CURRENT> - <REFERENCE>,           i.e. a positive number means that <CURRENT> is larger.
@@ -2453,7 +2453,7 @@ ieee80211_action_vendor.          0       0           0           0            0
           wps_internal.o          0       0           0           0            0           0         0           0
 
 ***
-Running idf_size.py diff --archive_details with bootloader...
+Running idf_size diff --archive_details with bootloader...
 <CURRENT> MAP file: app.map
 <REFERENCE> MAP file: bootloader.map
 Difference is counted as <CURRENT> - <REFERENCE>,           i.e. a positive number means that <CURRENT> is larger.
@@ -2540,7 +2540,7 @@ Section total:                                      0            0
 Section total:                                      0            0
 
 ***
-Running idf_size.py diff --archive_details with bootloader...
+Running idf_size diff --archive_details with bootloader...
 <CURRENT> MAP file: app.map
 <REFERENCE> MAP file: bootloader.map
 Difference is counted as <CURRENT> - <REFERENCE>,           i.e. a positive number means that <CURRENT> is larger.
@@ -2606,7 +2606,7 @@ Section total:                                      0            0
 Section total:                                      0            0
 
 ***
-Running idf_size.py diff --archive_details with itself...
+Running idf_size diff --archive_details with itself...
 <CURRENT> MAP file: app.map
 <REFERENCE> MAP file: app.map
 Difference is counted as <CURRENT> - <REFERENCE>,           i.e. a positive number means that <CURRENT> is larger.
@@ -2683,7 +2683,7 @@ Section total:                                      0            0
 Section total:                                      0            0
 
 ***
-Running idf_size.py diff --archive_details with another app...
+Running idf_size diff --archive_details with another app...
 <CURRENT> MAP file: app.map
 <REFERENCE> MAP file: app2.map
 Difference is counted as <CURRENT> - <REFERENCE>,           i.e. a positive number means that <CURRENT> is larger.
@@ -2825,7 +2825,7 @@ Section total:                                      0            0
 Section total:                                      0            0
 
 ***
-Running idf_size.py diff --archive_details with app in reverse order...
+Running idf_size diff --archive_details with app in reverse order...
 <CURRENT> MAP file: app2.map
 <REFERENCE> MAP file: app.map
 Difference is counted as <CURRENT> - <REFERENCE>,           i.e. a positive number means that <CURRENT> is larger.
@@ -2967,7 +2967,7 @@ Section total:                                      0            0
 Section total:                                      0            0
 
 ***
-Running idf_size.py diff --archive_details with another app...
+Running idf_size diff --archive_details with another app...
 <CURRENT> MAP file: app.map
 <REFERENCE> MAP file: app2.map
 Difference is counted as <CURRENT> - <REFERENCE>,           i.e. a positive number means that <CURRENT> is larger.
@@ -3268,7 +3268,7 @@ Section total:                                      0            0
 Section total:                                      0            0
 
 ***
-Running idf_size.py for esp32s2...
+Running idf_size for esp32s2...
 Total sizes:
 Used stat D/IRAM:   43020 bytes ( 153588 remain, 21.9% used)
       .data size:    7152 bytes
@@ -3281,7 +3281,7 @@ Used Flash size :   93019 bytes
 Total image size:  134103 bytes (.bin may be padded larger)
 
 ***
-Running idf_size.py for esp32s2 with overflow...
+Running idf_size for esp32s2 with overflow...
 Total sizes:
 Used stat D/IRAM:  207299 bytes ( -18883 remain, 110.0% used) Overflow detected! You can run idf.py size-files for more information.
       .data size:   15796 bytes
@@ -3294,7 +3294,7 @@ Used Flash size :  519371 bytes
 Total image size:  708078 bytes (.bin may be padded larger)
 
 ***
-Running idf_size.py for esp32s2 (target autodetected)...
+Running idf_size for esp32s2 (target autodetected)...
 Total sizes:
 Used stat D/IRAM:   43020 bytes ( 153588 remain, 21.9% used)
       .data size:    7152 bytes
@@ -3307,7 +3307,7 @@ Used Flash size :   93019 bytes
 Total image size:  134103 bytes (.bin may be padded larger)
 
 ***
-Running idf_size.py on bootloader for esp32s2...
+Running idf_size on bootloader for esp32s2...
 Total sizes:
 Used stat D/IRAM:   22569 bytes (  -1065 remain, 105.0% used) Overflow detected! You can run idf.py size-files for more information.
       .data size:       4 bytes
@@ -3317,7 +3317,7 @@ Used stat D/IRAM:   22569 bytes (  -1065 remain, 105.0% used) Overflow detected!
 Total image size:   22305 bytes (.bin may be padded larger)
 
 ***
-Running idf_size.py on bootloader for esp32s2 (target autodetected)...
+Running idf_size on bootloader for esp32s2 (target autodetected)...
 Total sizes:
 Used stat D/IRAM:   22569 bytes (  -1065 remain, 105.0% used) Overflow detected! You can run idf.py size-files for more information.
       .data size:       4 bytes
@@ -3327,7 +3327,7 @@ Used stat D/IRAM:   22569 bytes (  -1065 remain, 105.0% used) Overflow detected!
 Total image size:   22305 bytes (.bin may be padded larger)
 
 ***
-Running idf_size.py --archives for esp32s2...
+Running idf_size --archives for esp32s2...
 Total sizes:
 Used stat D/IRAM:   43020 bytes ( 153588 remain, 21.9% used)
       .data size:    7152 bytes
@@ -3367,7 +3367,7 @@ Per-archive contributions to ELF file:
              libxtensa.a          0       0           0           0            0           0         0           0
 
 ***
-Running idf_size.py --files for esp32s2...
+Running idf_size --files for esp32s2...
 Total sizes:
 Used stat D/IRAM:   43020 bytes ( 153588 remain, 21.9% used)
       .data size:    7152 bytes
@@ -3595,7 +3595,7 @@ spi_flash_hal_gpspi.c.ob          0       0           0           0            0
          stdatomic.c.obj          0       0           0           0            0           0         0           0
 
 ***
-Running idf_size.py --archive_details for esp32s2...
+Running idf_size --archive_details for esp32s2...
 Total sizes:
 Used stat D/IRAM:   43020 bytes ( 153588 remain, 21.9% used)
       .data size:    7152 bytes
@@ -3705,7 +3705,7 @@ Symbols from section: .rtc_noinit
 Section total: 0
 
 ***
-Running idf_size.py diff with another app (different target)...
+Running idf_size diff with another app (different target)...
 WARNING: The target of the reference and other MAP files is esp32 and esp32s2, respectively.
 <CURRENT> MAP file: app.map
 <REFERENCE> MAP file: app_esp32s2.map
@@ -3728,7 +3728,7 @@ Used Flash size :  186524 bytes                                       93019     
 Total image size:  234780 bytes (.bin may be padded larger)          134103        +100677
 
 ***
-Running idf_size.py for esp32h4...
+Running idf_size for esp32h4...
 Total sizes:
 Used stat D/IRAM:   45656 bytes ( 282024 remain, 13.9% used)
       .data size:    4864 bytes
@@ -3740,7 +3740,7 @@ Used Flash size :  110492 bytes
 Total image size:  152484 bytes (.bin may be padded larger)
 
 ***
-Running idf_size.py for esp32h4 (target autodetected)...
+Running idf_size for esp32h4 (target autodetected)...
 Total sizes:
 Used stat D/IRAM:   45656 bytes ( 282024 remain, 13.9% used)
       .data size:    4864 bytes
@@ -3752,7 +3752,7 @@ Used Flash size :  110492 bytes
 Total image size:  152484 bytes (.bin may be padded larger)
 
 ***
-Running idf_size.py --archives for esp32h4...
+Running idf_size --archives for esp32h4...
 Total sizes:
 Used stat D/IRAM:   45656 bytes ( 282024 remain, 13.9% used)
       .data size:    4864 bytes
@@ -3789,7 +3789,7 @@ Per-archive contributions to ELF file:
                 libcxx.a          0         0         0           0            0           2         0          0           2
 
 ***
-Running idf_size.py --files for esp32h4...
+Running idf_size --files for esp32h4...
 Total sizes:
 Used stat D/IRAM:   45656 bytes ( 282024 remain, 13.9% used)
       .data size:    4864 bytes
@@ -3948,7 +3948,7 @@ bootloader_flash_config_          0         0         0           0            0
               _umoddi3.o          0         0         0           0            0           0         0          0           0
 
 ***
-Running idf_size.py --archive_details for esp32h4...
+Running idf_size --archive_details for esp32h4...
 Total sizes:
 Used stat D/IRAM:   45656 bytes ( 282024 remain, 13.9% used)
       .data size:    4864 bytes
@@ -4046,7 +4046,7 @@ Symbols from section: .rtc_noinit
 Section total: 0
 
 ***
-Running idf_size.py for esp32c3...
+Running idf_size for esp32c3...
 Total sizes:
 Used stat D/IRAM:   48466 bytes ( 279214 remain, 14.8% used)
       .data size:    5048 bytes
@@ -4058,11 +4058,11 @@ Used Flash size :  117008 bytes
 Total image size:  161810 bytes (.bin may be padded larger)
 
 ***
-Running idf_size.py for esp32c3 with overflow...
+Running idf_size for esp32c3 with overflow...
 WARNING: Given section not found in any memory region.
-Check whether the LD file is compatible with the definitions in get_mem_regions in idf_size.py
+Check whether the LD file is compatible with the definitions in get_mem_regions in idf_size
 WARNING: Given section not found in any memory region.
-Check whether the LD file is compatible with the definitions in get_mem_regions in idf_size.py
+Check whether the LD file is compatible with the definitions in get_mem_regions in idf_size
 Total sizes:
 Used stat D/IRAM:  551174 bytes (-223494 remain, 168.2% used) Overflow detected! You can run idf.py size-files for more information.
       .text size:  551174 bytes
@@ -4072,7 +4072,7 @@ Used Flash size :  494592 bytes
 Total image size: 1045766 bytes (.bin may be padded larger)
 
 ***
-Running idf_size.py for esp32c3 (target autodetected)...
+Running idf_size for esp32c3 (target autodetected)...
 Total sizes:
 Used stat D/IRAM:   48466 bytes ( 279214 remain, 14.8% used)
       .data size:    5048 bytes
@@ -4084,7 +4084,7 @@ Used Flash size :  117008 bytes
 Total image size:  161810 bytes (.bin may be padded larger)
 
 ***
-Running idf_size.py --archives for esp32c3...
+Running idf_size --archives for esp32c3...
 Total sizes:
 Used stat D/IRAM:   48466 bytes ( 279214 remain, 14.8% used)
       .data size:    5048 bytes
@@ -4123,7 +4123,7 @@ Per-archive contributions to ELF file:
                 libcxx.a          0         0         0           0            0           2         0          0           2
 
 ***
-Running idf_size.py --files for esp32c3...
+Running idf_size --files for esp32c3...
 Total sizes:
 Used stat D/IRAM:   48466 bytes ( 279214 remain, 14.8% used)
       .data size:    5048 bytes
@@ -4288,7 +4288,7 @@ bootloader_flash_config_          0         0         0           0            0
               _umoddi3.o          0         0         0           0            0           0         0          0           0
 
 ***
-Running idf_size.py --archive_details for esp32c3...
+Running idf_size --archive_details for esp32c3...
 Total sizes:
 Used stat D/IRAM:   48466 bytes ( 279214 remain, 14.8% used)
       .data size:    5048 bytes
@@ -4416,7 +4416,7 @@ Symbols from section: .rtc_noinit
 Section total: 0
 
 ***
-Running idf_size.py for esp32s3...
+Running idf_size for esp32s3...
 Total sizes:
 Used static IRAM:   46786 bytes ( 239934 remain, 16.3% used)
       .text size:   45759 bytes
@@ -4430,7 +4430,7 @@ Used Flash size :  114851 bytes
 Total image size:  170889 bytes (.bin may be padded larger)
 
 ***
-Running idf_size.py for esp32s3 configured with 32KB of icache...
+Running idf_size for esp32s3 configured with 32KB of icache...
 Total sizes:
 Used stat D/IRAM:   71186 bytes ( 274670 remain, 20.6% used)
       .data size:   11900 bytes
@@ -4443,7 +4443,7 @@ Used Flash size :  132883 bytes
 Total image size:  200869 bytes (.bin may be padded larger)
 
 ***
-Running idf_size.py for esp32s3 with overflow...
+Running idf_size for esp32s3 with overflow...
 Total sizes:
 Used static IRAM:  337906 bytes ( -51186 remain, 117.9% used) Overflow detected! You can run idf.py size-files for more information.
       .text size:  336879 bytes
@@ -4457,7 +4457,7 @@ Used Flash size :  461714 bytes
 Total image size:  868549 bytes (.bin may be padded larger)
 
 ***
-Running idf_size.py for esp32s3 (target autodetected)...
+Running idf_size for esp32s3 (target autodetected)...
 Total sizes:
 Used static IRAM:   46786 bytes ( 239934 remain, 16.3% used)
       .text size:   45759 bytes
@@ -4471,7 +4471,7 @@ Used Flash size :  114851 bytes
 Total image size:  170889 bytes (.bin may be padded larger)
 
 ***
-Running idf_size.py --archives for esp32s3...
+Running idf_size --archives for esp32s3...
 Total sizes:
 Used static IRAM:   46786 bytes ( 239934 remain, 16.3% used)
       .text size:   45759 bytes
@@ -4515,7 +4515,7 @@ Per-archive contributions to ELF file:
                 libsoc.a          0         0         0           0           0            0           0         0          0           0
 
 ***
-Running idf_size.py --files for esp32s3...
+Running idf_size --files for esp32s3...
 Total sizes:
 Used static IRAM:   46786 bytes ( 239934 remain, 16.3% used)
       .text size:   45759 bytes
@@ -4781,7 +4781,7 @@ esp_crypto_shared_gdma.c          0         0         0           0           0 
                _muldf3.o          0         0         0           0           0            0           0         0          0           0
 
 ***
-Running idf_size.py --archive_details for esp32s3...
+Running idf_size --archive_details for esp32s3...
 Total sizes:
 Used static IRAM:   46786 bytes ( 239934 remain, 16.3% used)
       .text size:   45759 bytes

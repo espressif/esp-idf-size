@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 #
-# SPDX-FileCopyrightText: 2022 Espressif Systems (Shanghai) CO LTD
+# SPDX-FileCopyrightText: 2023 Espressif Systems (Shanghai) CO LTD
 # SPDX-License-Identifier: Apache-2.0
 #
 import argparse
@@ -20,7 +20,7 @@ def mem_test(size_json: dict, esptool_output: list) -> None:
         if tmp[0] == 'Segment':
             # tmp look like ['Segment', '2:', 'len', '0x02780', 'load', '0x3fc90610', 'file_offs', '0x00007ab0', '[BYTE_ACCESSIBLE,MEM_INTERNAL,DRAM]']
             # tmp[3] contains the size of the segment and tmp[8] contains the name of the memory segment
-            esptool_mem = {'mem_type':tmp[8], 'size':tmp[3]}
+            esptool_mem = {'mem_type': tmp[8], 'size': tmp[3]}
             seg = re.sub(r'MEM_INTERNAL|,|BYTE_ACCESSIBLE|\n|\[|\]', '', esptool_mem['mem_type'])
             # If there are two IRAMs in esptool output it will compute these two IRAM lengths in a seg_len['IRAM']
             seg_len[seg] = int(esptool_mem['size'], 16) if seg not in seg_len else seg_len[seg] + int(esptool_mem['size'], 16)
