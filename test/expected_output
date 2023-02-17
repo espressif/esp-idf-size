@@ -5210,6 +5210,325 @@ Symbols from section: .rtc_noinit
 Section total: 0
 
 ***
+Running idf_size for esp32h2...
+Total sizes:
+Used stat D/IRAM:   35228 bytes ( 292452 remain, 10.8% used)
+      .data size:    2724 bytes
+      .bss  size:    3624 bytes
+      .text size:   28880 bytes
+Used Flash size :  101058 bytes
+           .text:   72226 bytes
+         .rodata:   28576 bytes
+Total image size:  132662 bytes (.bin may be padded larger)
+
+***
+Running idf_size for esp32h2 (target autodetected)...
+Total sizes:
+Used stat D/IRAM:   35228 bytes ( 292452 remain, 10.8% used)
+      .data size:    2724 bytes
+      .bss  size:    3624 bytes
+      .text size:   28880 bytes
+Used Flash size :  101058 bytes
+           .text:   72226 bytes
+         .rodata:   28576 bytes
+Total image size:  132662 bytes (.bin may be padded larger)
+
+***
+Running idf_size --archives for esp32h2...
+Total sizes:
+Used stat D/IRAM:   35228 bytes ( 292452 remain, 10.8% used)
+      .data size:    2724 bytes
+      .bss  size:    3624 bytes
+      .text size:   28880 bytes
+Used Flash size :  101058 bytes
+           .text:   72226 bytes
+         .rodata:   28576 bytes
+Total image size:  132662 bytes (.bin may be padded larger)
+Per-archive contributions to ELF file:
+            Archive File DRAM .data & 0.bss .rtc_noinit IRAM0 .text ram_st_total Flash .text & .rodata & .appdesc flash_total
+                  libc.a          4       4           0           0            8       36166      3603          0       39773
+           libfreertos.a         96    2236           0        9940        12272         376      3897          0       14309
+         libesp_system.a        173     134           0        1372         1679        6392      3769          0       11706
+                libvfs.a        304      64           0           0          368        8836       933          0       10073
+          libspi_flash.a       1182      14           0        5710         6906         800      1406          0        9098
+         libesp_common.a          0       0           0           0            0          58      7584          0        7642
+     libesp_hw_support.a          0      45          16         946         1007        4962      1064          0        6988
+                libhal.a        598       0           0        4540         5138        1308       147          0        6593
+             libesp_mm.a          4      44           0         304          352        2830      1476          0        4614
+               libheap.a         12       8           0        1038         1058        1932      1205          0        4187
+             libnewlib.a        241     440           0        1780         2461        1256       340          0        3617
+             libdriver.a         24       8           0           0           32        2898       693          0        3615
+          libesp_timer.a         16      36           0         522          574        1034       293          0        1865
+        libesp_ringbuf.a          0       0           0         980          980           0       512          0        1492
+      libesp_partition.a          0       8           0           0            8        1056       276          0        1332
+                liblog.a          8     272           0         262          542         566       124          0         960
+              libriscv.a          0     256           0         712          968          74       139          0         925
+ libbootloader_support.a          0       0           0         550          550          70       167          0         787
+                  libm.a          0       0           0           0            0         692         8          0         700
+               libmain.a          0       0           0           0            0         316       292          0         608
+     libesp_app_format.a          1       8           0         194          203          32         4        256         487
+            libpthread.a          0      12           0           0           12         348         0          0         348
+         libapp_update.a          0       4           0           0            4         190       125          0         315
+                libsoc.a          0       0           0           0            0           0       112          0         112
+            libesp_rom.a          0       0           0          30           30           0         0          0          30
+              libefuse.a          0       0           0           0            0          16         0          0          16
+                libcxx.a          0       0           0           0            0           2         0          0           2
+                libgcc.a          0       0           0           0            0           0         0          0           0
+
+***
+Running idf_size --files for esp32h2...
+Total sizes:
+Used stat D/IRAM:   35228 bytes ( 292452 remain, 10.8% used)
+      .data size:    2724 bytes
+      .bss  size:    3624 bytes
+      .text size:   28880 bytes
+Used Flash size :  101058 bytes
+           .text:   72226 bytes
+         .rodata:   28576 bytes
+Total image size:  132662 bytes (.bin may be padded larger)
+Per-file contributions to ELF file:
+             Object File DRAM .data & 0.bss .rtc_noinit IRAM0 .text ram_st_total Flash .text & .rodata & .appdesc flash_total
+        lib_a-vfprintf.o          0       0           0           0            0       10468       657          0       11125
+      lib_a-svfiprintf.o          0       0           0           0            0        6648      1044          0        7692
+   esp_err_to_name.c.obj          0       0           0           0            0          58      7584          0        7642
+       lib_a-vfiprintf.o          0       0           0           0            0        6870       572          0        7442
+             tasks.c.obj          8     664           0        5232         5904           0      1434          0        6674
+          vfs_uart.c.obj         72       8           0           0           80        4390       360          0        4822
+             queue.c.obj          0       0           0        3120         3120           0      1533          0        4653
+       esp_mmu_map.c.obj          4      44           0         304          352        2830      1452          0        4590
+            lib_a-dtoa.o          0       0           0           0            0        3668       209          0        3877
+              uart.c.obj         24       8           0           0           32        2898       689          0        3611
+          task_wdt.c.obj         45       5           0           0           50        2120      1252          0        3417
+        intr_alloc.c.obj          0      13           0         708          721        2324       377          0        3409
+spi_flash_chip_generic.c        573       0           0        2822         3395           0         0          0        3395
+           lib_a-mprec.o          0       0           0           0            0        3002       382          0        3384
+               vfs.c.obj        192      40           0           0          232        2444       106          0        2742
+spi_flash_hal_iram.c.obj          0       0           0        2326         2326           0         0          0        2326
+     esp_flash_api.c.obj         20       0           0        1090         1110          80       913          0        2103
+           startup.c.obj          0       8           0           0            8        1118       815          0        1933
+        panic_arch.c.obj          0       0           0           0            0         552      1152          0        1704
+         heap_caps.c.obj          4       4           0         980          988         262       314          0        1560
+           mmu_hal.c.obj        488       0           0        1064         1552           0         0          0        1552
+           ringbuf.c.obj          0       0           0         980          980           0       512          0        1492
+vfs_usb_serial_jtag.c.ob         40       0           0           0           40        1160       259          0        1459
+             locks.c.obj          0     168           0         908         1076         160       340          0        1408
+       periph_ctrl.c.obj          0      32           0           0           32        1298        95          0        1393
+    heap_caps_init.c.obj          0       4           0           0            4        1008       340          0        1348
+             panic.c.obj         12       9           0          30           51        1142       131          0        1315
+         partition.c.obj          0       8           0           0            8         978       276          0        1254
+memspi_host_driver.c.obj        400       0           0         772         1172           0         0          0        1172
+       vfs_console.c.obj          0      16           0           0           16         842       208          0        1050
+spi_flash_hal_gpspi.c.ob          0       0           0        1014         1014           0         0          0        1014
+          lib_a-fseeko.o          0       0           0           0            0         952         0          0         952
+memory_layout_utils.c.ob          0       0           0           0            0         662       288          0         950
+              port.c.obj         84    1556           0         614         2254           0       217          0         915
+         esp_timer.c.obj          0       8           0         292          300         538        82          0         912
+          lib_a-findfp.o          0       0           0           0            0         736        96          0         832
+              time.c.obj          0      20           0         188          208         618         0          0         806
+        flash_mmap.c.obj          0       0           0         310          310         346       135          0         791
+         lib_a-fvwrite.o          0       0           0           0            0         780         0          0         780
+     spi_flash_hal.c.obj          0       0           0           0            0         624       147          0         771
+       app_startup.c.obj          0       0           0           0            0         376       380          0         756
+               log.c.obj          8     264           0          32          304         566       124          0         730
+  bootloader_flash.c.obj          0       0           0         546          546           0       167          0         713
+esp_timer_impl_systimer.         16      20           0         194          230         356       130          0         696
+      port_systick.c.obj          0      16           0         476          492           0       213          0         689
+esp_flash_spi_init.c.obj         72       4           0           0           76         294       262          0         628
+spi_flash_os_func_app.c.         56       0           0         434          490          42        96          0         628
+  hello_world_main.c.obj          0       0           0           0            0         316       292          0         608
+           vectors.S.obj          0       0           0         600          600           0         0          0         600
+          lib_a-fflush.o          0       0           0           0            0         580         0          0         580
+          uart_hal.c.obj          0       0           0           0            0         546         0          0         546
+          clk_tree.c.obj          0       0           0           0            0         322       209          0         531
+        sleep_gpio.c.obj          0       0           0           0            0         272       227          0         499
+      esp_app_desc.c.obj          1       8           0         194          203          32         4        256         487
+               cpu.c.obj          0       0           0          28           28         424         0          0         452
+         cpu_start.c.obj          0       0           0         354          354          42        48          0         444
+     crosscore_int.c.obj          0       4           0         160          164         104       165          0         429
+   system_internal.c.obj          0       0           0         394          394           0         0          0         394
+          lib_a-locale.o          4       0           0           0            4           0       378          0         382
+          lib_a-refill.o          0       0           0           0            0         382         0          0         382
+     panic_handler.c.obj          8       4           0          82           94         270         8          0         368
+task_wdt_impl_timergroup          0      12           0           0           12         354         0          0         354
+          lib_a-s_ceil.o          0       0           0           0            0         342         8          0         350
+         lib_a-s_floor.o          0       0           0           0            0         350         0          0         350
+            assert.c.obj         47       0           0         298          345           0         0          0         345
+     esp_time_impl.c.obj          0      12           0           0           12         344         0          0         344
+    freertos_hooks.c.obj          0      64           0          48          112         290         0          0         338
+       port_common.c.obj          0       0           0         212          212           0       120          0         332
+           lib_a-reent.o          0       0           0           0            0         322         0          0         322
+       esp_ota_ops.c.obj          0       4           0           0            4         190       125          0         315
+          lib_a-fclose.o          0       0           0           0            0         314         0          0         314
+           int_wdt.c.obj          0       8           0          94          102         202         0          0         296
+           lib_a-fopen.o          0       0           0           0            0         278         0          0         278
+           esp_clk.c.obj          0       0          16          30           46         230         0          0         276
+           esp_err.c.obj        108       0           0         156          264           0         0          0         264
+     memory_layout.c.obj          0       0           0           0            0           0       263          0         263
+          lib_a-ctype_.o          0       0           0           0            0           0       257          0         257
+       system_time.c.obj          0       8           0          36           44         140        81          0         257
+         interrupt.c.obj          0     256           0         112          368           0       139          0         251
+pthread_local_storage.c.          0       4           0           0            4         246         0          0         246
+       newlib_init.c.obj        156     240           0           0          396          86         0          0         242
+            lib_a-puts.o          0       0           0           0            0         240         0          0         240
+      log_freertos.c.obj          0       8           0         230          238           0         0          0         230
+          rtc_time.c.obj          0       0           0          60           60           0       156          0         216
+           lib_a-stdio.o          0       0           0           0            0         200         0          0         200
+         cache_hal.c.obj        110       0           0          82          192           0         0          0         192
+              heap.c.obj          0       0           0         190          190           0         0          0         190
+       cache_utils.c.obj          1       8           0         146          155          38         0          0         185
+    fpga_overrides.c.obj          0       0           0           0            0          72       108          0         180
+             abort.c.obj         38       0           0         132          170           0         0          0         170
+           portasm.S.obj          0       0           0         154          154           0         0          0         154
+     cache_err_int.c.obj          0       0           0           4            4          56        90          0         150
+         lib_a-s_frexp.o          0       0           0           0            0         130         8          0         138
+              list.c.obj          0       0           0         132          132           0         0          0         132
+     uart_hal_iram.c.obj          0       0           0           0            0         130         0          0         130
+          lib_a-printf.o          0       0           0           0            0         126         0          0         126
+spi_flash_os_func_noos.c         40       0           0          86          126           0         0          0         126
+           lib_a-flags.o          0       0           0           0            0         122         0          0         122
+       gpio_periph.c.obj          0       0           0           0            0           0       112          0         112
+         lib_a-vprintf.o          0       0           0           0            0         102         0          0         102
+           pthread.c.obj          0       8           0           0            8         100         0          0         100
+        esp_system.c.obj          0      20           0          40           60          54         0          0          94
+         chip_info.c.obj          0       0           0           0            0          92         0          0          92
+  partition_target.c.obj          0       0           0           0            0          78         0          0          78
+           rtc_clk.c.obj          0       0           0          76           76           0         0          0          76
+instruction_decode.c.obj          0       0           0           0            0          74         0          0          74
+        lib_a-mbtowc_r.o          0       0           0           0            0          72         0          0          72
+        multi_heap.c.obj          8       0           0          58           66           0         0          0          66
+        reent_init.c.obj          0       0           0          64           64           0         0          0          64
+         efuse_hal.c.obj          0       0           0          40           40           8         0          0          48
+        lib_a-wctomb_r.o          0       0           0           0            0          46         0          0          46
+flash_brownout_hook.c.ob          0       2           0          44           46           0         0          0          44
+          syscalls.c.obj          0       0           0           0            0          42         0          0          42
+           lib_a-fseek.o          0       0           0           0            0          40         0          0          40
+    bootloader_mem.c.obj          0       0           0           0            0          38         0          0          38
+       lib_a-sysgettod.o          0       0           0           0            0          36         0          0          36
+      lib_a-localeconv.o          0       0           0           0            0          34         0          0          34
+bootloader_flash_config_          0       0           0           0            0          32         0          0          32
+  esp_rom_systimer.c.obj          0       0           0          30           30           0         0          0          30
+          systimer.c.obj          0       0           0          24           24           0         0          0          24
+    ext_mem_layout.c.obj          0       0           0           0            0           0        24          0          24
+   esp_system_chip.c.obj          0       0           0           8            8          16         0          0          24
+           lib_a-errno.o          0       0           0           0            0          18         0          0          18
+  esp_memory_utils.c.obj          0       0           0          16           16           0         0          0          16
+spi_flash_encrypt_hal_ir          0       0           0          14           14           0         0          0          14
+         flash_ops.c.obj          8       0           0           6           14           0         0          0          14
+     esp_efuse_api.c.obj          0       0           0           0            0          12         0          0          12
+spi_flash_chip_drivers.c         12       0           0           0           12           0         0          0          12
+           pthread.c.obj          0       0           0           0            0           6         0          0           6
+     flash_encrypt.c.obj          0       0           0           4            4           0         0          0           4
+      spi_bus_lock.c.obj          0       0           0           0            0           0         4          0           4
+ esp_efuse_utility.c.obj          0       0           0           0            0           4         0          0           4
+        rtc_module.c.obj          0       0           0           4            4           0         0          0           4
+  FreeRTOS-openocd.c.obj          4       0           0           0            4           0         0          0           4
+      cxx_guards.cpp.obj          0       0           0           0            0           2         0          0           2
+             ubsan.c.obj          0       0           0           2            2           0         0          0           2
+    pthread_rwlock.c.obj          0       0           0           0            0           2         0          0           2
+         lib_a-environ.o          0       4           0           0            4           0         0          0           0
+               _divdi3.o          0       0           0           0            0           0         0          0           0
+               _moddi3.o          0       0           0           0            0           0         0          0           0
+              _udivdi3.o          0       0           0           0            0           0         0          0           0
+              _umoddi3.o          0       0           0           0            0           0         0          0           0
+
+***
+Running idf_size --archive_details for esp32h2...
+Total sizes:
+Used stat D/IRAM:   35228 bytes ( 292452 remain, 10.8% used)
+      .data size:    2724 bytes
+      .bss  size:    3624 bytes
+      .text size:   28880 bytes
+Used Flash size :  101058 bytes
+           .text:   72226 bytes
+         .rodata:   28576 bytes
+Total image size:  132662 bytes (.bin may be padded larger)
+
+Symbols within the archive: libdriver.a (Not all symbols may be reported)
+
+Symbols from section: .dram0.bss
+    .p_uart_obj                    :   8
+Section total: 8
+
+Symbols from section: .dram0.data
+    uart_context                   :  16
+    .uart_selectlock               :   8
+Section total: 24
+
+Symbols from section: .flash.appdesc
+Section total: 0
+
+Symbols from section: .flash.rodata
+    uart_wait_tx_done.str1.4       : 144
+    uart_reenable_intr_mask.str1.4 :  55
+    uart_pattern_pop_pos.str1.4    :  50
+    uart_set_baudrate.str1.4       :  48
+    uart_set_stop_bits.str1.4      :  47
+    uart_set_word_length.str1.4    :  47
+    uart_flush_input.str1.4        :  46
+    __FUNCTION__.34                :  27
+    __FUNCTION__.33                :  24
+    __FUNCTION__.0                 :  21
+    __FUNCTION__.1                 :  21
+    __FUNCTION__.2                 :  19
+    __FUNCTION__.3                 :  19
+    __FUNCTION__.27                :  18
+    __FUNCTION__.6                 :  18
+    __FUNCTION__.7                 :  18
+    __func__.28                    :  18
+    __FUNCTION__.36                :  17
+    __FUNCTION__.4                 :  16
+    __FUNCTION__.5                 :  16
+    .g_spi_lock_main_flash_dev     :   4
+Section total: 693
+
+Symbols from section: .flash.rodata_noload
+Section total: 0
+
+Symbols from section: .flash.text
+    uart_wait_tx_done              : 616
+    uart_flush_input               : 594
+    uart_get_baudrate              : 196
+    uart_set_baudrate              : 196
+    uart_get_bufferedlen           : 194
+    uart_set_stop_bits             : 178
+    uart_set_word_length           : 178
+    uart_reenable_intr_mask        : 144
+    uart_get_parity                : 116
+    uart_get_stop_bits             : 116
+    uart_set_parity                : 116
+    uart_get_word_length           :  86
+    uart_pattern_queue_update      :  80
+    uart_is_driver_installed       :  34
+    uart_set_select_notif_callback :  30
+    uart_get_sclk_freq             :  18
+    uart_get_selectlock            :   6
+Section total: 2898
+
+Symbols from section: .iram0.bss
+Section total: 0
+
+Symbols from section: .iram0.data
+Section total: 0
+
+Symbols from section: .iram0.text
+Section total: 0
+
+Symbols from section: .noinit
+Section total: 0
+
+Symbols from section: .rtc.bss
+Section total: 0
+
+Symbols from section: .rtc.data
+Section total: 0
+
+Symbols from section: .rtc.text
+Section total: 0
+
+Symbols from section: .rtc_noinit
+Section total: 0
+
+***
 Producing JSON output...
 {
     "dram_data": 9324,
@@ -19650,6 +19969,1172 @@ Producing JSON output for esp32c6...
 }
 
 ***
+Producing JSON output for esp32h2...
+{
+    "dram_data": 0,
+    "dram_bss": 0,
+    "dram_rodata": 0,
+    "dram_other": 0,
+    "used_dram": 0,
+    "dram_total": 0,
+    "used_dram_ratio": 0,
+    "dram_remain": 0,
+    "iram_vectors": 0,
+    "iram_text": 0,
+    "iram_other": 0,
+    "used_iram": 0,
+    "iram_total": 0,
+    "used_iram_ratio": 0,
+    "iram_remain": 0,
+    "diram_data": 2724,
+    "diram_bss": 3624,
+    "diram_text": 28880,
+    "diram_vectors": 0,
+    "diram_rodata": 0,
+    "diram_other": 0,
+    "diram_total": 327680,
+    "used_diram": 35228,
+    "used_diram_ratio": 0.10750732421875,
+    "diram_remain": 292452,
+    "flash_code": 72226,
+    "flash_rodata": 28576,
+    "flash_other": 256,
+    "used_flash_non_ram": 101058,
+    "total_size": 132662
+}
+{
+    "libc.a": {
+        ".dram0.bss": 4,
+        ".dram0.data": 4,
+        ".flash.rodata": 3603,
+        ".flash.text": 36166,
+        "flash_total": 39773,
+        "ram_st_total": 8
+    },
+    "libfreertos.a": {
+        ".dram0.bss": 2236,
+        ".dram0.data": 96,
+        ".flash.rodata": 3897,
+        ".flash.text": 376,
+        ".iram0.text": 9940,
+        "flash_total": 14309,
+        "ram_st_total": 12272
+    },
+    "libesp_system.a": {
+        ".dram0.bss": 134,
+        ".dram0.data": 173,
+        ".flash.rodata": 3769,
+        ".flash.text": 6392,
+        ".iram0.text": 1372,
+        "flash_total": 11706,
+        "ram_st_total": 1679
+    },
+    "libvfs.a": {
+        ".dram0.bss": 64,
+        ".dram0.data": 304,
+        ".flash.rodata": 933,
+        ".flash.text": 8836,
+        "flash_total": 10073,
+        "ram_st_total": 368
+    },
+    "libspi_flash.a": {
+        ".dram0.bss": 14,
+        ".dram0.data": 1182,
+        ".flash.rodata": 1406,
+        ".flash.text": 800,
+        ".iram0.text": 5710,
+        "flash_total": 9098,
+        "ram_st_total": 6906
+    },
+    "libesp_common.a": {
+        ".flash.rodata": 7584,
+        ".flash.text": 58,
+        "flash_total": 7642,
+        "ram_st_total": 0
+    },
+    "libesp_hw_support.a": {
+        ".dram0.bss": 45,
+        ".flash.rodata": 1064,
+        ".flash.text": 4962,
+        ".iram0.text": 946,
+        ".rtc_noinit": 16,
+        "flash_total": 6988,
+        "ram_st_total": 1007
+    },
+    "libhal.a": {
+        ".dram0.data": 598,
+        ".flash.rodata": 147,
+        ".flash.text": 1308,
+        ".iram0.text": 4540,
+        "flash_total": 6593,
+        "ram_st_total": 5138
+    },
+    "libesp_mm.a": {
+        ".dram0.bss": 44,
+        ".dram0.data": 4,
+        ".flash.rodata": 1476,
+        ".flash.text": 2830,
+        ".iram0.text": 304,
+        "flash_total": 4614,
+        "ram_st_total": 352
+    },
+    "libheap.a": {
+        ".dram0.bss": 8,
+        ".dram0.data": 12,
+        ".flash.rodata": 1205,
+        ".flash.text": 1932,
+        ".iram0.text": 1038,
+        "flash_total": 4187,
+        "ram_st_total": 1058
+    },
+    "libnewlib.a": {
+        ".dram0.bss": 440,
+        ".dram0.data": 241,
+        ".flash.rodata": 340,
+        ".flash.text": 1256,
+        ".iram0.text": 1780,
+        "flash_total": 3617,
+        "ram_st_total": 2461
+    },
+    "libdriver.a": {
+        ".dram0.bss": 8,
+        ".dram0.data": 24,
+        ".flash.rodata": 693,
+        ".flash.text": 2898,
+        "flash_total": 3615,
+        "ram_st_total": 32
+    },
+    "libesp_timer.a": {
+        ".dram0.bss": 36,
+        ".dram0.data": 16,
+        ".flash.rodata": 293,
+        ".flash.text": 1034,
+        ".iram0.text": 522,
+        "flash_total": 1865,
+        "ram_st_total": 574
+    },
+    "libesp_ringbuf.a": {
+        ".flash.rodata": 512,
+        ".iram0.text": 980,
+        "flash_total": 1492,
+        "ram_st_total": 980
+    },
+    "libesp_partition.a": {
+        ".dram0.bss": 8,
+        ".flash.rodata": 276,
+        ".flash.text": 1056,
+        "flash_total": 1332,
+        "ram_st_total": 8
+    },
+    "liblog.a": {
+        ".dram0.bss": 272,
+        ".dram0.data": 8,
+        ".flash.rodata": 124,
+        ".flash.text": 566,
+        ".iram0.text": 262,
+        "flash_total": 960,
+        "ram_st_total": 542
+    },
+    "libriscv.a": {
+        ".dram0.bss": 256,
+        ".flash.rodata": 139,
+        ".flash.text": 74,
+        ".iram0.text": 712,
+        "flash_total": 925,
+        "ram_st_total": 968
+    },
+    "libbootloader_support.a": {
+        ".flash.rodata": 167,
+        ".flash.text": 70,
+        ".iram0.text": 550,
+        "flash_total": 787,
+        "ram_st_total": 550
+    },
+    "libm.a": {
+        ".flash.rodata": 8,
+        ".flash.text": 692,
+        "flash_total": 700,
+        "ram_st_total": 0
+    },
+    "libmain.a": {
+        ".flash.rodata": 292,
+        ".flash.text": 316,
+        "flash_total": 608,
+        "ram_st_total": 0
+    },
+    "libesp_app_format.a": {
+        ".dram0.bss": 8,
+        ".dram0.data": 1,
+        ".flash.appdesc": 256,
+        ".flash.rodata": 4,
+        ".flash.text": 32,
+        ".iram0.text": 194,
+        "flash_total": 487,
+        "ram_st_total": 203
+    },
+    "libpthread.a": {
+        ".dram0.bss": 12,
+        ".flash.text": 348,
+        "flash_total": 348,
+        "ram_st_total": 12
+    },
+    "libapp_update.a": {
+        ".dram0.bss": 4,
+        ".flash.rodata": 125,
+        ".flash.text": 190,
+        "flash_total": 315,
+        "ram_st_total": 4
+    },
+    "libsoc.a": {
+        ".flash.rodata": 112,
+        "flash_total": 112,
+        "ram_st_total": 0
+    },
+    "libesp_rom.a": {
+        ".iram0.text": 30,
+        "flash_total": 30,
+        "ram_st_total": 30
+    },
+    "libefuse.a": {
+        ".flash.text": 16,
+        "flash_total": 16,
+        "ram_st_total": 0
+    },
+    "libcxx.a": {
+        ".flash.text": 2,
+        "flash_total": 2,
+        "ram_st_total": 0
+    },
+    "libgcc.a": {
+        "flash_total": 0,
+        "ram_st_total": 0
+    }
+}
+{
+    "libc.a:lib_a-vfprintf.o": {
+        ".flash.rodata": 657,
+        ".flash.text": 10468,
+        "flash_total": 11125,
+        "ram_st_total": 0
+    },
+    "libc.a:lib_a-svfiprintf.o": {
+        ".flash.rodata": 1044,
+        ".flash.text": 6648,
+        "flash_total": 7692,
+        "ram_st_total": 0
+    },
+    "libesp_common.a:esp_err_to_name.c.obj": {
+        ".flash.rodata": 7584,
+        ".flash.text": 58,
+        "flash_total": 7642,
+        "ram_st_total": 0
+    },
+    "libc.a:lib_a-vfiprintf.o": {
+        ".flash.rodata": 572,
+        ".flash.text": 6870,
+        "flash_total": 7442,
+        "ram_st_total": 0
+    },
+    "libfreertos.a:tasks.c.obj": {
+        ".dram0.bss": 664,
+        ".dram0.data": 8,
+        ".flash.rodata": 1434,
+        ".iram0.text": 5232,
+        "flash_total": 6674,
+        "ram_st_total": 5904
+    },
+    "libvfs.a:vfs_uart.c.obj": {
+        ".dram0.bss": 8,
+        ".dram0.data": 72,
+        ".flash.rodata": 360,
+        ".flash.text": 4390,
+        "flash_total": 4822,
+        "ram_st_total": 80
+    },
+    "libfreertos.a:queue.c.obj": {
+        ".flash.rodata": 1533,
+        ".iram0.text": 3120,
+        "flash_total": 4653,
+        "ram_st_total": 3120
+    },
+    "libesp_mm.a:esp_mmu_map.c.obj": {
+        ".dram0.bss": 44,
+        ".dram0.data": 4,
+        ".flash.rodata": 1452,
+        ".flash.text": 2830,
+        ".iram0.text": 304,
+        "flash_total": 4590,
+        "ram_st_total": 352
+    },
+    "libc.a:lib_a-dtoa.o": {
+        ".flash.rodata": 209,
+        ".flash.text": 3668,
+        "flash_total": 3877,
+        "ram_st_total": 0
+    },
+    "libdriver.a:uart.c.obj": {
+        ".dram0.bss": 8,
+        ".dram0.data": 24,
+        ".flash.rodata": 689,
+        ".flash.text": 2898,
+        "flash_total": 3611,
+        "ram_st_total": 32
+    },
+    "libesp_system.a:task_wdt.c.obj": {
+        ".dram0.bss": 5,
+        ".dram0.data": 45,
+        ".flash.rodata": 1252,
+        ".flash.text": 2120,
+        "flash_total": 3417,
+        "ram_st_total": 50
+    },
+    "libesp_hw_support.a:intr_alloc.c.obj": {
+        ".dram0.bss": 13,
+        ".flash.rodata": 377,
+        ".flash.text": 2324,
+        ".iram0.text": 708,
+        "flash_total": 3409,
+        "ram_st_total": 721
+    },
+    "libspi_flash.a:spi_flash_chip_generic.c.obj": {
+        ".dram0.data": 573,
+        ".iram0.text": 2822,
+        "flash_total": 3395,
+        "ram_st_total": 3395
+    },
+    "libc.a:lib_a-mprec.o": {
+        ".flash.rodata": 382,
+        ".flash.text": 3002,
+        "flash_total": 3384,
+        "ram_st_total": 0
+    },
+    "libvfs.a:vfs.c.obj": {
+        ".dram0.bss": 40,
+        ".dram0.data": 192,
+        ".flash.rodata": 106,
+        ".flash.text": 2444,
+        "flash_total": 2742,
+        "ram_st_total": 232
+    },
+    "libhal.a:spi_flash_hal_iram.c.obj": {
+        ".iram0.text": 2326,
+        "flash_total": 2326,
+        "ram_st_total": 2326
+    },
+    "libspi_flash.a:esp_flash_api.c.obj": {
+        ".dram0.data": 20,
+        ".flash.rodata": 913,
+        ".flash.text": 80,
+        ".iram0.text": 1090,
+        "flash_total": 2103,
+        "ram_st_total": 1110
+    },
+    "libesp_system.a:startup.c.obj": {
+        ".dram0.bss": 8,
+        ".flash.rodata": 815,
+        ".flash.text": 1118,
+        "flash_total": 1933,
+        "ram_st_total": 8
+    },
+    "libesp_system.a:panic_arch.c.obj": {
+        ".flash.rodata": 1152,
+        ".flash.text": 552,
+        "flash_total": 1704,
+        "ram_st_total": 0
+    },
+    "libheap.a:heap_caps.c.obj": {
+        ".dram0.bss": 4,
+        ".dram0.data": 4,
+        ".flash.rodata": 314,
+        ".flash.text": 262,
+        ".iram0.text": 980,
+        "flash_total": 1560,
+        "ram_st_total": 988
+    },
+    "libhal.a:mmu_hal.c.obj": {
+        ".dram0.data": 488,
+        ".iram0.text": 1064,
+        "flash_total": 1552,
+        "ram_st_total": 1552
+    },
+    "libesp_ringbuf.a:ringbuf.c.obj": {
+        ".flash.rodata": 512,
+        ".iram0.text": 980,
+        "flash_total": 1492,
+        "ram_st_total": 980
+    },
+    "libvfs.a:vfs_usb_serial_jtag.c.obj": {
+        ".dram0.data": 40,
+        ".flash.rodata": 259,
+        ".flash.text": 1160,
+        "flash_total": 1459,
+        "ram_st_total": 40
+    },
+    "libnewlib.a:locks.c.obj": {
+        ".dram0.bss": 168,
+        ".flash.rodata": 340,
+        ".flash.text": 160,
+        ".iram0.text": 908,
+        "flash_total": 1408,
+        "ram_st_total": 1076
+    },
+    "libesp_hw_support.a:periph_ctrl.c.obj": {
+        ".dram0.bss": 32,
+        ".flash.rodata": 95,
+        ".flash.text": 1298,
+        "flash_total": 1393,
+        "ram_st_total": 32
+    },
+    "libheap.a:heap_caps_init.c.obj": {
+        ".dram0.bss": 4,
+        ".flash.rodata": 340,
+        ".flash.text": 1008,
+        "flash_total": 1348,
+        "ram_st_total": 4
+    },
+    "libesp_system.a:panic.c.obj": {
+        ".dram0.bss": 9,
+        ".dram0.data": 12,
+        ".flash.rodata": 131,
+        ".flash.text": 1142,
+        ".iram0.text": 30,
+        "flash_total": 1315,
+        "ram_st_total": 51
+    },
+    "libesp_partition.a:partition.c.obj": {
+        ".dram0.bss": 8,
+        ".flash.rodata": 276,
+        ".flash.text": 978,
+        "flash_total": 1254,
+        "ram_st_total": 8
+    },
+    "libspi_flash.a:memspi_host_driver.c.obj": {
+        ".dram0.data": 400,
+        ".iram0.text": 772,
+        "flash_total": 1172,
+        "ram_st_total": 1172
+    },
+    "libvfs.a:vfs_console.c.obj": {
+        ".dram0.bss": 16,
+        ".flash.rodata": 208,
+        ".flash.text": 842,
+        "flash_total": 1050,
+        "ram_st_total": 16
+    },
+    "libhal.a:spi_flash_hal_gpspi.c.obj": {
+        ".iram0.text": 1014,
+        "flash_total": 1014,
+        "ram_st_total": 1014
+    },
+    "libc.a:lib_a-fseeko.o": {
+        ".flash.text": 952,
+        "flash_total": 952,
+        "ram_st_total": 0
+    },
+    "libheap.a:memory_layout_utils.c.obj": {
+        ".flash.rodata": 288,
+        ".flash.text": 662,
+        "flash_total": 950,
+        "ram_st_total": 0
+    },
+    "libfreertos.a:port.c.obj": {
+        ".dram0.bss": 1556,
+        ".dram0.data": 84,
+        ".flash.rodata": 217,
+        ".iram0.text": 614,
+        "flash_total": 915,
+        "ram_st_total": 2254
+    },
+    "libesp_timer.a:esp_timer.c.obj": {
+        ".dram0.bss": 8,
+        ".flash.rodata": 82,
+        ".flash.text": 538,
+        ".iram0.text": 292,
+        "flash_total": 912,
+        "ram_st_total": 300
+    },
+    "libc.a:lib_a-findfp.o": {
+        ".flash.rodata": 96,
+        ".flash.text": 736,
+        "flash_total": 832,
+        "ram_st_total": 0
+    },
+    "libnewlib.a:time.c.obj": {
+        ".dram0.bss": 20,
+        ".flash.text": 618,
+        ".iram0.text": 188,
+        "flash_total": 806,
+        "ram_st_total": 208
+    },
+    "libspi_flash.a:flash_mmap.c.obj": {
+        ".flash.rodata": 135,
+        ".flash.text": 346,
+        ".iram0.text": 310,
+        "flash_total": 791,
+        "ram_st_total": 310
+    },
+    "libc.a:lib_a-fvwrite.o": {
+        ".flash.text": 780,
+        "flash_total": 780,
+        "ram_st_total": 0
+    },
+    "libhal.a:spi_flash_hal.c.obj": {
+        ".flash.rodata": 147,
+        ".flash.text": 624,
+        "flash_total": 771,
+        "ram_st_total": 0
+    },
+    "libfreertos.a:app_startup.c.obj": {
+        ".flash.rodata": 380,
+        ".flash.text": 376,
+        "flash_total": 756,
+        "ram_st_total": 0
+    },
+    "liblog.a:log.c.obj": {
+        ".dram0.bss": 264,
+        ".dram0.data": 8,
+        ".flash.rodata": 124,
+        ".flash.text": 566,
+        ".iram0.text": 32,
+        "flash_total": 730,
+        "ram_st_total": 304
+    },
+    "libbootloader_support.a:bootloader_flash.c.obj": {
+        ".flash.rodata": 167,
+        ".iram0.text": 546,
+        "flash_total": 713,
+        "ram_st_total": 546
+    },
+    "libesp_timer.a:esp_timer_impl_systimer.c.obj": {
+        ".dram0.bss": 20,
+        ".dram0.data": 16,
+        ".flash.rodata": 130,
+        ".flash.text": 356,
+        ".iram0.text": 194,
+        "flash_total": 696,
+        "ram_st_total": 230
+    },
+    "libfreertos.a:port_systick.c.obj": {
+        ".dram0.bss": 16,
+        ".flash.rodata": 213,
+        ".iram0.text": 476,
+        "flash_total": 689,
+        "ram_st_total": 492
+    },
+    "libspi_flash.a:esp_flash_spi_init.c.obj": {
+        ".dram0.bss": 4,
+        ".dram0.data": 72,
+        ".flash.rodata": 262,
+        ".flash.text": 294,
+        "flash_total": 628,
+        "ram_st_total": 76
+    },
+    "libspi_flash.a:spi_flash_os_func_app.c.obj": {
+        ".dram0.data": 56,
+        ".flash.rodata": 96,
+        ".flash.text": 42,
+        ".iram0.text": 434,
+        "flash_total": 628,
+        "ram_st_total": 490
+    },
+    "libmain.a:hello_world_main.c.obj": {
+        ".flash.rodata": 292,
+        ".flash.text": 316,
+        "flash_total": 608,
+        "ram_st_total": 0
+    },
+    "libriscv.a:vectors.S.obj": {
+        ".iram0.text": 600,
+        "flash_total": 600,
+        "ram_st_total": 600
+    },
+    "libc.a:lib_a-fflush.o": {
+        ".flash.text": 580,
+        "flash_total": 580,
+        "ram_st_total": 0
+    },
+    "libhal.a:uart_hal.c.obj": {
+        ".flash.text": 546,
+        "flash_total": 546,
+        "ram_st_total": 0
+    },
+    "libesp_hw_support.a:clk_tree.c.obj": {
+        ".flash.rodata": 209,
+        ".flash.text": 322,
+        "flash_total": 531,
+        "ram_st_total": 0
+    },
+    "libesp_hw_support.a:sleep_gpio.c.obj": {
+        ".flash.rodata": 227,
+        ".flash.text": 272,
+        "flash_total": 499,
+        "ram_st_total": 0
+    },
+    "libesp_app_format.a:esp_app_desc.c.obj": {
+        ".dram0.bss": 8,
+        ".dram0.data": 1,
+        ".flash.appdesc": 256,
+        ".flash.rodata": 4,
+        ".flash.text": 32,
+        ".iram0.text": 194,
+        "flash_total": 487,
+        "ram_st_total": 203
+    },
+    "libesp_hw_support.a:cpu.c.obj": {
+        ".flash.text": 424,
+        ".iram0.text": 28,
+        "flash_total": 452,
+        "ram_st_total": 28
+    },
+    "libesp_system.a:cpu_start.c.obj": {
+        ".flash.rodata": 48,
+        ".flash.text": 42,
+        ".iram0.text": 354,
+        "flash_total": 444,
+        "ram_st_total": 354
+    },
+    "libesp_system.a:crosscore_int.c.obj": {
+        ".dram0.bss": 4,
+        ".flash.rodata": 165,
+        ".flash.text": 104,
+        ".iram0.text": 160,
+        "flash_total": 429,
+        "ram_st_total": 164
+    },
+    "libesp_system.a:system_internal.c.obj": {
+        ".iram0.text": 394,
+        "flash_total": 394,
+        "ram_st_total": 394
+    },
+    "libc.a:lib_a-locale.o": {
+        ".dram0.data": 4,
+        ".flash.rodata": 378,
+        "flash_total": 382,
+        "ram_st_total": 4
+    },
+    "libc.a:lib_a-refill.o": {
+        ".flash.text": 382,
+        "flash_total": 382,
+        "ram_st_total": 0
+    },
+    "libesp_system.a:panic_handler.c.obj": {
+        ".dram0.bss": 4,
+        ".dram0.data": 8,
+        ".flash.rodata": 8,
+        ".flash.text": 270,
+        ".iram0.text": 82,
+        "flash_total": 368,
+        "ram_st_total": 94
+    },
+    "libesp_system.a:task_wdt_impl_timergroup.c.obj": {
+        ".dram0.bss": 12,
+        ".flash.text": 354,
+        "flash_total": 354,
+        "ram_st_total": 12
+    },
+    "libm.a:lib_a-s_ceil.o": {
+        ".flash.rodata": 8,
+        ".flash.text": 342,
+        "flash_total": 350,
+        "ram_st_total": 0
+    },
+    "libm.a:lib_a-s_floor.o": {
+        ".flash.rodata": 0,
+        ".flash.text": 350,
+        "flash_total": 350,
+        "ram_st_total": 0
+    },
+    "libnewlib.a:assert.c.obj": {
+        ".dram0.data": 47,
+        ".iram0.text": 298,
+        "flash_total": 345,
+        "ram_st_total": 345
+    },
+    "libnewlib.a:esp_time_impl.c.obj": {
+        ".dram0.bss": 12,
+        ".flash.text": 344,
+        "flash_total": 344,
+        "ram_st_total": 12
+    },
+    "libesp_system.a:freertos_hooks.c.obj": {
+        ".dram0.bss": 64,
+        ".flash.text": 290,
+        ".iram0.text": 48,
+        "flash_total": 338,
+        "ram_st_total": 112
+    },
+    "libfreertos.a:port_common.c.obj": {
+        ".flash.rodata": 120,
+        ".iram0.text": 212,
+        "flash_total": 332,
+        "ram_st_total": 212
+    },
+    "libc.a:lib_a-reent.o": {
+        ".flash.text": 322,
+        "flash_total": 322,
+        "ram_st_total": 0
+    },
+    "libapp_update.a:esp_ota_ops.c.obj": {
+        ".dram0.bss": 4,
+        ".flash.rodata": 125,
+        ".flash.text": 190,
+        "flash_total": 315,
+        "ram_st_total": 4
+    },
+    "libc.a:lib_a-fclose.o": {
+        ".flash.text": 314,
+        "flash_total": 314,
+        "ram_st_total": 0
+    },
+    "libesp_system.a:int_wdt.c.obj": {
+        ".dram0.bss": 8,
+        ".flash.text": 202,
+        ".iram0.text": 94,
+        "flash_total": 296,
+        "ram_st_total": 102
+    },
+    "libc.a:lib_a-fopen.o": {
+        ".flash.text": 278,
+        "flash_total": 278,
+        "ram_st_total": 0
+    },
+    "libesp_hw_support.a:esp_clk.c.obj": {
+        ".flash.text": 230,
+        ".iram0.text": 30,
+        ".rtc_noinit": 16,
+        "flash_total": 276,
+        "ram_st_total": 46
+    },
+    "libesp_system.a:esp_err.c.obj": {
+        ".dram0.data": 108,
+        ".iram0.text": 156,
+        "flash_total": 264,
+        "ram_st_total": 264
+    },
+    "libheap.a:memory_layout.c.obj": {
+        ".flash.rodata": 263,
+        "flash_total": 263,
+        "ram_st_total": 0
+    },
+    "libc.a:lib_a-ctype_.o": {
+        ".flash.rodata": 257,
+        "flash_total": 257,
+        "ram_st_total": 0
+    },
+    "libesp_timer.a:system_time.c.obj": {
+        ".dram0.bss": 8,
+        ".flash.rodata": 81,
+        ".flash.text": 140,
+        ".iram0.text": 36,
+        "flash_total": 257,
+        "ram_st_total": 44
+    },
+    "libriscv.a:interrupt.c.obj": {
+        ".dram0.bss": 256,
+        ".flash.rodata": 139,
+        ".iram0.text": 112,
+        "flash_total": 251,
+        "ram_st_total": 368
+    },
+    "libpthread.a:pthread_local_storage.c.obj": {
+        ".dram0.bss": 4,
+        ".flash.text": 246,
+        "flash_total": 246,
+        "ram_st_total": 4
+    },
+    "libnewlib.a:newlib_init.c.obj": {
+        ".dram0.bss": 240,
+        ".dram0.data": 156,
+        ".flash.text": 86,
+        "flash_total": 242,
+        "ram_st_total": 396
+    },
+    "libc.a:lib_a-puts.o": {
+        ".flash.rodata": 0,
+        ".flash.text": 240,
+        "flash_total": 240,
+        "ram_st_total": 0
+    },
+    "liblog.a:log_freertos.c.obj": {
+        ".dram0.bss": 8,
+        ".iram0.text": 230,
+        "flash_total": 230,
+        "ram_st_total": 238
+    },
+    "libesp_hw_support.a:rtc_time.c.obj": {
+        ".flash.rodata": 156,
+        ".iram0.text": 60,
+        "flash_total": 216,
+        "ram_st_total": 60
+    },
+    "libc.a:lib_a-stdio.o": {
+        ".flash.text": 200,
+        "flash_total": 200,
+        "ram_st_total": 0
+    },
+    "libhal.a:cache_hal.c.obj": {
+        ".dram0.data": 110,
+        ".iram0.text": 82,
+        "flash_total": 192,
+        "ram_st_total": 192
+    },
+    "libnewlib.a:heap.c.obj": {
+        ".iram0.text": 190,
+        "flash_total": 190,
+        "ram_st_total": 190
+    },
+    "libspi_flash.a:cache_utils.c.obj": {
+        ".dram0.bss": 8,
+        ".dram0.data": 1,
+        ".flash.text": 38,
+        ".iram0.text": 146,
+        "flash_total": 185,
+        "ram_st_total": 155
+    },
+    "libesp_system.a:fpga_overrides.c.obj": {
+        ".flash.rodata": 108,
+        ".flash.text": 72,
+        "flash_total": 180,
+        "ram_st_total": 0
+    },
+    "libnewlib.a:abort.c.obj": {
+        ".dram0.data": 38,
+        ".iram0.text": 132,
+        "flash_total": 170,
+        "ram_st_total": 170
+    },
+    "libfreertos.a:portasm.S.obj": {
+        ".iram0.text": 154,
+        "flash_total": 154,
+        "ram_st_total": 154
+    },
+    "libesp_system.a:cache_err_int.c.obj": {
+        ".flash.rodata": 90,
+        ".flash.text": 56,
+        ".iram0.text": 4,
+        "flash_total": 150,
+        "ram_st_total": 4
+    },
+    "libc.a:lib_a-s_frexp.o": {
+        ".flash.rodata": 8,
+        ".flash.text": 130,
+        "flash_total": 138,
+        "ram_st_total": 0
+    },
+    "libfreertos.a:list.c.obj": {
+        ".iram0.text": 132,
+        "flash_total": 132,
+        "ram_st_total": 132
+    },
+    "libhal.a:uart_hal_iram.c.obj": {
+        ".flash.text": 130,
+        "flash_total": 130,
+        "ram_st_total": 0
+    },
+    "libc.a:lib_a-printf.o": {
+        ".flash.text": 126,
+        "flash_total": 126,
+        "ram_st_total": 0
+    },
+    "libspi_flash.a:spi_flash_os_func_noos.c.obj": {
+        ".dram0.data": 40,
+        ".iram0.text": 86,
+        "flash_total": 126,
+        "ram_st_total": 126
+    },
+    "libc.a:lib_a-flags.o": {
+        ".flash.text": 122,
+        "flash_total": 122,
+        "ram_st_total": 0
+    },
+    "libsoc.a:gpio_periph.c.obj": {
+        ".flash.rodata": 112,
+        "flash_total": 112,
+        "ram_st_total": 0
+    },
+    "libc.a:lib_a-vprintf.o": {
+        ".flash.text": 102,
+        "flash_total": 102,
+        "ram_st_total": 0
+    },
+    "libpthread.a:pthread.c.obj": {
+        ".dram0.bss": 8,
+        ".flash.text": 100,
+        "flash_total": 100,
+        "ram_st_total": 8
+    },
+    "libesp_system.a:esp_system.c.obj": {
+        ".dram0.bss": 20,
+        ".flash.text": 54,
+        ".iram0.text": 40,
+        "flash_total": 94,
+        "ram_st_total": 60
+    },
+    "libesp_hw_support.a:chip_info.c.obj": {
+        ".flash.text": 92,
+        "flash_total": 92,
+        "ram_st_total": 0
+    },
+    "libesp_partition.a:partition_target.c.obj": {
+        ".flash.text": 78,
+        "flash_total": 78,
+        "ram_st_total": 0
+    },
+    "libesp_hw_support.a:rtc_clk.c.obj": {
+        ".iram0.text": 76,
+        "flash_total": 76,
+        "ram_st_total": 76
+    },
+    "libriscv.a:instruction_decode.c.obj": {
+        ".flash.text": 74,
+        "flash_total": 74,
+        "ram_st_total": 0
+    },
+    "libc.a:lib_a-mbtowc_r.o": {
+        ".flash.text": 72,
+        "flash_total": 72,
+        "ram_st_total": 0
+    },
+    "libheap.a:multi_heap.c.obj": {
+        ".dram0.data": 8,
+        ".iram0.text": 58,
+        "flash_total": 66,
+        "ram_st_total": 66
+    },
+    "libnewlib.a:reent_init.c.obj": {
+        ".iram0.text": 64,
+        "flash_total": 64,
+        "ram_st_total": 64
+    },
+    "libhal.a:efuse_hal.c.obj": {
+        ".flash.text": 8,
+        ".iram0.text": 40,
+        "flash_total": 48,
+        "ram_st_total": 40
+    },
+    "libc.a:lib_a-wctomb_r.o": {
+        ".flash.text": 46,
+        "flash_total": 46,
+        "ram_st_total": 0
+    },
+    "libspi_flash.a:flash_brownout_hook.c.obj": {
+        ".dram0.bss": 2,
+        ".iram0.text": 44,
+        "flash_total": 44,
+        "ram_st_total": 46
+    },
+    "libnewlib.a:syscalls.c.obj": {
+        ".flash.text": 42,
+        "flash_total": 42,
+        "ram_st_total": 0
+    },
+    "libc.a:lib_a-fseek.o": {
+        ".flash.text": 40,
+        "flash_total": 40,
+        "ram_st_total": 0
+    },
+    "libbootloader_support.a:bootloader_mem.c.obj": {
+        ".flash.text": 38,
+        "flash_total": 38,
+        "ram_st_total": 0
+    },
+    "libc.a:lib_a-sysgettod.o": {
+        ".flash.text": 36,
+        "flash_total": 36,
+        "ram_st_total": 0
+    },
+    "libc.a:lib_a-localeconv.o": {
+        ".flash.text": 34,
+        "flash_total": 34,
+        "ram_st_total": 0
+    },
+    "libbootloader_support.a:bootloader_flash_config_esp32h2.c.obj": {
+        ".flash.text": 32,
+        "flash_total": 32,
+        "ram_st_total": 0
+    },
+    "libesp_rom.a:esp_rom_systimer.c.obj": {
+        ".iram0.text": 30,
+        "flash_total": 30,
+        "ram_st_total": 30
+    },
+    "libesp_hw_support.a:systimer.c.obj": {
+        ".iram0.text": 24,
+        "flash_total": 24,
+        "ram_st_total": 24
+    },
+    "libesp_mm.a:ext_mem_layout.c.obj": {
+        ".flash.rodata": 24,
+        "flash_total": 24,
+        "ram_st_total": 0
+    },
+    "libesp_system.a:esp_system_chip.c.obj": {
+        ".flash.text": 16,
+        ".iram0.text": 8,
+        "flash_total": 24,
+        "ram_st_total": 8
+    },
+    "libc.a:lib_a-errno.o": {
+        ".flash.text": 18,
+        "flash_total": 18,
+        "ram_st_total": 0
+    },
+    "libesp_hw_support.a:esp_memory_utils.c.obj": {
+        ".iram0.text": 16,
+        "flash_total": 16,
+        "ram_st_total": 16
+    },
+    "libhal.a:spi_flash_encrypt_hal_iram.c.obj": {
+        ".iram0.text": 14,
+        "flash_total": 14,
+        "ram_st_total": 14
+    },
+    "libspi_flash.a:flash_ops.c.obj": {
+        ".dram0.data": 8,
+        ".iram0.text": 6,
+        "flash_total": 14,
+        "ram_st_total": 14
+    },
+    "libefuse.a:esp_efuse_api.c.obj": {
+        ".flash.text": 12,
+        "flash_total": 12,
+        "ram_st_total": 0
+    },
+    "libspi_flash.a:spi_flash_chip_drivers.c.obj": {
+        ".dram0.data": 12,
+        "flash_total": 12,
+        "ram_st_total": 12
+    },
+    "libnewlib.a:pthread.c.obj": {
+        ".flash.text": 6,
+        "flash_total": 6,
+        "ram_st_total": 0
+    },
+    "libbootloader_support.a:flash_encrypt.c.obj": {
+        ".iram0.text": 4,
+        "flash_total": 4,
+        "ram_st_total": 4
+    },
+    "libdriver.a:spi_bus_lock.c.obj": {
+        ".flash.rodata": 4,
+        "flash_total": 4,
+        "ram_st_total": 0
+    },
+    "libefuse.a:esp_efuse_utility.c.obj": {
+        ".flash.text": 4,
+        "flash_total": 4,
+        "ram_st_total": 0
+    },
+    "libesp_hw_support.a:rtc_module.c.obj": {
+        ".iram0.text": 4,
+        "flash_total": 4,
+        "ram_st_total": 4
+    },
+    "libfreertos.a:FreeRTOS-openocd.c.obj": {
+        ".dram0.data": 4,
+        "flash_total": 4,
+        "ram_st_total": 4
+    },
+    "libcxx.a:cxx_guards.cpp.obj": {
+        ".flash.text": 2,
+        "flash_total": 2,
+        "ram_st_total": 0
+    },
+    "libesp_system.a:ubsan.c.obj": {
+        ".iram0.text": 2,
+        "flash_total": 2,
+        "ram_st_total": 2
+    },
+    "libpthread.a:pthread_rwlock.c.obj": {
+        ".flash.text": 2,
+        "flash_total": 2,
+        "ram_st_total": 0
+    },
+    "libc.a:lib_a-environ.o": {
+        ".dram0.bss": 4,
+        "flash_total": 0,
+        "ram_st_total": 4
+    },
+    "libgcc.a:_divdi3.o": {
+        "flash_total": 0,
+        "ram_st_total": 0
+    },
+    "libgcc.a:_moddi3.o": {
+        "flash_total": 0,
+        "ram_st_total": 0
+    },
+    "libgcc.a:_udivdi3.o": {
+        "flash_total": 0,
+        "ram_st_total": 0
+    },
+    "libgcc.a:_umoddi3.o": {
+        "flash_total": 0,
+        "ram_st_total": 0
+    }
+}
+{
+    ".dram0.bss": {
+        ".p_uart_obj": 8
+    },
+    ".dram0.data": {
+        "uart_context": 16,
+        ".uart_selectlock": 8
+    },
+    ".flash.appdesc": {},
+    ".flash.rodata": {
+        "uart_wait_tx_done.str1.4": 144,
+        "uart_reenable_intr_mask.str1.4": 55,
+        "uart_pattern_pop_pos.str1.4": 50,
+        "uart_set_baudrate.str1.4": 48,
+        "uart_set_stop_bits.str1.4": 47,
+        "uart_set_word_length.str1.4": 47,
+        "uart_flush_input.str1.4": 46,
+        "__FUNCTION__.34": 27,
+        "__FUNCTION__.33": 24,
+        "__FUNCTION__.0": 21,
+        "__FUNCTION__.1": 21,
+        "__FUNCTION__.2": 19,
+        "__FUNCTION__.3": 19,
+        "__FUNCTION__.27": 18,
+        "__FUNCTION__.6": 18,
+        "__FUNCTION__.7": 18,
+        "__func__.28": 18,
+        "__FUNCTION__.36": 17,
+        "__FUNCTION__.4": 16,
+        "__FUNCTION__.5": 16,
+        ".g_spi_lock_main_flash_dev": 4
+    },
+    ".flash.rodata_noload": {},
+    ".flash.text": {
+        "uart_wait_tx_done": 616,
+        "uart_flush_input": 594,
+        "uart_get_baudrate": 196,
+        "uart_set_baudrate": 196,
+        "uart_get_bufferedlen": 194,
+        "uart_set_stop_bits": 178,
+        "uart_set_word_length": 178,
+        "uart_reenable_intr_mask": 144,
+        "uart_get_parity": 116,
+        "uart_get_stop_bits": 116,
+        "uart_set_parity": 116,
+        "uart_get_word_length": 86,
+        "uart_pattern_queue_update": 80,
+        "uart_is_driver_installed": 34,
+        "uart_set_select_notif_callback": 30,
+        "uart_get_sclk_freq": 18,
+        "uart_get_selectlock": 6
+    },
+    ".iram0.bss": {},
+    ".iram0.data": {},
+    ".iram0.text": {},
+    ".noinit": {},
+    ".rtc.bss": {},
+    ".rtc.data": {},
+    ".rtc.text": {},
+    ".rtc_noinit": {}
+}
+
+***
 Producing CSV output...
 Total sizes:,,,
 Used static DRAM,17620 bytes (163116 remain 9.7% used),,,
@@ -22476,6 +23961,304 @@ uart_is_driver_installed,34
 uart_set_select_notif_callback,30
 uart_get_selectlock,6
 Section total: 2852
+
+Symbols from section: .iram0.bss
+Section total: 0
+
+Symbols from section: .iram0.data
+Section total: 0
+
+Symbols from section: .iram0.text
+Section total: 0
+
+Symbols from section: .noinit
+Section total: 0
+
+Symbols from section: .rtc.bss
+Section total: 0
+
+Symbols from section: .rtc.data
+Section total: 0
+
+Symbols from section: .rtc.text
+Section total: 0
+
+Symbols from section: .rtc_noinit
+Section total: 0
+
+***
+Producing CSV output for esp32h2...
+Total sizes:,,,
+Used stat D/IRAM,35228 bytes (292452 remain 10.8% used),,,
+.data size,2724 bytes,,,
+.bss  size,3624 bytes,,,
+.text size,28880 bytes,,,
+Used Flash size ,101058 bytes,,,
+.text,72226 bytes,,,
+.rodata,28576 bytes,,,
+Total image size,132662 bytes (.bin may be padded larger),,,
+Total sizes:,,,
+Used stat D/IRAM,35228 bytes (292452 remain 10.8% used),,,
+.data size,2724 bytes,,,
+.bss  size,3624 bytes,,,
+.text size,28880 bytes,,,
+Used Flash size ,101058 bytes,,,
+.text,72226 bytes,,,
+.rodata,28576 bytes,,,
+Total image size,132662 bytes (.bin may be padded larger),,,
+Per-archive contributions to ELF file:
+Archive File,DRAM .data,& 0.bss,.rtc_noinit,IRAM0 .text,ram_st_total,Flash .text,& .rodata,& .appdesc
+libc.a,4,4,0,0,8,36166,3603,0
+libfreertos.a,96,2236,0,9940,12272,376,3897,0
+libesp_system.a,173,134,0,1372,1679,6392,3769,0
+libvfs.a,304,64,0,0,368,8836,933,0
+libspi_flash.a,1182,14,0,5710,6906,800,1406,0
+libesp_common.a,0,0,0,0,0,58,7584,0
+libesp_hw_support.a,0,45,16,946,1007,4962,1064,0
+libhal.a,598,0,0,4540,5138,1308,147,0
+libesp_mm.a,4,44,0,304,352,2830,1476,0
+libheap.a,12,8,0,1038,1058,1932,1205,0
+libnewlib.a,241,440,0,1780,2461,1256,340,0
+libdriver.a,24,8,0,0,32,2898,693,0
+libesp_timer.a,16,36,0,522,574,1034,293,0
+libesp_ringbuf.a,0,0,0,980,980,0,512,0
+libesp_partition.a,0,8,0,0,8,1056,276,0
+liblog.a,8,272,0,262,542,566,124,0
+libriscv.a,0,256,0,712,968,74,139,0
+libbootloader_support.a,0,0,0,550,550,70,167,0
+libm.a,0,0,0,0,0,692,8,0
+libmain.a,0,0,0,0,0,316,292,0
+libesp_app_format.a,1,8,0,194,203,32,4,256
+libpthread.a,0,12,0,0,12,348,0,0
+libapp_update.a,0,4,0,0,4,190,125,0
+libsoc.a,0,0,0,0,0,0,112,0
+libesp_rom.a,0,0,0,30,30,0,0,0
+libefuse.a,0,0,0,0,0,16,0,0
+libcxx.a,0,0,0,0,0,2,0,0
+libgcc.a,0,0,0,0,0,0,0,0
+Total sizes:,,,
+Used stat D/IRAM,35228 bytes (292452 remain 10.8% used),,,
+.data size,2724 bytes,,,
+.bss  size,3624 bytes,,,
+.text size,28880 bytes,,,
+Used Flash size ,101058 bytes,,,
+.text,72226 bytes,,,
+.rodata,28576 bytes,,,
+Total image size,132662 bytes (.bin may be padded larger),,,
+Per-file contributions to ELF file:
+Object File,DRAM .data,& 0.bss,.rtc_noinit,IRAM0 .text,ram_st_total,Flash .text,& .rodata,& .appdesc
+lib_a-vfprintf.o,0,0,0,0,0,10468,657,0
+lib_a-svfiprintf.o,0,0,0,0,0,6648,1044,0
+esp_err_to_name.c.obj,0,0,0,0,0,58,7584,0
+lib_a-vfiprintf.o,0,0,0,0,0,6870,572,0
+tasks.c.obj,8,664,0,5232,5904,0,1434,0
+vfs_uart.c.obj,72,8,0,0,80,4390,360,0
+queue.c.obj,0,0,0,3120,3120,0,1533,0
+esp_mmu_map.c.obj,4,44,0,304,352,2830,1452,0
+lib_a-dtoa.o,0,0,0,0,0,3668,209,0
+uart.c.obj,24,8,0,0,32,2898,689,0
+task_wdt.c.obj,45,5,0,0,50,2120,1252,0
+intr_alloc.c.obj,0,13,0,708,721,2324,377,0
+spi_flash_chip_generic.c,573,0,0,2822,3395,0,0,0
+lib_a-mprec.o,0,0,0,0,0,3002,382,0
+vfs.c.obj,192,40,0,0,232,2444,106,0
+spi_flash_hal_iram.c.obj,0,0,0,2326,2326,0,0,0
+esp_flash_api.c.obj,20,0,0,1090,1110,80,913,0
+startup.c.obj,0,8,0,0,8,1118,815,0
+panic_arch.c.obj,0,0,0,0,0,552,1152,0
+heap_caps.c.obj,4,4,0,980,988,262,314,0
+mmu_hal.c.obj,488,0,0,1064,1552,0,0,0
+ringbuf.c.obj,0,0,0,980,980,0,512,0
+vfs_usb_serial_jtag.c.ob,40,0,0,0,40,1160,259,0
+locks.c.obj,0,168,0,908,1076,160,340,0
+periph_ctrl.c.obj,0,32,0,0,32,1298,95,0
+heap_caps_init.c.obj,0,4,0,0,4,1008,340,0
+panic.c.obj,12,9,0,30,51,1142,131,0
+partition.c.obj,0,8,0,0,8,978,276,0
+memspi_host_driver.c.obj,400,0,0,772,1172,0,0,0
+vfs_console.c.obj,0,16,0,0,16,842,208,0
+spi_flash_hal_gpspi.c.ob,0,0,0,1014,1014,0,0,0
+lib_a-fseeko.o,0,0,0,0,0,952,0,0
+memory_layout_utils.c.ob,0,0,0,0,0,662,288,0
+port.c.obj,84,1556,0,614,2254,0,217,0
+esp_timer.c.obj,0,8,0,292,300,538,82,0
+lib_a-findfp.o,0,0,0,0,0,736,96,0
+time.c.obj,0,20,0,188,208,618,0,0
+flash_mmap.c.obj,0,0,0,310,310,346,135,0
+lib_a-fvwrite.o,0,0,0,0,0,780,0,0
+spi_flash_hal.c.obj,0,0,0,0,0,624,147,0
+app_startup.c.obj,0,0,0,0,0,376,380,0
+log.c.obj,8,264,0,32,304,566,124,0
+bootloader_flash.c.obj,0,0,0,546,546,0,167,0
+esp_timer_impl_systimer.,16,20,0,194,230,356,130,0
+port_systick.c.obj,0,16,0,476,492,0,213,0
+esp_flash_spi_init.c.obj,72,4,0,0,76,294,262,0
+spi_flash_os_func_app.c.,56,0,0,434,490,42,96,0
+hello_world_main.c.obj,0,0,0,0,0,316,292,0
+vectors.S.obj,0,0,0,600,600,0,0,0
+lib_a-fflush.o,0,0,0,0,0,580,0,0
+uart_hal.c.obj,0,0,0,0,0,546,0,0
+clk_tree.c.obj,0,0,0,0,0,322,209,0
+sleep_gpio.c.obj,0,0,0,0,0,272,227,0
+esp_app_desc.c.obj,1,8,0,194,203,32,4,256
+cpu.c.obj,0,0,0,28,28,424,0,0
+cpu_start.c.obj,0,0,0,354,354,42,48,0
+crosscore_int.c.obj,0,4,0,160,164,104,165,0
+system_internal.c.obj,0,0,0,394,394,0,0,0
+lib_a-locale.o,4,0,0,0,4,0,378,0
+lib_a-refill.o,0,0,0,0,0,382,0,0
+panic_handler.c.obj,8,4,0,82,94,270,8,0
+task_wdt_impl_timergroup,0,12,0,0,12,354,0,0
+lib_a-s_ceil.o,0,0,0,0,0,342,8,0
+lib_a-s_floor.o,0,0,0,0,0,350,0,0
+assert.c.obj,47,0,0,298,345,0,0,0
+esp_time_impl.c.obj,0,12,0,0,12,344,0,0
+freertos_hooks.c.obj,0,64,0,48,112,290,0,0
+port_common.c.obj,0,0,0,212,212,0,120,0
+lib_a-reent.o,0,0,0,0,0,322,0,0
+esp_ota_ops.c.obj,0,4,0,0,4,190,125,0
+lib_a-fclose.o,0,0,0,0,0,314,0,0
+int_wdt.c.obj,0,8,0,94,102,202,0,0
+lib_a-fopen.o,0,0,0,0,0,278,0,0
+esp_clk.c.obj,0,0,16,30,46,230,0,0
+esp_err.c.obj,108,0,0,156,264,0,0,0
+memory_layout.c.obj,0,0,0,0,0,0,263,0
+lib_a-ctype_.o,0,0,0,0,0,0,257,0
+system_time.c.obj,0,8,0,36,44,140,81,0
+interrupt.c.obj,0,256,0,112,368,0,139,0
+pthread_local_storage.c.,0,4,0,0,4,246,0,0
+newlib_init.c.obj,156,240,0,0,396,86,0,0
+lib_a-puts.o,0,0,0,0,0,240,0,0
+log_freertos.c.obj,0,8,0,230,238,0,0,0
+rtc_time.c.obj,0,0,0,60,60,0,156,0
+lib_a-stdio.o,0,0,0,0,0,200,0,0
+cache_hal.c.obj,110,0,0,82,192,0,0,0
+heap.c.obj,0,0,0,190,190,0,0,0
+cache_utils.c.obj,1,8,0,146,155,38,0,0
+fpga_overrides.c.obj,0,0,0,0,0,72,108,0
+abort.c.obj,38,0,0,132,170,0,0,0
+portasm.S.obj,0,0,0,154,154,0,0,0
+cache_err_int.c.obj,0,0,0,4,4,56,90,0
+lib_a-s_frexp.o,0,0,0,0,0,130,8,0
+list.c.obj,0,0,0,132,132,0,0,0
+uart_hal_iram.c.obj,0,0,0,0,0,130,0,0
+lib_a-printf.o,0,0,0,0,0,126,0,0
+spi_flash_os_func_noos.c,40,0,0,86,126,0,0,0
+lib_a-flags.o,0,0,0,0,0,122,0,0
+gpio_periph.c.obj,0,0,0,0,0,0,112,0
+lib_a-vprintf.o,0,0,0,0,0,102,0,0
+pthread.c.obj,0,8,0,0,8,100,0,0
+esp_system.c.obj,0,20,0,40,60,54,0,0
+chip_info.c.obj,0,0,0,0,0,92,0,0
+partition_target.c.obj,0,0,0,0,0,78,0,0
+rtc_clk.c.obj,0,0,0,76,76,0,0,0
+instruction_decode.c.obj,0,0,0,0,0,74,0,0
+lib_a-mbtowc_r.o,0,0,0,0,0,72,0,0
+multi_heap.c.obj,8,0,0,58,66,0,0,0
+reent_init.c.obj,0,0,0,64,64,0,0,0
+efuse_hal.c.obj,0,0,0,40,40,8,0,0
+lib_a-wctomb_r.o,0,0,0,0,0,46,0,0
+flash_brownout_hook.c.ob,0,2,0,44,46,0,0,0
+syscalls.c.obj,0,0,0,0,0,42,0,0
+lib_a-fseek.o,0,0,0,0,0,40,0,0
+bootloader_mem.c.obj,0,0,0,0,0,38,0,0
+lib_a-sysgettod.o,0,0,0,0,0,36,0,0
+lib_a-localeconv.o,0,0,0,0,0,34,0,0
+bootloader_flash_config_,0,0,0,0,0,32,0,0
+esp_rom_systimer.c.obj,0,0,0,30,30,0,0,0
+systimer.c.obj,0,0,0,24,24,0,0,0
+ext_mem_layout.c.obj,0,0,0,0,0,0,24,0
+esp_system_chip.c.obj,0,0,0,8,8,16,0,0
+lib_a-errno.o,0,0,0,0,0,18,0,0
+esp_memory_utils.c.obj,0,0,0,16,16,0,0,0
+spi_flash_encrypt_hal_ir,0,0,0,14,14,0,0,0
+flash_ops.c.obj,8,0,0,6,14,0,0,0
+esp_efuse_api.c.obj,0,0,0,0,0,12,0,0
+spi_flash_chip_drivers.c,12,0,0,0,12,0,0,0
+pthread.c.obj,0,0,0,0,0,6,0,0
+flash_encrypt.c.obj,0,0,0,4,4,0,0,0
+spi_bus_lock.c.obj,0,0,0,0,0,0,4,0
+esp_efuse_utility.c.obj,0,0,0,0,0,4,0,0
+rtc_module.c.obj,0,0,0,4,4,0,0,0
+FreeRTOS-openocd.c.obj,4,0,0,0,4,0,0,0
+cxx_guards.cpp.obj,0,0,0,0,0,2,0,0
+ubsan.c.obj,0,0,0,2,2,0,0,0
+pthread_rwlock.c.obj,0,0,0,0,0,2,0,0
+lib_a-environ.o,0,4,0,0,4,0,0,0
+_divdi3.o,0,0,0,0,0,0,0,0
+_moddi3.o,0,0,0,0,0,0,0,0
+_udivdi3.o,0,0,0,0,0,0,0,0
+_umoddi3.o,0,0,0,0,0,0,0,0
+Total sizes:,,,
+Used stat D/IRAM,35228 bytes (292452 remain 10.8% used),,,
+.data size,2724 bytes,,,
+.bss  size,3624 bytes,,,
+.text size,28880 bytes,,,
+Used Flash size ,101058 bytes,,,
+.text,72226 bytes,,,
+.rodata,28576 bytes,,,
+Total image size,132662 bytes (.bin may be padded larger),,,
+
+Symbols within the archive: libdriver.a (Not all symbols may be reported)
+
+Symbols from section: .dram0.bss
+.p_uart_obj,8
+Section total: 8
+
+Symbols from section: .dram0.data
+uart_context,16
+.uart_selectlock,8
+Section total: 24
+
+Symbols from section: .flash.appdesc
+Section total: 0
+
+Symbols from section: .flash.rodata
+uart_wait_tx_done.str1.4,144
+uart_reenable_intr_mask.str1.4,55
+uart_pattern_pop_pos.str1.4,50
+uart_set_baudrate.str1.4,48
+uart_set_stop_bits.str1.4,47
+uart_set_word_length.str1.4,47
+uart_flush_input.str1.4,46
+__FUNCTION__.34,27
+__FUNCTION__.33,24
+__FUNCTION__.0,21
+__FUNCTION__.1,21
+__FUNCTION__.2,19
+__FUNCTION__.3,19
+__FUNCTION__.27,18
+__FUNCTION__.6,18
+__FUNCTION__.7,18
+__func__.28,18
+__FUNCTION__.36,17
+__FUNCTION__.4,16
+__FUNCTION__.5,16
+.g_spi_lock_main_flash_dev,4
+Section total: 693
+
+Symbols from section: .flash.rodata_noload
+Section total: 0
+
+Symbols from section: .flash.text
+uart_wait_tx_done,616
+uart_flush_input,594
+uart_get_baudrate,196
+uart_set_baudrate,196
+uart_get_bufferedlen,194
+uart_set_stop_bits,178
+uart_set_word_length,178
+uart_reenable_intr_mask,144
+uart_get_parity,116
+uart_get_stop_bits,116
+uart_set_parity,116
+uart_get_word_length,86
+uart_pattern_queue_update,80
+uart_is_driver_installed,34
+uart_set_select_notif_callback,30
+uart_get_sclk_freq,18
+uart_get_selectlock,6
+Section total: 2898
 
 Symbols from section: .iram0.bss
 Section total: 0
