@@ -130,6 +130,16 @@ csv_test() {
     && python -m coverage run -a -m idf_size --target esp32c6 --files app_esp32c6.map &>> output \
     && echo -e "\n***\nRunning idf_size --archive_details for esp32c6..." &>> output \
     && python -m coverage run -a -m idf_size --target esp32c6 --archive_details libdriver.a app_esp32c6.map &>> output \
+    && echo -e "\n***\nRunning idf_size for esp32h2..." &>> output \
+    && python -m coverage run -a -m idf_size --target esp32h2 app_esp32h2.map &>> output \
+    && echo -e "\n***\nRunning idf_size for esp32h2 (target autodetected)..." &>> output \
+    && python -m coverage run -a -m idf_size app_esp32h2.map &>> output \
+    && echo -e "\n***\nRunning idf_size --archives for esp32h2..." &>> output \
+    && python -m coverage run -a -m idf_size --target esp32h2 --archives app_esp32h2.map &>> output \
+    && echo -e "\n***\nRunning idf_size --files for esp32h2..." &>> output \
+    && python -m coverage run -a -m idf_size --target esp32h2 --files app_esp32h2.map &>> output \
+    && echo -e "\n***\nRunning idf_size --archive_details for esp32h2..." &>> output \
+    && python -m coverage run -a -m idf_size --target esp32h2 --archive_details libdriver.a app_esp32h2.map &>> output \
     && echo -e "\n***\nProducing JSON output..." &>> output \
     && python -m coverage run -a -m idf_size --format=json app.map | python json_validate_test.py &>> output \
     && python -m coverage run -a -m idf_size --format=json --archives app.map | python json_validate_test.py &>> output \
@@ -144,6 +154,7 @@ csv_test() {
     && json_test esp32h4 \
     && json_test esp32s3 \
     && json_test esp32c6 \
+    && json_test esp32h2 \
     && echo -e "\n***\nProducing CSV output..." &>> output \
     && python -m coverage run -a -m idf_size --format=csv app.map &>> output \
     && python -m coverage run -a -m idf_size --format=csv --archives app.map &>> output \
@@ -158,6 +169,7 @@ csv_test() {
     && csv_test esp32h4 \
     && csv_test esp32s3 \
     && csv_test esp32c6 \
+    && csv_test esp32h2 \
     && echo -e "\n***\nProducing JSON file output..." &>> output \
     && python -m coverage run -a -m idf_size --format=json --output-file output.json app.map &>> output \
     && echo -e "\n***\nProducing text file output..." &>> output \
