@@ -449,7 +449,9 @@ def check_target(target: str, map_file: TextIO) -> None:
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description='idf_size - a tool to print size information from an IDF MAP file')
+    parser = argparse.ArgumentParser(
+        prog='idf_size',
+        description='This tool prints firmware size information from an ESP-IDF MAP file')
 
     parser.add_argument(
         'map_file', help='MAP file produced by linker',
