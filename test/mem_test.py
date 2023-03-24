@@ -30,7 +30,7 @@ def mem_test(size_json: dict, esptool_output: list) -> None:
                      ['dram_data'] + size_json['diram_data'])]
     for mem_type, size in size_from_map:
         if abs(size - seg_len[mem_type]) > MAX_SIZE_DIFF:
-            raise RuntimeError(mem_type + " segment in idf_size isn't correct regarding esptool")
+            raise RuntimeError(mem_type + " segment in esp_idf_size isn't correct regarding esptool")
     print('Test complete without errors')
 
 
