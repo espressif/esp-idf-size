@@ -95,7 +95,7 @@ class MemRegions(object):
     def __init__(self, target: str) -> None:
         self.chip_mem_regions = self.get_mem_regions(target)
         if not self.chip_mem_regions:
-            raise RuntimeError('Target {} is not implemented in idf_size'.format(target))
+            raise RuntimeError('Target {} is not implemented in esp_idf_size'.format(target))
 
     def _get_first_region(self, start: int, length: int) -> Tuple[Union['MemRegions.MemRegDef', None], int]:
         for region in self.chip_mem_regions:  # type: ignore
@@ -104,7 +104,7 @@ class MemRegions(object):
             if region.secondary_addr and region.secondary_addr <= start < region.secondary_addr + region.length:
                 return (region, length)
         print('WARNING: Given section not found in any memory region.')
-        print('Check whether the LD file is compatible with the definitions in get_mem_regions in idf_size')
+        print('Check whether the LD file is compatible with the definitions in get_mem_regions in esp_idf_size')
         return (None, length)
 
     def _get_regions(self, start: int, length: int, name: Optional[str]=None) -> List:
@@ -450,7 +450,7 @@ def check_target(target: str, map_file: TextIO) -> None:
 
 def main() -> None:
     parser = argparse.ArgumentParser(
-        prog='idf_size',
+        prog='esp_idf_size',
         description='This tool prints firmware size information from an ESP-IDF MAP file')
 
     parser.add_argument(
