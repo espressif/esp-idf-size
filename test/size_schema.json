@@ -20,7 +20,7 @@
                 "^diram_(data|bss|rodata|vectors|text|other|remain|total)$": {
                     "type": "integer"
                 },
-                "^flash_(code|rodata|other)$": {
+                "(^flash_(code|rodata|other)$)|(^eh_frame(_hdr)?$)": {
                     "type": "integer"
                 },
                 "^total_size$": {
@@ -74,7 +74,7 @@
                 "(^\\.dram0\\.(bss|data)$)": {
                     "$ref": "#/$defs/archive_details"
                 },
-                "(^\\.flash\\.(rodata|text|appdesc|rodata_noload)$)": {
+                "(^\\.flash\\.(rodata|text|appdesc|rodata_noload)$|(^\\.eh_frame(_hdr)?$))": {
                     "$ref": "#/$defs/archive_details"
                 },
                 "(^\\.iram0\\.(text|vectors|bss|data)$)": {
@@ -142,6 +142,12 @@
                     "type": "integer"
                 },
                 ".rtc_noinit": {
+                    "type": "integer"
+                },
+                ".eh_frame": {
+                    "type": "integer"
+                },
+                ".eh_frame_hdr": {
                     "type": "integer"
                 },
                 "flash_total": {

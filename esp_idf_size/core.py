@@ -150,7 +150,7 @@ class LinkingSections(object):
         'rodata': r'.*\.rodata',
         'noinit': r'.*noinit',
         'vectors': r'.*\.vectors',
-        'flash': r'.*flash.*',
+        'flash': r'.*(flash|eh_frame).*',
     }.items()}
 
     @staticmethod
