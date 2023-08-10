@@ -64,6 +64,12 @@ csv_test() {
     && python -m coverage run -a -m esp_idf_size app2.map --archive_details libdriver.a --diff app.map &>> output \
     && echo -e "\n***\nRunning esp_idf_size diff --archive_details with another app..." &>> output \
     && python -m coverage run -a -m esp_idf_size app.map --archive_details libfreertos.a --diff app2.map &>> output \
+    && echo -e "\n***\nRunning esp_idf_size on app with nonzero noload sections..." &>> output \
+    && python -m coverage run -a -m esp_idf_size app_nonzero_noload.map &>> output \
+    && echo -e "\n***\nRunning esp_idf_size --archives on app with nonzero noload sections..." &>> output \
+    && python -m coverage run -a -m esp_idf_size --archives app_nonzero_noload.map &>> output \
+    && echo -e "\n***\nRunning esp_idf_size --files on app with nonzero noload sections..." &>> output \
+    && python -m coverage run -a -m esp_idf_size --files app_nonzero_noload.map &>> output \
     && echo -e "\n***\nRunning esp_idf_size for esp32s2..." &>> output \
     && python -m coverage run -a -m esp_idf_size --target esp32s2 app_esp32s2.map &>> output \
     && echo -e "\n***\nRunning esp_idf_size for esp32s2 with overflow..." &>> output \
