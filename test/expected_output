@@ -6402,6 +6402,401 @@ Symbols from section: .rtc_noinit
 Section total: 0
 
 ***
+Running esp_idf_size for esp32p4...
+WARNING: Given section not found in any memory region.
+Check whether the LD file is compatible with the definitions in get_mem_regions in esp_idf_size
+WARNING: Given section not found in any memory region.
+Check whether the LD file is compatible with the definitions in get_mem_regions in esp_idf_size
+Total sizes:
+Used stat D/IRAM:   52176 bytes ( 135168 remain, 27.9% used)
+      .data size:    3940 bytes
+      .bss  size:    5896 bytes
+      .text size:   42340 bytes
+Used Flash size :  118850 bytes
+           .text:   80266 bytes
+         .rodata:   35920 bytes
+Total image size:  165130 bytes (.bin may be padded larger)
+
+***
+Running esp_idf_size for esp32p4 (target autodetected)...
+WARNING: Given section not found in any memory region.
+Check whether the LD file is compatible with the definitions in get_mem_regions in esp_idf_size
+WARNING: Given section not found in any memory region.
+Check whether the LD file is compatible with the definitions in get_mem_regions in esp_idf_size
+Total sizes:
+Used stat D/IRAM:   52176 bytes ( 135168 remain, 27.9% used)
+      .data size:    3940 bytes
+      .bss  size:    5896 bytes
+      .text size:   42340 bytes
+Used Flash size :  118850 bytes
+           .text:   80266 bytes
+         .rodata:   35920 bytes
+Total image size:  165130 bytes (.bin may be padded larger)
+
+***
+Running esp_idf_size --archives for esp32p4...
+WARNING: Given section not found in any memory region.
+Check whether the LD file is compatible with the definitions in get_mem_regions in esp_idf_size
+WARNING: Given section not found in any memory region.
+Check whether the LD file is compatible with the definitions in get_mem_regions in esp_idf_size
+Total sizes:
+Used stat D/IRAM:   52176 bytes ( 135168 remain, 27.9% used)
+      .data size:    3940 bytes
+      .bss  size:    5896 bytes
+      .text size:   42340 bytes
+Used Flash size :  118850 bytes
+           .text:   80266 bytes
+         .rodata:   35920 bytes
+Total image size:  165130 bytes (.bin may be padded larger)
+Per-archive contributions to ELF file:
+            Archive File DRAM .data & 0.bss .eh_frame IRAM0 .text ram_st_total Flash .text & .rodata & .appdesc flash_total
+                  libc.a        264     320         0           0          584       35856      3117          0       39237
+            libpthread.a         16      12         0           0           28        1302     25601          0       26919
+           libfreertos.a         96    3845         0       14532        18473         460       922          0       16010
+         libesp_system.a        429     267         0        2542         3238        7998       431          0       11400
+               libheap.a          4       8         0        6124         6136        3642       744          0       10514
+                libvfs.a        380      80         0           0          460        7760       465          0        8605
+          libspi_flash.a        733      20         0        6252         7005         920       373          0        8278
+                libhal.a        355       8         0        5436         5799        1482         0          0        7273
+     libesp_hw_support.a         25      93         0        1828         1946        4584       215          0        6652
+             libstdc++.a         12      49      2404           0           61        3340       652          0        6408
+             libnewlib.a       1408     200         0        1804         3412        1454        95          0        4761
+             libdriver.a        104      24         0           0          128        3708       256          0        4068
+             libesp_mm.a          4      84         0         352          440        3142       213          0        3711
+          libesp_timer.a         32      36         0         612          680        1224        49          0        1917
+         libesp_common.a          0       0         0           0            0          58      1710          0        1768
+        libesp_ringbuf.a          0       0         0        1164         1164           0        97          0        1261
+      libesp_partition.a          0       8         0           0            8        1062        37          0        1099
+                liblog.a          8     272         0         268          548         670        21          0         967
+              libriscv.a          0     512         0         856         1368          54        50          0         960
+                  libm.a          0       0         0           0            0         696         0          0         696
+ libbootloader_support.a          0       0         0         568          568          46        40          0         654
+                libsoc.a          0       0         0           0            0           0       512          0         512
+     libesp_app_format.a          0      10         0           0           10         186         4        256         446
+               libmain.a          0       0         0           0            0         336         0          0         336
+         libapp_update.a          0       4         0           0            4         198        30          0         228
+                libcxx.a          0       0         0           0            0          54         0          0          54
+              libefuse.a          0       0         0           0            0          16         0          0          16
+   libnvs_sec_provider.a          0       0         0           0            0           2         0          0           2
+                libgcc.a          0       0         0           0            0           0         0          0           0
+
+***
+Running esp_idf_size --files for esp32p4...
+WARNING: Given section not found in any memory region.
+Check whether the LD file is compatible with the definitions in get_mem_regions in esp_idf_size
+WARNING: Given section not found in any memory region.
+Check whether the LD file is compatible with the definitions in get_mem_regions in esp_idf_size
+Total sizes:
+Used stat D/IRAM:   52176 bytes ( 135168 remain, 27.9% used)
+      .data size:    3940 bytes
+      .bss  size:    5896 bytes
+      .text size:   42340 bytes
+Used Flash size :  118850 bytes
+           .text:   80266 bytes
+         .rodata:   35920 bytes
+Total image size:  165130 bytes (.bin may be padded larger)
+Per-file contributions to ELF file:
+             Object File DRAM .data & 0.bss .eh_frame IRAM0 .text ram_st_total Flash .text & .rodata & .appdesc flash_total
+           pthread.c.obj          8       8         0           0           16         644     25555          0       26207
+       libc_a-vfprintf.o          0       0         0           0            0       10328       576          0       10904
+             tasks.c.obj         16     704         0        8896         9616           0       537          0        9449
+     libc_a-svfiprintf.o          0       0         0           0            0        6666      1048          0        7714
+      libc_a-vfiprintf.o          0       0         0           0            0        6788       576          0        7364
+              tlsf.c.obj          0       0         0        4706         4706        1354       238          0        6298
+          vfs_uart.c.obj        188      28         0           0          216        4584       286          0        5058
+              uart.c.obj        104      24         0           0          128        3708       252          0        4064
+       esp_mmu_map.c.obj          4      84         0         352          440        3142       165          0        3663
+           libc_a-dtoa.o          0       0         0           0            0        3632         0          0        3632
+          libc_a-mprec.o          0       0         0           0            0        3006       296          0        3302
+        intr_alloc.c.obj          8      22         0         994         1024        2066       131          0        3199
+spi_flash_chip_generic.c        250       0         0        2850         3100           0         0          0        3100
+             queue.c.obj          0       0         0        2634         2634           0       252          0        2886
+               vfs.c.obj        192      40         0           0          232        2418        15          0        2625
+          task_wdt.c.obj         53       5         0           0           58        2156       118          0        2327
+spi_flash_hal_iram.c.obj          0       0         0        2168         2168           0         0          0        2168
+              port.c.obj         80    3120         0        1800         5000           0        56          0        1936
+   esp_err_to_name.c.obj          0       0         0           0            0          58      1710          0        1768
+       periph_ctrl.c.obj          8      55         0          72          135        1662        21          0        1763
+           mmu_hal.c.obj        281       0         0        1382         1663           0         0          0        1663
+              eh_alloc.o          0      16       456           0           16         998       160          0        1614
+             abort.c.obj       1244       0         0         132         1376           0         0          0        1376
+         heap_caps.c.obj          4       4         0         958          966         254       141          0        1357
+     esp_flash_api.c.obj         30       0         0        1098         1128          20       180          0        1328
+           ringbuf.c.obj          0       0         0        1164         1164           0        97          0        1261
+         cpu_start.c.obj          0       5         0         896          901         354         0          0        1250
+           startup.c.obj          0      11         0          48           59        1160        29          0        1237
+             locks.c.obj          8     168         0         928         1104         160        95          0        1191
+         cache_hal.c.obj         74       8         0        1070         1152           0         0          0        1144
+    heap_caps_init.c.obj          0       4         0           0            4        1074        49          0        1123
+           esp_ipc.c.obj        336      40         0         192          568         542        26          0        1096
+         esp_timer.c.obj          8       8         0         326          342         706        21          0        1061
+             panic.c.obj         12       5         0          30           47        1018         0          0        1060
+         partition.c.obj          0       8         0           0            8         984        37          0        1021
+memspi_host_driver.c.obj        257       0         0         758         1015           0         0          0        1015
+       cache_utils.c.obj          4      14         0         678          696         156       119          0         957
+       vfs_console.c.obj          0      12         0           0           12         758       164          0         922
+         libc_a-fseeko.o          0       0         0           0            0         908         0          0         908
+        multi_heap.c.obj          0       0         0         460          460         298        49          0         807
+              time.c.obj          0      20         0         184          204         606         0          0         790
+         libc_a-findfp.o         12     316         0           0          328         770         0          0         782
+        libc_a-fvwrite.o          0       0         0           0            0         766         0          0         766
+        panic_arch.c.obj          0       0         0           0            0         536       212          0         748
+    si_class_type_info.o          0       0       288           0            0         408        44          0         740
+               log.c.obj          8     264         0          32          304         670        21          0         731
+pthread_local_storage.c.          8       4         0           0           12         652        46          0         706
+memory_layout_utils.c.ob          0       0         0           0            0         662        27          0         689
+       class_type_info.o          0       0       280           0            0         354        44          0         678
+       cow-string-inst.o          0      16       284           0           16         394         0          0         678
+     spi_flash_hal.c.obj          0       0         0           0            0         658         0          0         658
+esp_timer_impl_systimer.          0      20         0         250          270         378        28          0         656
+          uart_hal.c.obj          0       0         0           0            0         650         0          0         650
+      port_systick.c.obj          0      20         0         618          638           0        15          0         633
+     panic_handler.c.obj          8       8         0          94          110         506         0          0         608
+  bootloader_flash.c.obj          0       0         0         554          554           0        40          0         594
+spi_flash_os_func_app.c.         56       0         0         444          500          42        25          0         567
+   system_internal.c.obj          0       0         0         562          562           0         0          0         562
+        flash_mmap.c.obj          0       0         0         198          198         346        17          0         561
+spi_flash_hal_gpspi.c.ob          0       0         0         544          544           0         0          0         544
+    freertos_hooks.c.obj          8     128         0          60          196         468         0          0         536
+        interrupts.c.obj          0       0         0           0            0           0       512          0         512
+         libc_a-fflush.o          0       0         0           0            0         506         0          0         506
+           functexcept.o          0       0       144           0            0         230       122          0         496
+       app_startup.c.obj          0       1         0           0            1         460        32          0         492
+           esp_clk.c.obj          9       0         0         128          137         330         0          0         467
+      esp_app_desc.c.obj          0      10         0           0           10         186         4        256         446
+       newlib_init.c.obj        156       0         0           0          156         288         0          0         444
+     crosscore_int.c.obj          8       8         0         218          234         166        46          0         438
+           int_wdt.c.obj          0       9         0         134          143         298         0          0         432
+              eh_throw.o          0       0       104           0            0         198       120          0         422
+task_wdt_impl_timergroup          0      12         0           0           12         416         0          0         416
+           vectors.S.obj          0       0         0         414          414           0         0          0         414
+               cpu.c.obj          0       0         0         234          234         132        30          0         396
+             stdexcept.o          0       0       192           0            0         138        60          0         390
+esp_flash_spi_init.c.obj         76       4         0           0           80         290        10          0         376
+         libc_a-locale.o          4       0         0           0            4           0       364          0         368
+     esp_time_impl.c.obj          0      12         0           0           12         352         0          0         352
+        libm_a-s_floor.o          0       0         0           0            0         350         0          0         350
+         libm_a-s_ceil.o          0       0         0           0            0         346         0          0         346
+            eh_globals.o          0      13       152           0           13         184         8          0         344
+  hello_world_main.c.obj          0       0         0           0            0         336         0          0         336
+      esp_clk_tree.c.obj          0       0         0           0            0         302        29          0         331
+         libc_a-refill.o          0       0         0           0            0         320         0          0         320
+            assert.c.obj          0       0         0         316          316           0         0          0         316
+         interrupt.c.obj          0     512         0         186          698          54        50          0         290
+          libc_a-fopen.o          0       0         0           0            0         280         0          0         280
+         libc_a-fclose.o          0       0         0           0            0         260         0          0         260
+         libc_a-ctype_.o          0       0         0           0            0           0       257          0         257
+          libc_a-reent.o          0       0         0           0            0         256         0          0         256
+      vectors_clic.S.obj          0       0         0         256          256           0         0          0         256
+         libc_a-impure.o        244       0         0           0          244           0         0          0         244
+     memory_layout.c.obj          0       0         0           0            0           0       240          0         240
+      log_freertos.c.obj          0       8         0         236          244           0         0          0         236
+       esp_ota_ops.c.obj          0       4         0           0            4         198        30          0         228
+         cow-stdexcept.o          0       0       104           0            0         110        12          0         226
+          libc_a-stdio.o          0       0         0           0            0         200         0          0         200
+spi_flash_encrypt_hal_ir          0       0         0         196          196           0         0          0         196
+              heap.c.obj          0       0         0         190          190           0         0          0         190
+         flash_ops.c.obj          8       0         0          92          100          66        22          0         188
+           libc_a-puts.o          0       0         0           0            0         182         0          0         182
+           portasm.S.obj          0       0         0         178          178           0         0          0         178
+       system_time.c.obj          0       8         0          36           44         140         0          0         176
+     uart_hal_iram.c.obj          0       0         0           0            0         174         0          0         174
+       libc_a-getenv_r.o          0       0         0           0            0         172         0          0         172
+          eh_terminate.o          0       0        96           0            0          58        16          0         170
+          rtc_time.c.obj          0       0         0         164          164           0         4          0         168
+       port_common.c.obj          0       0         0         132          132           0        30          0         162
+                new_op.o          0       0        40           0            0          76        46          0         162
+           esp_err.c.obj          0       0         0         156          156           0         0          0         156
+              eh_catch.o          0       0        40           0            0         112         0          0         152
+           rtc_clk.c.obj          0       8         0         144          152           0         0          0         144
+          heap_idf.c.obj          0       0         0         142          142           0         0          0         142
+             bad_alloc.o          0       0        72           0            0          46        20          0         138
+        libm_a-s_frexp.o          0       0         0           0            0         132         0          0         132
+              list.c.obj          0       0         0         132          132           0         0          0         132
+spi_flash_os_func_noos.c         40       0         0          90          130           0         0          0         130
+esp_ipc_isr_handler.S.ob          0       0         0         128          128           0         0          0         128
+          libc_a-flags.o          0       0         0           0            0         122         0          0         122
+          libc_a-fwalk.o          0       0         0           0            0         104         0          0         104
+        esp_system.c.obj          0      20         0           0           20         104         0          0         104
+         chip_info.c.obj          0       0         0           0            0          90         0          0          90
+         libc_a-printf.o          0       0         0           0            0          84         0          0          84
+  esp_ipc_isr_port.c.obj          0       0         0           0            0          82         0          0          82
+  partition_target.c.obj          0       0         0           0            0          78         0          0          78
+         efuse_hal.c.obj          0       0         0          76           76           0         0          0          76
+     cache_err_int.c.obj          0       0         0           4            4          70         0          0          74
+       libc_a-mbtowc_r.o          0       0         0           0            0          72         0          0          72
+    fpga_overrides.c.obj          0       0         0           0            0          72         0          0          72
+         libc_a-getenv.o          0       0         0           0            0          56         0          0          56
+        reent_init.c.obj          0       0         0          54           54           0         0          0          54
+           new_handler.o          0       4        40           0            4          14         0          0          54
+cxx_exception_stubs.cpp.          0       0         0           0            0          52         0          0          52
+    ext_mem_layout.c.obj          0       0         0           0            0           0        48          0          48
+       esp_ipc_isr.c.obj          4      16         0          10           30          34         0          0          48
+       libc_a-wctomb_r.o          0       0         0           0            0          46         0          0          46
+                 tinfo.o          0       0        40           0            0           6         0          0          46
+flash_brownout_hook.c.ob          0       2         0          44           46           0         0          0          44
+          syscalls.c.obj          0       0         0           0            0          42         0          0          42
+          libc_a-fseek.o          0       0         0           0            0          40         0          0          40
+        libc_a-vprintf.o          0       0         0           0            0          40         0          0          40
+      libc_a-sysgettod.o          0       0         0           0            0          36         0          0          36
+     libc_a-localeconv.o          0       0         0           0            0          34         0          0          34
+  esp_gpio_reserve.c.obj          0       8         0          34           42           0         0          0          34
+bootloader_flash_config_          0       0         0           0            0          32         0          0          32
+        libc_a-envlock.o          0       0         0           0            0          32         0          0          32
+                del_op.o          0       0        24           0            0           8         0          0          32
+  esp_memory_utils.c.obj          0       0         0          30           30           0         0          0          30
+               del_ops.o          0       0        24           0            0           4         0          0          28
+          eh_exception.o          0       0        24           0            0           2         0          0          26
+          systimer.c.obj          0       0         0          24           24           0         0          0          24
+   esp_system_chip.c.obj          0       0         0           8            8          16         0          0          24
+esp_timer_impl_common.c.         24       0         0           0           24           0         0          0          24
+          libc_a-errno.o          0       0         0           0            0          18         0          0          18
+    bootloader_mem.c.obj          0       0         0           0            0          14         0          0          14
+     flash_encrypt.c.obj          0       0         0          14           14           0         0          0          14
+     esp_efuse_api.c.obj          0       0         0           0            0          12         0          0          12
+spi_flash_chip_drivers.c         12       0         0           0           12           0         0          0          12
+           pthread.c.obj          0       0         0           0            0           6         0          0           6
+        libc_a-environ.o          4       4         0           0            8           0         0          0           4
+      spi_bus_lock.c.obj          0       0         0           0            0           0         4          0           4
+ esp_efuse_utility.c.obj          0       0         0           0            0           4         0          0           4
+        rtc_module.c.obj          0       0         0           4            4           0         0          0           4
+       eh_term_handler.o          4       0         0           0            4           0         0          0           4
+       eh_unex_handler.o          4       0         0           0            4           0         0          0           4
+             new_opvnt.o          4       0         0           0            4           0         0          0           4
+      cxx_guards.cpp.obj          0       0         0           0            0           2         0          0           2
+cpu_region_protect.c.obj          0       0         0           0            0           2         0          0           2
+             ubsan.c.obj          0       0         0           2            2           0         0          0           2
+  nvs_sec_provider.c.obj          0       0         0           0            0           2         0          0           2
+  pthread_cond_var.c.obj          0       0         0           0            0           2         0          0           2
+    pthread_rwlock.c.obj          0       0         0           0            0           2         0          0           2
+ pthread_semaphore.c.obj          0       0         0           0            0           2         0          0           2
+               _divdi3.o          0       0         0           0            0           0         0          0           0
+               _moddi3.o          0       0         0           0            0           0         0          0           0
+              _udivdi3.o          0       0         0           0            0           0         0          0           0
+              _umoddi3.o          0       0         0           0            0           0         0          0           0
+         bad_array_new.o          0       0         0           0            0           0         0          0           0
+              bad_cast.o          0       0         0           0            0           0         0          0           0
+            bad_typeid.o          0       0         0           0            0           0         0          0           0
+               del_opv.o          0       0         0           0            0           0         0          0           0
+              del_opvs.o          0       0         0           0            0           0         0          0           0
+               new_opv.o          0       0         0           0            0           0         0          0           0
+                random.o          0       0         0           0            0           0         0          0           0
+            sso_string.o          0       0         0           0            0           0         0          0           0
+           string-inst.o          0       0         0           0            0           0         0          0           0
+
+***
+Running esp_idf_size --archive_details for esp32p4...
+WARNING: Given section not found in any memory region.
+Check whether the LD file is compatible with the definitions in get_mem_regions in esp_idf_size
+WARNING: Given section not found in any memory region.
+Check whether the LD file is compatible with the definitions in get_mem_regions in esp_idf_size
+Total sizes:
+Used stat D/IRAM:   52176 bytes ( 135168 remain, 27.9% used)
+      .data size:    3940 bytes
+      .bss  size:    5896 bytes
+      .text size:   42340 bytes
+Used Flash size :  118850 bytes
+           .text:   80266 bytes
+         .rodata:   35920 bytes
+Total image size:  165130 bytes (.bin may be padded larger)
+
+Symbols within the archive: libdriver.a (Not all symbols may be reported)
+
+Symbols from section: .dram0.bss
+    p_uart_obj                     :  24
+Section total: 24
+
+Symbols from section: .dram0.data
+    uart_context                   :  96
+    .uart_selectlock               :   8
+Section total: 104
+
+Symbols from section: .eh_frame
+Section total: 0
+
+Symbols from section: .eh_frame_hdr
+Section total: 0
+
+Symbols from section: .flash.appdesc
+Section total: 0
+
+Symbols from section: .flash.rodata
+    __FUNCTION__.35                :  27
+    __FUNCTION__.34                :  24
+    __FUNCTION__.0                 :  21
+    __FUNCTION__.1                 :  21
+    __FUNCTION__.2                 :  19
+    __FUNCTION__.3                 :  19
+    __FUNCTION__.28                :  18
+    __FUNCTION__.6                 :  18
+    __FUNCTION__.7                 :  18
+    __func__.29                    :  18
+    __FUNCTION__.37                :  17
+    __FUNCTION__.4                 :  16
+    __FUNCTION__.5                 :  16
+    .g_spi_lock_main_flash_dev     :   4
+    uart_flush_input.str1.4        :   0
+    uart_pattern_pop_pos.str1.4    :   0
+    uart_reenable_intr_mask.str1.4 :   0
+    uart_set_baudrate.str1.4       :   0
+    uart_set_stop_bits.str1.4      :   0
+    uart_set_word_length.str1.4    :   0
+    uart_wait_tx_done.str1.4       :   0
+Section total: 256
+
+Symbols from section: .flash.rodata_noload
+Section total: 0
+
+Symbols from section: .flash.text
+    uart_set_baudrate              : 820
+    uart_wait_tx_done              : 648
+    uart_flush_input               : 634
+    uart_get_baudrate              : 222
+    uart_get_bufferedlen           : 218
+    uart_set_stop_bits             : 194
+    uart_set_word_length           : 194
+    uart_reenable_intr_mask        : 162
+    uart_get_parity                : 132
+    uart_get_stop_bits             : 132
+    uart_set_parity                : 132
+    uart_get_word_length           :  86
+    uart_pattern_queue_update      :  68
+    uart_is_driver_installed       :  34
+    uart_set_select_notif_callback :  26
+    uart_get_selectlock            :   6
+Section total: 3708
+
+Symbols from section: .iram0.bss
+Section total: 0
+
+Symbols from section: .iram0.data
+Section total: 0
+
+Symbols from section: .iram0.text
+Section total: 0
+
+Symbols from section: .noinit
+Section total: 0
+
+Symbols from section: .rtc.bss
+Section total: 0
+
+Symbols from section: .rtc.data
+Section total: 0
+
+Symbols from section: .rtc.text
+Section total: 0
+
+Symbols from section: .rtc_noinit
+Section total: 0
+
+Symbols from section: .tcm.data
+Section total: 0
+
+Symbols from section: .tcm.text
+Section total: 0
+
+***
 Producing JSON output...
 {
     "dram_data": 9324,
