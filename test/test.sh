@@ -146,6 +146,16 @@ csv_test() {
     && python -m coverage run -a -m esp_idf_size --target esp32h2 --files app_esp32h2.map &>> output \
     && echo -e "\n***\nRunning esp_idf_size --archive_details for esp32h2..." &>> output \
     && python -m coverage run -a -m esp_idf_size --target esp32h2 --archive_details libdriver.a app_esp32h2.map &>> output \
+    && echo -e "\n***\nRunning esp_idf_size for esp32p4..." &>> output \
+    && python -m coverage run -a -m esp_idf_size --target esp32p4 app_esp32p4.map &>> output \
+    && echo -e "\n***\nRunning esp_idf_size for esp32p4 (target autodetected)..." &>> output \
+    && python -m coverage run -a -m esp_idf_size app_esp32p4.map &>> output \
+    && echo -e "\n***\nRunning esp_idf_size --archives for esp32p4..." &>> output \
+    && python -m coverage run -a -m esp_idf_size --target esp32p4 --archives app_esp32p4.map &>> output \
+    && echo -e "\n***\nRunning esp_idf_size --files for esp32p4..." &>> output \
+    && python -m coverage run -a -m esp_idf_size --target esp32p4 --files app_esp32p4.map &>> output \
+    && echo -e "\n***\nRunning esp_idf_size --archive_details for esp32p4..." &>> output \
+    && python -m coverage run -a -m esp_idf_size --target esp32p4 --archive_details libdriver.a app_esp32p4.map &>> output \
     && echo -e "\n***\nProducing JSON output..." &>> output \
     && python -m coverage run -a -m esp_idf_size --format=json app.map | python json_validate_test.py &>> output \
     && python -m coverage run -a -m esp_idf_size --format=json --archives app.map | python json_validate_test.py &>> output \
