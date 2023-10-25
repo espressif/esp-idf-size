@@ -12,6 +12,11 @@ CACHE_I:
 CACHE_D:
   primary_address: 0x40000000
   length: 0x800000
+RTC_FAST_D:
+  primary_address: 0x30100000
+  length: 0x2000
+  secondary_address: 0x30100000
 RTC_SLOW_D:
   primary_address: 0x50108000
   length: 0x8000
+  secondary_address: 0x50108000
