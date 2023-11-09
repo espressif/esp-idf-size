@@ -6,19 +6,25 @@ DRAM:
   primary_address: 0x3FFB2000
   length: 3 * 0x2000 + 18 * 0x4000
   secondary_address: 0x40022000
+  name: DIRAM
 CACHE_I_1:
   primary_address: 0x3F000000
   length: 0x400000
+  name: Flash Data
 CACHE_D:
   primary_address: 0x3F500000
   length: 0xA80000
+  name: SPI DRAM
 CACHE_I_2:
   primary_address: 0x40080000
   length: 0x780000
+  name: Flash Code
 RTC_FAST_D:
   primary_address: 0x40070000
   length: 0x2000
   secondary_address: 0x3FF9E000
+  name: RTC FAST
 RTC_SLOW_D:
   primary_address: 0x50000000
   length: 0x2000
+  name: RTC SLOW

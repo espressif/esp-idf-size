@@ -12,9 +12,12 @@ IRAM:
 CACHE_I:
   primary_address: 0x42000000
   length: 0x800000
+  name: Flash Code
 CACHE_D:
   primary_address: 0x3C000000
   length: 0x800000
+  name: Flash Data
 RTC_SLOW_D:
   primary_address: 0x50000000
   length: 0x2000
+  name: RTC SLOW
