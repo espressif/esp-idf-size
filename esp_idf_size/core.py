@@ -450,6 +450,17 @@ def check_target(target: str, map_file: TextIO) -> None:
 
 
 def main() -> None:
+    if '--ng' in sys.argv or os.environ.get('ESP_IDF_SIZE_NG'):
+        from .ng.main import main as main_ng
+        try:
+            sys.argv.remove('--ng')
+        except ValueError:
+            # The use of new version may have been requested via environmental
+            # variable.
+            pass
+        main_ng()
+        return
+
     parser = argparse.ArgumentParser(
         prog='esp_idf_size',
         description='This tool prints firmware size information from an ESP-IDF MAP file')

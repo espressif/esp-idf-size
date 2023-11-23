@@ -11,16 +11,21 @@ IRAM:
 CACHE_I:
   primary_address: 0x400C2000
   length: 0xB3E000
+  name: Flash Code
 CACHE_D_1:
   primary_address: 0x3F400000
   length: 0x400000
+  name: Flash Data
 CACHE_D_2:
   primary_address: 0x3F800000
   length: 0x400000
+  name: SPI DRAM
 RTC_FAST_D:
   primary_address: 0x3FF80000
   length: 0x2000
   secondary_address: 0x400C0000
+  name: RTC FAST
 RTC_SLOW_D:
   primary_address: 0x50000000
   length: 0x2000
+  name: RTC SLOW

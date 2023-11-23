@@ -6,17 +6,21 @@ DRAM:
   primary_address: 0x4ff00000
   length: 0xC0000
   secondary_address: 0x4ff00000
+  name: DIRAM
 CACHE_I:
   primary_address: 0x40000000
-  length: 0x800000
+  length: 0x4000000
+  name: Flash
 CACHE_D:
   primary_address: 0x40000000
-  length: 0x800000
+  length: 0x4000000
 RTC_FAST_D:
   primary_address: 0x30100000
   length: 0x2000
   secondary_address: 0x30100000
+  name: HP core RAM
 RTC_SLOW_D:
   primary_address: 0x50108000
   length: 0x8000
   secondary_address: 0x50108000
+  name: LP RAM

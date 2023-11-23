@@ -77,3 +77,12 @@ test:
   script:
     - cd test
     - ./test.sh
+
+test_ng:
+  stage: test
+  extends: .base_template
+  rules:
+    - changes:
+        - esp_idf_size/ng/**/*
+  script:
+    - pytest test/ng/
