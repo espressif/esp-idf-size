@@ -81,7 +81,7 @@ def test_memmap(target: str, artifacts: Path) -> None:
     map_fn = os.path.join(proj_desc['build_dir'], proj_desc['project_name'] + '.map')
 
     # Generate new memory map based on the adjusted project_description.json
-    run([sys.executable, '-m', 'esp_idf_size', '--ng', '--format', 'json-tree', '-o', 'memmap_new.json', map_fn],
+    run([sys.executable, '-m', 'esp_idf_size', '--ng', '--format', 'raw', '-o', 'memmap_new.json', map_fn],
         cwd=tmp_dir_path, check=True)
 
     with open(tmp_dir_path / 'memmap.json') as f:
@@ -144,7 +144,7 @@ if __name__ == '__main__':
 
         run([sys.executable, IDF_PY_PATH, '--preview', 'set-target', target], cwd=project_path, check=True)
         run([sys.executable, IDF_PY_PATH, 'app'], cwd=project_path, check=True)
-        run([sys.executable, '-m', 'esp_idf_size.ng', '--format', 'json-tree', '-o', str(outdir / 'memmap.json'),
+        run([sys.executable, '-m', 'esp_idf_size.ng', '--format', 'raw', '-o', str(outdir / 'memmap.json'),
              str(project_path / 'build' / 'project_description.json')],
             cwd=project_path, check=True)
 

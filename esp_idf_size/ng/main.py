@@ -7,8 +7,8 @@ import argparse
 import os
 import sys
 
-from . import (format_csv, format_json, format_json_tree, format_table,
-               format_tree, log, memorymap)
+from . import (format_csv, format_json, format_raw, format_table, format_tree,
+               log, memorymap)
 
 
 def main() -> None:
@@ -21,9 +21,9 @@ def main() -> None:
 
     format_group = parser.add_mutually_exclusive_group()
     format_group.add_argument('--format',
-                              choices=['table', 'text', 'tree', 'csv', 'json2', 'json-tree'],
+                              choices=['table', 'text', 'tree', 'csv', 'json2', 'raw'],
                               default='table',
-                              help='Specify output format: table(text), tree, csv, json2 or json-tree')
+                              help='Specify output format: table(text), tree, csv, json2 or raw')
 
     parser.add_argument('--archives',
                         action='store_true',
@@ -84,7 +84,7 @@ def main() -> None:
         log.set_console(ofile, args.quiet, args.no_color, args.force_terminal, args.debug)
 
         args.abbrev = not args.no_abbrev
-        load_symbols = True if args.archive_details or args.format == 'json-tree' else False
+        load_symbols = True if args.archive_details or args.format == 'raw' else False
 
         memmap = memorymap.get(args.input_file, load_symbols)
         if args.diff:
@@ -100,8 +100,8 @@ def main() -> None:
             format_table.show(memmap, args)
         elif args.format == 'json2':
             format_json.show(memmap, args)
-        elif args.format == 'json-tree':
-            format_json_tree.show(memmap, args)
+        elif args.format == 'raw':
+            format_raw.show(memmap, args)
         elif args.format == 'csv':
             format_csv.show(memmap, args)
         elif args.format == 'tree':
