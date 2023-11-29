@@ -21,9 +21,9 @@ def main() -> None:
 
     format_group = parser.add_mutually_exclusive_group()
     format_group.add_argument('--format',
-                              choices=['table', 'text', 'tree', 'csv', 'json', 'json-tree'],
+                              choices=['table', 'text', 'tree', 'csv', 'json2', 'json-tree'],
                               default='table',
-                              help='Specify output format: table(text), tree, csv, json or json-tree')
+                              help='Specify output format: table(text), tree, csv, json2 or json-tree')
 
     parser.add_argument('--archives',
                         action='store_true',
@@ -98,7 +98,7 @@ def main() -> None:
 
         if args.format in ['table', 'text']:
             format_table.show(memmap, args)
-        elif args.format == 'json':
+        elif args.format == 'json2':
             format_json.show(memmap, args)
         elif args.format == 'json-tree':
             format_json_tree.show(memmap, args)
