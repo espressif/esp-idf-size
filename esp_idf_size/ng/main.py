@@ -72,13 +72,15 @@ def main() -> None:
     parser.add_argument('--force-terminal',
                         action='store_true',
                         default=bool(os.environ.get('ESP_IDF_SIZE_FORCE_TERMINAL')) or None,
-                        help=('Enable terminal control codes even if out is not attached to terminal.'))
+                        help=('Enable terminal control codes even if out is not attached to terminal. '
+                              'This option is ignored if used along with the "--output-file" option.'))
 
     ofile = sys.stdout
     try:
         args = parser.parse_args()
 
         if args.output_file:
+            args.force_terminal = False
             ofile = open(args.output_file, 'w')
 
         log.set_console(ofile, args.quiet, args.no_color, args.force_terminal, args.debug)
