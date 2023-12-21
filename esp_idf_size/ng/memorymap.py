@@ -106,7 +106,7 @@ def get(input_fn: str, load_symbols: bool=False) -> Dict[str, Any]:
     else:
         map_fn = input_fn
 
-    if elf_fn:
+    if elf_fn and os.path.isfile(elf_fn):
         elf = _load_elf_file(elf_fn)
     else:
         log.debug(f'elf file is not available')
