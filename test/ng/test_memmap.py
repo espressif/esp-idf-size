@@ -33,23 +33,6 @@ def targets(ctx: Dict[str,Set]={'targets': set()}) -> Set[str]:
     return ctx['targets']
 
 
-@pytest.fixture
-def artifacts(pytestconfig: pytest.Config, ctx: dict={'tmpdir': None}) -> Path:
-    # Download artifacts for testing into temporary directory and return
-    # the directory path.
-    if ctx['tmpdir']:
-        return Path(ctx['tmpdir'].name)
-
-    tmp_dir = TemporaryDirectory()
-    tmp_dir_path = Path(tmp_dir.name)
-    ctx['tmpdir'] = tmp_dir
-
-    url = pytestconfig.getoption('url')
-    run(['git', 'clone', '--quiet', '--depth', '1', '--single-branch', url, tmp_dir_path], check=True)
-
-    return tmp_dir_path
-
-
 @pytest.mark.parametrize('target', targets())
 def test_memmap(target: str, artifacts: Path) -> None:
     # Generate new memory map based on target artifacts and compare it

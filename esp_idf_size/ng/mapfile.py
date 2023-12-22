@@ -54,7 +54,7 @@ class MapFile:
                 name, origin, length = splitted
                 attrs = ''
             else:
-                log.die((f'unexpected format of memory region "{line}" at line {ln+1} in '
+                log.die((f'unexpected format of memory region "{line}" at line {ln + 1} in '
                          f'"Memory Configuration" section in "{self.fn}" map file'))
 
             regions.append({
@@ -233,12 +233,12 @@ class MapFile:
                     # is splitted on two lines. Fill in the missing address and length here.
                     splitted = line.split()
                     if len(splitted) != 2:
-                        log.die((f'unexpected output section continuous line "{line}" at line {ln+1} in '
+                        log.die((f'unexpected output section continuous line "{line}" at line {ln + 1} in '
                                  f'"Linker script and memory map" section in "{self.fn}" map file'))
                     output_section['address'] = int(splitted[0], 0)
                     output_section['size'] = int(splitted[1], 0)
 
-                elif line.startswith('.'):
+                elif line.startswith(('.', 'COMMON')):
                     # New input section
                     if input_section:
                         add_input_section(output_section, input_section)
@@ -261,7 +261,7 @@ class MapFile:
                         input_section['size'] = int(splitted[2], 0)
                         input_section['archive'], input_section['object_file'] = get_archive_object_file(splitted[3])
                     else:
-                        log.die((f'unexpected format of input section "{line}" at line {ln+1} in '
+                        log.die((f'unexpected format of input section "{line}" at line {ln + 1} in '
                                  f'"Linker script and memory map" section in "{self.fn}" map file'))
 
                 elif in_input_section:
@@ -269,7 +269,7 @@ class MapFile:
                         # Handle input section address, size and archive(object_file) on a separate line
                         splitted = line.split()
                         if len(splitted) != 3:
-                            log.die((f'unexpected input section continuous line "{line}" at line {ln+1} in '
+                            log.die((f'unexpected input section continuous line "{line}" at line {ln + 1} in '
                                      f'"Linker script and memory map" section in "{self.fn}" map file'))
                         input_section['address'] = int(splitted[0], 0)
                         input_section['size'] = int(splitted[1], 0)
@@ -278,7 +278,7 @@ class MapFile:
                     elif line.startswith('*fill*'):
                         splitted = line.split()
                         if len(splitted) != 3:
-                            log.die((f'unexpected "*fill*" line "{line}" at line {ln+1} in '
+                            log.die((f'unexpected "*fill*" line "{line}" at line {ln + 1} in '
                                      f'"Linker script and memory map" section in "{self.fn}" map file'))
                         address = int(splitted[1], 0)
                         size = int(splitted[2], 0)
@@ -321,7 +321,7 @@ class MapFile:
                     output_section['address'] = int(splitted[1], 0)
                     output_section['size'] = int(splitted[2], 0)
                 else:
-                    log.die((f'unexpected format of output section "{line}" at line {ln+1} in '
+                    log.die((f'unexpected format of output section "{line}" at line {ln + 1} in '
                              f'"Linker script and memory map" section in "{self.fn}" map file'))
 
         if not found:
@@ -342,5 +342,5 @@ class MapFile:
                 if not input_section['size']:
                     continue
                 if start_addr + offset != input_section['address']:
-                    log.die(f'input section {input_section["name"]} is not at expected address {hex(start_addr+offset)}')
+                    log.die(f'input section {input_section["name"]} is not at expected address {hex(start_addr + offset)}')
                 offset += input_section['size'] + input_section['fill']
