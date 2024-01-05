@@ -336,7 +336,12 @@ class MapFile:
 
     def _validate_sections(self, sections: List[Dict[str, Any]]) -> None:
         for section in sections:
-            start_addr = section['address']
+            if not section['input_sections']:
+                # Output section doesn't have any input sections, so it can be skipped
+                continue
+            # Start at the first input section address. There might be alignment(fill) between
+            # output sections address and first input section address, which is not accounted.
+            start_addr = section['input_sections'][0]['address']
             offset = 0
             for input_section in section['input_sections']:
                 if not input_section['size']:
