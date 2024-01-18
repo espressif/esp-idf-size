@@ -45,6 +45,7 @@ setup(
             'coverage',
             'jsonschema',
             'pytest',
+            'commitizen',
         ],
     },
     keywords=['espressif', 'embedded', 'project', 'size'],
