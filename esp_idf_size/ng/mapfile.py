@@ -240,6 +240,7 @@ class MapFile:
 
                 elif line.startswith(('.', 'COMMON')):
                     # New input section
+                    in_input_section = True
                     if input_section:
                         add_input_section(output_section, input_section)
                     input_section = {
@@ -253,7 +254,6 @@ class MapFile:
                     splitted = line.split()
                     if len(splitted) == 1:
                         # Same as for output section. We have just the name and the rest is on the next line.
-                        in_input_section = True
                         input_section['name'] = splitted[0]
                     elif len(splitted) == 4:
                         input_section['name'] = splitted[0]
