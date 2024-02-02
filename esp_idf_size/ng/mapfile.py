@@ -240,6 +240,7 @@ class MapFile:
 
                 elif line.startswith(('.', 'COMMON')):
                     # New input section
+                    in_input_section = True
                     if input_section:
                         add_input_section(output_section, input_section)
                     input_section = {
@@ -253,7 +254,6 @@ class MapFile:
                     splitted = line.split()
                     if len(splitted) == 1:
                         # Same as for output section. We have just the name and the rest is on the next line.
-                        in_input_section = True
                         input_section['name'] = splitted[0]
                     elif len(splitted) == 4:
                         input_section['name'] = splitted[0]
@@ -347,5 +347,8 @@ class MapFile:
                 if not input_section['size']:
                     continue
                 if start_addr + offset != input_section['address']:
-                    log.die(f'input section {input_section["name"]} is not at expected address {hex(start_addr + offset)}')
+                    log.die((f'Input section {input_section["name"]} at {hex(input_section["address"])} '
+                             f'is not at expected address {hex(start_addr + offset)}. '
+                             f'This signals error in the linker map parser. Please consider filing a '
+                             f'bug report with the linker map file attached.'))
                 offset += input_section['size'] + input_section['fill']
