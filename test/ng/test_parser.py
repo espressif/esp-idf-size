@@ -9,5 +9,5 @@ from subprocess import run
 def test_parser(artifacts: Path) -> None:
     # Test that each link map file stored in artifacts repo
     # under the test_parser directory can be properly parsed.
-    for entry in (artifacts / 'test_parser').glob('*.map'):
+    for entry in (artifacts / 'test_parser').rglob('*.map'):
         run([sys.executable, '-m', 'esp_idf_size', '--ng', entry], check=True)
