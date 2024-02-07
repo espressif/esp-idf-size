@@ -84,5 +84,7 @@ test_ng:
   rules:
     - changes:
         - esp_idf_size/ng/**/*
+        - esp_idf_size/chip_info/**/*
+        - test/ng/**/*
   script:
     - pytest test/ng/
