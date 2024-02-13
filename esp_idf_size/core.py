@@ -317,6 +317,9 @@ def load_sections(map_file: TextIO) -> Dict:
           source lines.
     """
 
+    # Explicit bytes of data in output section
+    EXPLICIT_BYTES = ['BYTE', 'SHORT', 'LONG', 'QUAD', 'SQUAD']
+
     # Check for lines which only contain the sym name (and rest is on following lines)
     RE_SYMBOL_ONLY_LINE = re.compile(r'^\s*(?P<sym_name>\S*)$')
 
@@ -365,7 +368,9 @@ def load_sections(map_file: TextIO) -> Dict:
         name = match_line.group('sym_name') if match_line.group('sym_name') else sym_backup
         sym_backup = ''
 
-        is_section = not match_line.group('file') and name != '*fill*'
+        file = match_line.group('file')
+        is_explicit_byte = any(file.startswith(b + ' 0x') for b in EXPLICIT_BYTES)
+        is_section = not file and not is_explicit_byte and name != '*fill*'
         if is_section:
             # section
 
@@ -394,7 +399,7 @@ def load_sections(map_file: TextIO) -> Dict:
                     last_src['size'] = 0
 
             # Count the padding size into the last valid (size > 0) source in the section
-            if name == '*fill*':
+            if is_explicit_byte or name == '*fill*':
                 for src in reversed(srcs):
                     if src['size'] > 0:
                         src['fill'] += int(match_line.group('size'), 16)
