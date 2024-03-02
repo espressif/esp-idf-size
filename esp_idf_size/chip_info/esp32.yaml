@@ -7,7 +7,7 @@ DRAM:
   length: 17 * 0x2000 + 4 * 0x8000 + 4 * 0x4000
 IRAM:
   primary_address: 0x40070000
-  length: 2 * 0x8000 + 16 * 0x2000
+  length: 0x50000
 CACHE_I:
   primary_address: 0x400C2000
   length: 0xB3E000
