@@ -22,6 +22,8 @@ csv_test() {
     && python -m coverage run -a -m esp_idf_size bootloader.map &>> output \
     && echo -e "\n***\nRunning esp_idf_size with overflow..." &>> output \
     && python -m coverage run -a -m esp_idf_size overflow.map &>> output \
+    && echo -e "\n***\nRunning esp_idf_size with explicit bytes..." &>> output \
+    && python -m coverage run -a -m esp_idf_size explicit_bytes.map &>> output \
     && echo -e "\n***\nRunning esp_idf_size --archives..." &>> output \
     && python -m coverage run -a -m esp_idf_size --archives app.map &>> output \
     && echo -e "\n***\nRunning esp_idf_size --files..." &>> output \
