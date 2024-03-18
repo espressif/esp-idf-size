@@ -1,3 +1,9 @@
+## v1.2.0 (2024-03-18)
+
+### New Features
+
+- **ng**: add explicit bytes support
+
 ## v1.1.1 (2024-02-07)
 
 ### Bug Fixes
