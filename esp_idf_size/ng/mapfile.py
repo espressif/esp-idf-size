@@ -8,6 +8,9 @@ from . import log
 
 
 class MapFile:
+    # Explicit bytes of data in output section
+    EXPLICIT_BYTES = ['BYTE', 'SHORT', 'LONG', 'QUAD', 'SQUAD']
+
     def __init__(self, fn:str) -> None:
         self.fn = fn
         self.lines = self._get_mapfile_lines(fn)
@@ -289,6 +292,15 @@ class MapFile:
                             input_section['size'] = 0
 
                         input_section['fill'] += size
+
+                    elif any(b in line for b in self.EXPLICIT_BYTES):
+                        # Output section may contain explicit data
+                        # https://sourceware.org/binutils/docs/ld/Output-Section-Data.html
+                        # We account them the same as for *fill* into the previous input
+                        # section.
+                        splitted = line.split()
+                        if len(splitted) == 4 and splitted[2] in self.EXPLICIT_BYTES:
+                            input_section['fill'] += int(splitted[1], 0)
 
             elif line.startswith('.'):
                 # Detected new output section. There are two cases
