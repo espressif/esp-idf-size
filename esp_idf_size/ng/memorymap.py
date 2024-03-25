@@ -644,8 +644,8 @@ def _filter_map_sections(sections: List[Dict[str, Any]], elf_sections: Optional[
         else:
             # ELF sections are not available. Filter based on output section names.
             if (not section['name'].endswith(('.text', '.data', '.bss', '.rodata', 'noinit', '.vectors')) and
-                    'flash' not in section['name'] and
-                    'eh_frame' not in section['name']):
+                    '.flash' not in section['name'] and
+                    '.eh_frame' not in section['name']):
                 continue
 
         # Remove input sections, which have zero size

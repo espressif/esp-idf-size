@@ -151,7 +151,7 @@ class LinkingSections(object):
         'rodata_noload': r'.*\.rodata_noload',
         'noinit': r'.*noinit',
         'vectors': r'.*\.vectors',
-        'flash': r'.*(flash|eh_frame).*',
+        'flash': r'.*\.(flash|eh_frame).*',
     }.items()}
 
     @staticmethod
