@@ -61,6 +61,23 @@ def main() -> None:
                         metavar='OUTPUT_FILE',
                         help=('Print output to the specified file instead of stdout.'))
 
+    parser.add_argument('-s', '--sort',
+                        metavar='COLUMN',
+                        default=1,
+                        help=('Sort table rows based on specified column number, starting from 0. '
+                              'Column can be specified also as negative number, where -1 means last column. '
+                              'Default is 1 and column 0, containing row description, cannot be used. '
+                              'The name of the column can be utilized in place of its numerical identifier. '
+                              'Applies only to table and csv formats, otherwise ignored.'))
+
+    parser.add_argument('--sort-diff',
+                        action='store_true',
+                        help=('Sort entries based on diff value instead of size.'))
+
+    parser.add_argument('--sort-reverse',
+                        action='store_false',
+                        help=('Sort entries in reversed order. By default descending order is used.'))
+
     parser.add_argument('-q', '--quiet',
                         action='store_true',
                         help=('Suppress all output.'))

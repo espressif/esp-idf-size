@@ -14,6 +14,8 @@ def show_summary(memmap: Dict[str, Any], args: Namespace) -> None:
         'layout': [],
     }
 
+    memorymap.sort(memmap, args)
+
     for mem_type_name, mem_type_info in memmap['memory_types'].items():
         mem_type = {
             'name': mem_type_name,
@@ -34,16 +36,19 @@ def show_summary(memmap: Dict[str, Any], args: Namespace) -> None:
 
 def show_object_files(memmap: Dict[str, Any], args: Namespace) -> None:
     summary = memorymap.get_object_files_summary(memmap, args)
+    summary = memorymap.get_summary_sorted(summary, args)
     log.print(json.dumps(summary, indent=4))
 
 
 def show_archives(memmap: Dict[str, Any], args: Namespace) -> None:
     summary = memorymap.get_archives_summary(memmap, args)
+    summary = memorymap.get_summary_sorted(summary, args)
     log.print(json.dumps(summary, indent=4))
 
 
 def show_symbols(memmap: Dict[str, Any], args: Namespace) -> None:
     summary = memorymap.get_symbols_summary(memmap, args)
+    summary = memorymap.get_summary_sorted(summary, args)
     log.print(json.dumps(summary, indent=4))
 
 
