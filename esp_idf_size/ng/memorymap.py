@@ -900,7 +900,8 @@ def _get_image_size(elf_sections: Optional[Dict[str, Any]], sections: List[Dict[
     if not elf_sections:
         # ELF information not available
         for sec in sections:
-            if sec['name'].endswith('.bss'):
+            # NOLOAD(SHT_NOBITS) sections are not part of the image
+            if sec['name'].endswith(('.bss', 'noinit')):
                 continue
             size += sec['size']
         return size

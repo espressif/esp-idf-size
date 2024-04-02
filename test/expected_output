@@ -81,6 +81,21 @@ Used Flash size :  117902 bytes
 Total image size:  176228 bytes (.bin may be padded larger)
 
 ***
+Running esp_idf_size with noinit ...
+Total sizes:
+Used static DRAM:   62152 bytes ( 118584 remain, 34.4% used)
+      .data size:    8704 bytes
+      .bss  size:    2248 bytes
+ DRAM other size:   51200 bytes
+Used static IRAM:   49598 bytes (  81474 remain, 37.8% used)
+      .text size:   48571 bytes
+   .vectors size:    1027 bytes
+Used Flash size :  117866 bytes
+           .text:   79958 bytes
+         .rodata:   37652 bytes
+Total image size:  176168 bytes (.bin may be padded larger)
+
+***
 Running esp_idf_size --archives...
 Total sizes:
 Used static DRAM:   17620 bytes ( 163116 remain, 9.7% used)
@@ -7081,7 +7096,7 @@ Used stat D/IRAM:   34584 bytes ( 125920 remain, 21.5% used)
 Used Flash size :   86928 bytes
            .text:   65328 bytes
          .rodata:   21280 bytes
-Total image size:  117816 bytes (.bin may be padded larger)
+Total image size:  117813 bytes (.bin may be padded larger)
 
 ***
 Running esp_idf_size for esp32c61 (target autodetected)...
@@ -7094,7 +7109,7 @@ Used stat D/IRAM:   34584 bytes ( 125920 remain, 21.5% used)
 Used Flash size :   86928 bytes
            .text:   65328 bytes
          .rodata:   21280 bytes
-Total image size:  117816 bytes (.bin may be padded larger)
+Total image size:  117813 bytes (.bin may be padded larger)
 
 ***
 Running esp_idf_size --archives for esp32c61...
@@ -7107,7 +7122,7 @@ Used stat D/IRAM:   34584 bytes ( 125920 remain, 21.5% used)
 Used Flash size :   86928 bytes
            .text:   65328 bytes
          .rodata:   21280 bytes
-Total image size:  117816 bytes (.bin may be padded larger)
+Total image size:  117813 bytes (.bin may be padded larger)
 Per-archive contributions to ELF file:
             Archive File DRAM .data & 0.bss .eh_frame IRAM0 .text ram_st_total Flash .text & .rodata & .appdesc flash_total
                   libc.a        264     320         0           0          584       35260      3221          0       38745
@@ -7146,7 +7161,7 @@ Used stat D/IRAM:   34584 bytes ( 125920 remain, 21.5% used)
 Used Flash size :   86928 bytes
            .text:   65328 bytes
          .rodata:   21280 bytes
-Total image size:  117816 bytes (.bin may be padded larger)
+Total image size:  117813 bytes (.bin may be padded larger)
 Per-file contributions to ELF file:
              Object File DRAM .data & 0.bss .eh_frame IRAM0 .text ram_st_total Flash .text & .rodata & .appdesc flash_total
        system_time.c.obj          0       8         0          36           44         138     14326          0       14500
@@ -7322,7 +7337,7 @@ Used stat D/IRAM:   34584 bytes ( 125920 remain, 21.5% used)
 Used Flash size :   86928 bytes
            .text:   65328 bytes
          .rodata:   21280 bytes
-Total image size:  117816 bytes (.bin may be padded larger)
+Total image size:  117813 bytes (.bin may be padded larger)
 
 Symbols within the archive: libdriver.a (Not all symbols may be reported)
 
