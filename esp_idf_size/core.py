@@ -684,8 +684,10 @@ class StructureForSummary(object):
         r.flash_other = get_size(flash_other_list)
         r.used_flash_non_ram = r.flash_code + r.flash_rodata + r.flash_other
 
-        # The used DRAM BSS is counted into the "Used static DRAM" but not into the "Total image size"
-        r.total_size = r.used_dram - r.dram_bss + r.used_iram + r.used_diram - r.diram_bss + r.used_flash_non_ram
+        # The used DRAM BSS and .noinit section are counted into the "Used static DRAM" but not into the "Total image size"
+        noinit_sections = filter_in_section(dram_sections + diram_sections, 'noinit')
+        noinit_total = get_size(noinit_sections)
+        r.total_size = r.used_dram - r.dram_bss + r.used_iram + r.used_diram - r.diram_bss + r.used_flash_non_ram - noinit_total
         return r
 
     def get_dict(self) -> collections.OrderedDict:
