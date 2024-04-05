@@ -386,6 +386,26 @@ def trim(memory_map: Dict[str, Any], args: Namespace) -> None:
                                               if changed(v['size_diff'])}
 
 
+def sort(memory_map: Dict[str, Any], args: Namespace) -> None:
+    # For memory types diff, sort based on used key, not size key.
+    sort_key_type = 'used_diff' if args.sort_diff else 'used'
+    sort_key = 'size_diff' if args.sort_diff else 'size'
+    reverse = args.sort_reverse
+
+    memory_map['memory_types'] = sort_dict_by_key(memory_map['memory_types'], sort_key_type, reverse)
+    for mem_type_name, mem_type_info in memory_map['memory_types'].items():
+        mem_type_info['sections'] = sort_dict_by_key(mem_type_info['sections'], sort_key, reverse)
+
+        for section_name, section_info in mem_type_info['sections'].items():
+            section_info['archives'] = sort_dict_by_key(section_info['archives'], sort_key, reverse)
+
+            for archive_name, archive_info in section_info['archives'].items():
+                archive_info['object_files'] = sort_dict_by_key(archive_info['object_files'], sort_key, reverse)
+
+                for object_name, object_info in archive_info['object_files'].items():
+                    object_info['symbols'] = sort_dict_by_key(object_info['symbols'], sort_key, reverse)
+
+
 def _get_summary_memory_types(memory_map: Dict[str, Any]) -> Dict[str, Any]:
     # Helper creating memory type/section dictionary for get_*_summary functions.
     mem_types: Dict[str, Any] = {}
@@ -404,6 +424,29 @@ def _get_summary_memory_types(memory_map: Dict[str, Any]) -> Dict[str, Any]:
             }
 
     return mem_types
+
+
+def sort_dict_by_key(dictionary: Dict[str, Any], key: str, reverse: bool) -> Dict[str, Any]:
+        return {k: v for k, v in sorted(dictionary.items(),
+                                        key=lambda item: int(item[1][key]),
+                                        reverse=reverse)}
+
+
+def get_summary_sorted(entries: Dict[str, Any], args: Namespace) -> Dict[str, Any]:
+    sort_key = 'size_diff' if args.sort_diff else 'size'
+    reverse = args.sort_reverse
+
+    entries = {k: v for k, v in sorted(entries.items(),
+                                       key=lambda item: int(item[1][sort_key]),
+                                       reverse=reverse)}
+
+    for entry_name, entry_info in entries.items():
+        entry_info['memory_types'] = sort_dict_by_key(entry_info['memory_types'], sort_key, reverse)
+
+        for mem_type_name, mem_type_info in entry_info['memory_types'].items():
+            mem_type_info['sections'] = sort_dict_by_key(mem_type_info['sections'], sort_key, reverse)
+
+    return entries
 
 
 def get_symbols_summary(memory_map: Dict[str, Any], args: Namespace) -> Dict[str, Any]:
@@ -449,10 +492,6 @@ def get_symbols_summary(memory_map: Dict[str, Any], args: Namespace) -> Dict[str
     if not found:
         log.die(f'Archive "{args.archive_details}" not found.')
 
-    symbols = {k: v for k, v in sorted(symbols.items(),
-                                       key=lambda item: int(item[1]['size']),
-                                       reverse=True)}
-
     return symbols
 
 
@@ -490,10 +529,6 @@ def get_object_files_summary(memory_map: Dict[str, Any], args: Namespace) -> Dic
         object_file_mem_type['size_diff'] += size
         object_file['size_diff'] += size
 
-    object_files = {k: v for k, v in sorted(object_files.items(),
-                                            key=lambda item: int(item[1]['size']),
-                                            reverse=True)}
-
     return object_files
 
 
@@ -529,10 +564,6 @@ def get_archives_summary(memory_map: Dict[str, Any], args: Namespace) -> Dict[st
         archive_mem_type['sections'][section_name]['size_diff'] = size
         archive_mem_type['size_diff'] += size
         archive['size_diff'] += size
-
-    archives = {k: v for k, v in sorted(archives.items(),
-                                        key=lambda item: int(item[1]['size']),
-                                        reverse=True)}
 
     return archives
 

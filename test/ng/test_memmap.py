@@ -9,73 +9,39 @@ from distutils.dir_util import copy_tree
 from pathlib import Path
 from subprocess import run
 from tempfile import TemporaryDirectory
-from typing import Dict, Set
 
 import pytest
+import utils
 
 
-def targets(ctx: Dict[str,Set]={'targets': set()}) -> Set[str]:
-    # Return set of targets found in the chip_info directory
-    if ctx['targets']:
-        return ctx['targets']
-
-    # The esp32h4 chip is excluded, because it was renamed during development and
-    # there is no support for this target in the idf.py. Since original and new esp-idf-size
-    # implementations share the same chip info yaml files, we exclude it here, so we do
-    # not break existing esp-idf-size implementation, which has support for this chip and
-    # can be used by some users.
-    # TODO: This should be excluded in the future once the new version replaces the current
-    #       esp-idf-size implementation.
-    exclude = {'esp32h4'}
-    chip_info_dir = Path(__file__).parents[2] / 'esp_idf_size' / 'chip_info'
-    targets = {f.with_suffix('').name for f in chip_info_dir.iterdir() if f.is_file() and f.suffix == '.yaml'}
-    ctx['targets'] = targets - exclude
-    return ctx['targets']
-
-
-@pytest.mark.parametrize('target', targets())
+@pytest.mark.parametrize('target', utils.targets())
 def test_memmap(target: str, artifacts: Path) -> None:
     # Generate new memory map based on target artifacts and compare it
     # with the reference memory map.
 
     # Temporary directory for testing
     tmp_dir = TemporaryDirectory()
-    # The dirs_exist_ok arg for shutil.copytree was added in 3.8
-    # so just append the test name as subdirectory to avoid getting
-    # error that the dst directory already exists.
-    tmp_dir_path = Path(tmp_dir.name) / 'test_memmap'
+    tmp_dir_path = Path(tmp_dir.name)
 
-    # Build directory with reference artifacts for given target
-    build_dir_path = Path(__file__).parent / artifacts / 'test_memmap' / target
-
-    # Copy all artifacts for tested target into the temporary directory
-    shutil.copytree(build_dir_path, tmp_dir_path)
-
-    # Adjust project_path and build_dir to point to the temporary directory.
-    with open(tmp_dir_path / 'project_description.json') as f:
+    # Get the project name from the project_description to identify the map file name.
+    with open(artifacts / 'test_memmap' / target / 'project_description.json') as f:
         proj_desc = json.load(f)
-
-    proj_desc['project_path'] = str(tmp_dir_path)
-    proj_desc['build_dir'] = str(tmp_dir_path)
-
-    with open(tmp_dir_path / 'project_description.json', 'w') as f:
-        json.dump(proj_desc, f, indent=4)
 
     map_fn = os.path.join(proj_desc['build_dir'], proj_desc['project_name'] + '.map')
 
-    # Generate new memory map based on the adjusted project_description.json
-    run([sys.executable, '-m', 'esp_idf_size', '--ng', '--format', 'raw', '-o', 'memmap_new.json', map_fn],
+    # Generate memory map and compare it with the reference one
+    run([sys.executable, '-m', 'esp_idf_size', '--ng', '--format', 'raw', '-o', 'memmap.json', map_fn],
         cwd=tmp_dir_path, check=True)
 
-    with open(tmp_dir_path / 'memmap.json') as f:
+    with open(artifacts / 'test_memmap' / target / 'memmap.json') as f:
         memmap_ref = json.load(f)
 
-    with open(tmp_dir_path / 'memmap_new.json') as f:
+    with open(tmp_dir_path / 'memmap.json') as f:
         memmap_new = json.load(f)
 
     # Fix project_path in the reference memory map. The rest of it should
     # match newly generated memory map.
-    memmap_ref['project_path'] = str(tmp_dir_path)
+    memmap_ref['project_path'] = memmap_new['project_path']
 
     assert memmap_ref == memmap_new
 
@@ -102,7 +68,7 @@ if __name__ == '__main__':
     parser.add_argument('targets',
                         metavar='TARGET',
                         nargs='*',
-                        default=targets(),
+                        default=utils.targets(),
                         help=('Targets for which artifacts will be generated. '
                               'Default is all targets.'))
 
@@ -111,7 +77,7 @@ if __name__ == '__main__':
     if not os.environ.get('IDF_PATH'):
         sys.exit('error: ESP-IDF environment is not set.')
 
-    unknown_targets = ', '.join(set(args.targets) - set(targets()))
+    unknown_targets = ', '.join(set(args.targets) - set(utils.targets()))
     if unknown_targets:
         sys.exit(f'error: uknown targets: {unknown_targets}')
 
@@ -137,3 +103,23 @@ if __name__ == '__main__':
         shutil.copy(project_path / 'build' / proj_desc['app_elf'], outdir)
         shutil.copy(project_path / 'build' / (proj_desc['project_name'] + '.map'), outdir)
         shutil.copy(project_path / 'build' / 'project_description.json', outdir)
+
+        # Generate output format artifacts
+        run([sys.executable, '-m', 'esp_idf_size.ng', '--format', 'table', '-o', str(outdir / 'summary.table'),
+             str(project_path / 'build' / 'project_description.json')],
+            cwd=project_path, check=True)
+
+        run([sys.executable, '-m', 'esp_idf_size.ng', '--format', 'table',
+             '--archives', '-o', str(outdir / 'archives.table'),
+             str(project_path / 'build' / 'project_description.json')],
+            cwd=project_path, check=True)
+
+        run([sys.executable, '-m', 'esp_idf_size.ng', '--format', 'table',
+             '--files', '-o', str(outdir / 'files.table'),
+             str(project_path / 'build' / 'project_description.json')],
+            cwd=project_path, check=True)
+
+        run([sys.executable, '-m', 'esp_idf_size.ng', '--format', 'table',
+             '--archive-details', 'libesp_system.a', '-o', str(outdir / 'archive_details.table'),
+             str(project_path / 'build' / 'project_description.json')],
+            cwd=project_path, check=True)

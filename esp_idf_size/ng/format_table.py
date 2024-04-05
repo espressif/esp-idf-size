@@ -2,9 +2,12 @@
 # SPDX-License-Identifier: Apache-2.0
 
 from argparse import Namespace
+from collections import namedtuple
 from typing import Any, Dict, List, Union
 
+from rich.markup import escape
 from rich.table import Table
+from rich.text import Text
 
 from . import log, memorymap
 
@@ -56,50 +59,168 @@ def get_summary_table(memmap: Dict[str, Any], args: Namespace) -> Table:
     table.add_column(r'Remain \[bytes]', overflow='fold', justify='right')
     table.add_column(r'Total \[bytes]', overflow='fold', justify='right')
 
-    mem_type_sorted = {k: v for k, v in sorted(memmap['memory_types'].items(),
-                                               key=lambda item: int(item[1]['used']),
-                                               reverse=True)}
-
-    for name, info in mem_type_sorted.items():
-        if info['size']:
-            pct = info['used'] / info['size'] * 100
+    # Extend memory types and sections for percentage and remain info
+    for mem_type_name, mem_type_info in memmap['memory_types'].items():
+        if mem_type_info['size']:
+            mem_type_info['pct'] = mem_type_info['used'] / mem_type_info['size'] * 100
         else:
-            pct = 0
-        if info['size'] - info['size_diff']:
-            pct_diff = pct - ((info['used'] - info['used_diff']) / (info['size'] - info['size_diff']) * 100)
-        else:
-            pct_diff = pct - 0
+            mem_type_info['pct'] = 0
 
-        table.add_row(name,
-                      color_diff(info['used'], info['used_diff'], args.diff),
-                      color_diff(round(pct, 2), round(pct_diff, 2), args.diff),
-                      color_size(info['size'] - info['used'], info['size_diff'] - info['used_diff'], args.diff),
-                      color_size(info['size'], info['size_diff'], args.diff),
+        if mem_type_info['size'] - mem_type_info['size_diff']:
+            mem_type_info['pct_diff'] = (mem_type_info['pct'] -
+                                         ((mem_type_info['used'] - mem_type_info['used_diff']) /
+                                          (mem_type_info['size'] - mem_type_info['size_diff']) * 100))
+        else:
+            mem_type_info['pct_diff'] = mem_type_info['pct'] - 0
+
+        mem_type_info['remain'] = mem_type_info['size'] - mem_type_info['used']
+        mem_type_info['remain_diff'] = mem_type_info['size_diff'] - mem_type_info['used_diff']
+        mem_type_info['total'] = mem_type_info['size']
+        mem_type_info['total_diff'] = mem_type_info['size_diff']
+
+        for section_name, section_info in mem_type_info['sections'].items():
+            if mem_type_info['size']:
+                section_info['pct'] = section_info['size'] / mem_type_info['size'] * 100
+            else:
+                section_info['pct'] = 0
+
+            if mem_type_info['size'] - mem_type_info['size_diff']:
+                section_info['pct_diff'] = (section_info['pct'] -
+                                            ((section_info['size'] - section_info['size_diff']) /
+                                             (mem_type_info['size'] - mem_type_info['size_diff']) * 100))
+            else:
+                section_info['pct_diff'] = section_info['pct'] - 0
+
+            # Add used/remain into section, so we can use the same sorting keys as for memory types.
+            section_info['used'] = section_info['size']
+            section_info['used_diff'] = section_info['size_diff']
+            section_info['remain'] = 0
+            section_info['remain_diff'] = 0
+            section_info['total'] = 0
+            section_info['total_diff'] = 0
+
+    try:
+        args.sort = int(args.sort)
+    except ValueError:
+        for idx, column in enumerate(table.columns):
+            # We are using rich markup, which uses square brackets, in column header names, so
+            # we need to covert them before comparison.
+            if str(Text.from_markup(column.header)) == args.sort:
+                args.sort = idx
+                break
+        else:
+            log.die(f'Column "{escape(args.sort)}" not found')
+
+    if args.sort == 0:
+        log.die('Sorting based on column 0, which contains row description, is not supported.')
+
+    try:
+        sort_keys = ['used', 'pct', 'remain', 'total']
+        sort_key = sort_keys[args.sort - 1 if args.sort > 0 else args.sort]
+    except IndexError:
+        log.die((f'Column index {args.sort} is out of range. '
+                 f'Please use 1..{len(sort_keys)} or {-len(sort_keys)}..-1 range.'))
+
+    if args.sort_diff:
+        sort_key += '_diff'
+
+    # Sort memory types first and later sections within them.
+    mem_types_sorted = memorymap.sort_dict_by_key(memmap['memory_types'], sort_key, args.sort_reverse)
+
+    for mem_type_name, mem_type_info in mem_types_sorted.items():
+        table.add_row(mem_type_name,
+                      color_diff(mem_type_info['used'], mem_type_info['used_diff'], args.diff),
+                      color_diff(round(mem_type_info['pct'], 2), round(mem_type_info['pct_diff'], 2), args.diff),
+                      color_size(mem_type_info['remain'], mem_type_info['remain_diff'], args.diff),
+                      color_size(mem_type_info['total'], mem_type_info['total_diff'], args.diff),
                       style='dark_orange')
 
-        sections_sorted = {k: v for k, v in sorted(info['sections'].items(),
-                                                   key=lambda item: int(item[1]['size']),
-                                                   reverse=True)}
+        sections_sorted = memorymap.sort_dict_by_key(mem_type_info['sections'], sort_key, args.sort_reverse)
 
         for section_name, section_info in sections_sorted.items():
             name = section_info['abbrev_name'] if args.abbrev else section_name
 
-            if info['size']:
-                pct = section_info['size'] / info['size'] * 100
-            else:
-                pct = 0
-            if info['size'] - info['size_diff']:
-                pct_diff = pct - ((section_info['size'] - section_info['size_diff']) /
-                                  (info['size'] - info['size_diff']) * 100)
-
             table.add_row(f'   {name}',
-                          color_diff(section_info['size'], section_info['size_diff'], args.diff),
-                          color_diff(round(pct, 2), round(pct_diff, 2), args.diff),
+                          color_diff(section_info['used'], section_info['used_diff'], args.diff),
+                          color_diff(round(section_info['pct'], 2), round(section_info['pct_diff'], 2), args.diff),
                           '',
                           '',
                           style='bright_blue')
 
     return table
+
+
+def _get_table_sorted(summary: Dict[str, Any], table: Table, args: Namespace) -> List[List[str]]:
+    # Helper for get_*_table functions. It converts json summary into
+    # table and sorts it.
+
+    # Each column has three items:
+    #   info - text representing the size, which is printed in the table
+    #   size - used only for sorting purposes
+    #   size_diff - used only for sorting purposes
+    Column = namedtuple('Column', ['info', 'size', 'size_diff'])
+    # Raw has name and list of Columns
+    Row = namedtuple('Row', ['name', 'columns'])
+    columns: List[Column] = []
+    rows: List[Row] = []
+    rows_final: List[List[str]] = []
+
+    for entry_name, entry_info in summary.items():
+        columns = []
+        size = entry_info['size']
+        diff = entry_info['size_diff']
+        info = color_diff(size, diff, args.diff)
+        columns.append(Column(info, size, diff))
+
+        for mem_type_name, mem_type_info in entry_info['memory_types'].items():
+            size = mem_type_info['size']
+            diff = mem_type_info['size_diff']
+            info = color_diff(size, diff, args.diff)
+            columns.append(Column(info, size, diff))
+
+            for section_name, section_info in mem_type_info['sections'].items():
+                size = section_info['size']
+                diff = section_info['size_diff']
+                info = color_diff(size, diff, args.diff)
+                columns.append(Column(info, size, diff))
+
+        name = entry_info['abbrev_name'] if args.abbrev else entry_name
+        rows.append(Row(name, columns))
+
+    try:
+        args.sort = int(args.sort)
+    except ValueError:
+        for idx, column in enumerate(table.columns):
+            if column.header == args.sort:
+                args.sort = idx
+                break
+        else:
+            log.die(f'Column "{args.sort}" not found')
+
+    if args.sort == 0:
+        log.die('Sorting based on column 0, which contains row description, is not supported.')
+
+    def sort_key(row: Row) -> int:
+        sort_key_idx = args.sort - 1 if args.sort > 0 else args.sort
+
+        if args.sort_diff:
+            return int(row.columns[sort_key_idx].size_diff)
+        else:
+            return int(row.columns[sort_key_idx].size)
+
+    try:
+        rows = [row for row in sorted(rows, key=sort_key, reverse=args.sort_reverse)]
+    except IndexError:
+        log.die((f'Column index {args.sort} is out of range. '
+                 f'Please use 1..{len(columns) - 1} or {-len(columns)}..-1 range.'))
+
+    # Return only simple list of rows, where each row is a list
+    # of columns to be printed in table.
+    for row in rows:
+        cols = [row.name] + [col.info for col in row.columns]
+        rows_final.append(cols)
+
+    return rows_final
 
 
 def get_object_files_table(memmap: Dict[str, Any], args: Namespace) -> Table:
@@ -117,15 +238,9 @@ def get_object_files_table(memmap: Dict[str, Any], args: Namespace) -> Table:
                 table.add_column(name, overflow='fold', justify='right', style='bright_blue')
         break
 
-    for object_file_name, object_file_info in object_files_summary.items():
-        sizes: List[str] = []
-        sizes.append(color_diff(object_file_info['size'], object_file_info['size_diff'], args.diff))
-        for mem_type_name, mem_type_info in object_file_info['memory_types'].items():
-            sizes.append(color_diff(mem_type_info['size'], mem_type_info['size_diff'], args.diff))
-            for section_name, section_info in mem_type_info['sections'].items():
-                sizes.append(color_diff(section_info['size'], section_info['size_diff'], args.diff))
-        name = object_file_info['abbrev_name'] if args.abbrev else object_file_name
-        table.add_row(name, *sizes)
+    sizes_sorted = _get_table_sorted(object_files_summary, table, args)
+    for sizes in sizes_sorted:
+        table.add_row(*sizes)
 
     return table
 
@@ -145,15 +260,9 @@ def get_archives_table(memmap: Dict[str, Any], args: Namespace) -> Table:
                 table.add_column(name, overflow='fold', justify='right', style='bright_blue')
         break
 
-    for archive_name, archive_info in archives_summary.items():
-        sizes: List[str] = []
-        sizes.append(color_diff(archive_info['size'], archive_info['size_diff'], args.diff))
-        for mem_type_name, mem_type_info in archive_info['memory_types'].items():
-            sizes.append(color_diff(mem_type_info['size'], mem_type_info['size_diff'], args.diff))
-            for section_name, section_info in mem_type_info['sections'].items():
-                sizes.append(color_diff(section_info['size'], section_info['size_diff'], args.diff))
-        name = archive_info['abbrev_name'] if args.abbrev else archive_name
-        table.add_row(name, *sizes)
+    sizes_sorted = _get_table_sorted(archives_summary, table, args)
+    for sizes in sizes_sorted:
+        table.add_row(*sizes)
 
     return table
 
@@ -173,15 +282,9 @@ def get_symbols_table(memmap: Dict[str, Any], args: Namespace) -> Table:
                 table.add_column(name, overflow='fold', justify='right', style='bright_blue')
         break
 
-    for symbol_name, symbol_info in symbols_summary.items():
-        sizes: List[str] = []
-        sizes.append(color_diff(symbol_info['size'], symbol_info['size_diff'], args.diff))
-        for mem_type_name, mem_type_info in symbol_info['memory_types'].items():
-            sizes.append(color_diff(mem_type_info['size'], mem_type_info['size_diff'], args.diff))
-            for section_name, section_info in mem_type_info['sections'].items():
-                sizes.append(color_diff(section_info['size'], section_info['size_diff'], args.diff))
-        name = symbol_info['abbrev_name'] if args.abbrev else symbol_name
-        table.add_row(name, *sizes)
+    sizes_sorted = _get_table_sorted(symbols_summary, table, args)
+    for sizes in sizes_sorted:
+        table.add_row(*sizes)
 
     return table
 

@@ -6,12 +6,13 @@ from typing import Any, Dict
 
 from rich.tree import Tree
 
-from . import log
+from . import log, memorymap
 from .format_table import color_diff, color_size
 
 
 def show(memmap: Dict[str, Any], args: Namespace) -> None:
 
+    memorymap.sort(memmap, args)
     tree = Tree('Memory Types')
     for mem_type_name, mem_type_info in memmap['memory_types'].items():
         size = color_size(mem_type_info['size'], mem_type_info['size_diff'], args.diff)
