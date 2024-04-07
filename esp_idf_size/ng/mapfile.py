@@ -183,6 +183,14 @@ class MapFile:
             if not output_section['input_sections']:
                 output_section['input_sections'].append(input_section)
                 return
+
+            if (input_section['address'] < output_section['address'] or
+                    input_section['address'] >= output_section['address'] + output_section['size']):
+                # The linker map might include an output section featuring an input section with an address
+                # beyond the range of the output section. Disregard such sections by setting their size to
+                # zero. Note that padding is still considered in the calculation.
+                input_section['size'] = 0
+
             last_input_section = output_section['input_sections'][-1]
             if last_input_section['address'] == input_section['address']:
                 # The current input section is at the same address as the previous one,
