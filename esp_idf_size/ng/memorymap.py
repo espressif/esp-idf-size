@@ -8,12 +8,10 @@ from argparse import Namespace
 from typing import Any, Dict, Generator, List, Optional
 
 import yaml
-from elftools.common.exceptions import ELFError
-from elftools.elf.constants import SH_FLAGS
-from elftools.elf.elffile import ELFFile
-from elftools.elf.sections import Symbol
 
 from . import log, mapfile
+from .elf import (SHF_ALLOC, SHT_PROGBITS, STT_FUNC, STT_OBJECT, Elf,
+                  Elf_Exception, Elf_Shdr, Elf_Sym)
 
 
 def get(input_fn: str, load_symbols: bool=False) -> Dict[str, Any]:
@@ -155,7 +153,7 @@ def get(input_fn: str, load_symbols: bool=False) -> Dict[str, Any]:
     # Split output sections according to splitted memory regions
     map_sections_splitted = _split_map_sections(map_sections_filtered, memory_regions_splitted)
 
-    # Add archives info into sections. Archives contain objects and objects contains symbols.
+    # Add archives info into sections. Archives contain objects and objects contain symbols.
     _add_archives_to_sections(map_sections_splitted)
 
     # Generate the overall memory map representation
@@ -711,7 +709,7 @@ def _split_memory_regions(memory_regions: List[Dict[str, Any]], memory_types: Di
     return memory_regions_splitted
 
 
-def _filter_map_sections(sections: List[Dict[str, Any]], elf_sections: Optional[Dict[str, Any]]) -> List[Dict[str, Any]]:
+def _filter_map_sections(sections: List[Dict[str, Any]], elf_sections: Optional[Dict[str, Elf_Shdr]]) -> List[Dict[str, Any]]:
     sections_filtered: List[Dict[str, Any]] = []
     for section in sections:
         if not section['size']:
@@ -863,19 +861,19 @@ def _get_project_description(fn: str) -> Optional[Dict[str, Any]]:
     return proj_desc
 
 
-def _load_elf_file(fn: str) -> Optional[ELFFile]:
+def _load_elf_file(fn: str) -> Optional[Elf]:
     try:
-        elf = ELFFile.load_from_path(fn)
+        elf = Elf(fn)
     except (OSError, ValueError) as e:
         log.die(f'cannot read project ELF file: {e}')
-    except ELFError as e:
+    except Elf_Exception as e:
         log.die(f'cannot parse ELF file sections: {e}')
 
     log.debug(f'elf file {fn}')
     return elf
 
 
-def _add_symbols_to_sections(elf: Optional[ELFFile], osections: List[Dict[str, Any]]) -> None:
+def _add_symbols_to_sections(elf: Optional[Elf], osections: List[Dict[str, Any]]) -> None:
     if not elf:
         # ELF is not available. Use input section names as symbols.
         for osec in osections:
@@ -889,18 +887,8 @@ def _add_symbols_to_sections(elf: Optional[ELFFile], osections: List[Dict[str, A
 
     # Get dictionary of symbols from ELF for STT_FUNC and STT_OBJECT and sort it based
     # on symbol address.
-    symbols: List[Symbol] = []
-    for section in elf.iter_sections():
-        if section.header['sh_type'] != 'SHT_SYMTAB':
-            continue
-        symtab = elf.get_section_by_name(section.name)
-        for symbol in symtab.iter_symbols():
-            if symbol['st_info']['type'] not in ['STT_FUNC', 'STT_OBJECT'] or not symbol['st_size']:
-                # Skip uninteresting symbols
-                continue
-            symbols.append(symbol)
-
-    symbols = [s for s in sorted(symbols, key=lambda s: s['st_value'] or 0)]  # or 0 help mypy
+    symbols: List[Elf_Sym] = [s for s in sorted(elf.symbols, key=lambda s: s.st_value or 0)
+                              if s.type in (STT_FUNC, STT_OBJECT) and s.st_size]  # or 0 help mypy
 
     # Get list of input sections, sorted by address, and add symbols list to each
     # input section.
@@ -916,8 +904,8 @@ def _add_symbols_to_sections(elf: Optional[ELFFile], osections: List[Dict[str, A
     isec = isections.pop(0)
     for symbol in symbols:
         sym_name = symbol.name
-        sym_addr = symbol['st_value']
-        sym_size = symbol['st_size']
+        sym_addr = symbol.st_value
+        sym_size = symbol.st_size
         while sym_addr >= isec['address'] + isec['size']:
             if not isections:
                 # Sanity check that we found input section for symbol
@@ -956,7 +944,7 @@ def _add_symbols_to_sections(elf: Optional[ELFFile], osections: List[Dict[str, A
             continue
 
         # Append '()' to function symbol
-        if symbol['st_info']['type'] == 'STT_FUNC':
+        if symbol.type == STT_FUNC:
             sym_name += '()'
 
         isec['symbols'].append({
@@ -968,28 +956,27 @@ def _add_symbols_to_sections(elf: Optional[ELFFile], osections: List[Dict[str, A
     log.debug(f'linker map output sections filtered with symbols', osections)
 
 
-def _get_elf_sections_headers(elf: Optional[ELFFile]) -> Optional[Dict[str, Any]]:
+def _get_elf_sections_headers(elf: Optional[Elf]) -> Optional[Dict[str, Elf_Shdr]]:
     if not elf:
         return None
 
-    hdrs: Dict[str, Any] = {}
-    sections_headers = {s.name: dict(s.header) for s in elf.iter_sections()}
+    hdrs: Dict[str, Elf_Shdr] = {}
 
-    for name, info in sections_headers.items():
-        if info['sh_size'] == 0:
+    for shdr in elf.shdrs:
+        if shdr.sh_size == 0:
             # Section has zero memory size, so skip it
             continue
-        if not info['sh_flags'] & SH_FLAGS.SHF_ALLOC:
+        if not shdr.sh_flags & SHF_ALLOC:
             # Section doesn't occupy memory during app execution, so skip it
             continue
-        hdrs[name] = info
+        hdrs[shdr.name] = shdr
 
-    log.debug('elf section headers', hdrs)
+    log.debug('elf section headers', hdrs.keys())
 
     return hdrs
 
 
-def _get_image_size(elf_sections: Optional[Dict[str, Any]], sections: List[Dict[str, Any]]) -> int:
+def _get_image_size(elf_sections: Optional[Dict[str, Elf_Shdr]], sections: List[Dict[str, Any]]) -> int:
     size = 0
     if not elf_sections:
         # ELF information not available
@@ -1001,9 +988,9 @@ def _get_image_size(elf_sections: Optional[Dict[str, Any]], sections: List[Dict[
         return size
 
     for name, info in elf_sections.items():
-        if info['sh_type'] != 'SHT_PROGBITS':
+        if info.sh_type != SHT_PROGBITS:
             continue
-        size += info['sh_size']
+        size += info.sh_size
 
     return size
 

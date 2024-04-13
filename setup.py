@@ -37,8 +37,7 @@ setup(
     python_requires='>=3.7',
     install_requires=[
         'pyyaml',
-        'rich',
-        'pyelftools'],
+        'rich'],
     extras_require={
         'dev': [
             'pre-commit',
