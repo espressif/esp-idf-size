@@ -325,11 +325,21 @@ def walk(memory_map: Dict[str, Any], depth: str='all') -> Generator:
                                symbol_name, symbol_info)
 
 
+def remove_unused(memory_map: Dict[str, Any]) -> None:
+    # Remove memory types which are not used
+    memory_map['memory_types'] = {k: v for k, v in memory_map['memory_types'].items() if v['used']}
+
+    # Remove sections, which do not have any archive. For example .iram0.text_end is defined
+    # to mark the end of IRAM code segment and contains just an alignment.
+    for mem_type_name, mem_type_info in memory_map['memory_types'].items():
+        mem_type_info['sections'] = {k: v for k, v in mem_type_info['sections'].items() if v['archives']}
+
+
 def trim(memory_map: Dict[str, Any], args: Namespace) -> None:
-    """Trim the memory map tree based on command line arguments. This removes
-    unused memory types and sections and trims the dept of the tree if e.g.
-    --archives is specified. It also removes all entries for the diff command if
-    they were not changed."""
+    """Trim the memory map tree based on command line arguments. This trims the
+    dept of the tree if e.g. --archives is specified. It also removes all entries
+    for the diff command if they were not changed."""
+
     def changed(diff: int) -> bool:
         if not args.diff or args.show_unchanged:
             return True
@@ -346,19 +356,10 @@ def trim(memory_map: Dict[str, Any], args: Namespace) -> None:
     else:
         depth = ALL
 
-    if not args.show_unused:
-        memory_map['memory_types'] = {k: v for k, v in memory_map['memory_types'].items()
-                                      if v['used'] + abs(v['used_diff'])}
-
     memory_map['memory_types'] = {k: v for k, v in memory_map['memory_types'].items()
                                   if changed(v['used_diff'])}
 
     for mem_type_name, mem_type_info in memory_map['memory_types'].items():
-        if not args.show_unused:
-            # Remove sections, which do not have any archive. For example .iram0.text_end is defined
-            # to mark the end of IRAM code segment and contains just an alignment.
-            mem_type_info['sections'] = {k: v for k, v in mem_type_info['sections'].items()
-                                         if v['archives']}
         mem_type_info['sections'] = {k: v for k, v in mem_type_info['sections'].items()
                                      if changed(v['size_diff'])}
 
@@ -449,6 +450,14 @@ def get_summary_sorted(entries: Dict[str, Any], args: Namespace) -> Dict[str, An
     return entries
 
 
+def rem_summary_unchanged(entries: Dict[str, Any], args: Namespace) -> Dict[str, Any]:
+    if not args.diff or args.show_unchanged:
+        return entries
+
+    entries = {k: v for k, v in entries.items() if v['size_diff']}
+    return entries
+
+
 def get_symbols_summary(memory_map: Dict[str, Any], args: Namespace) -> Dict[str, Any]:
     symbols: Dict[str, Any] = {}
 
@@ -492,7 +501,7 @@ def get_symbols_summary(memory_map: Dict[str, Any], args: Namespace) -> Dict[str
     if not found:
         log.die(f'Archive "{args.archive_details}" not found.')
 
-    return symbols
+    return rem_summary_unchanged(symbols, args)
 
 
 def get_object_files_summary(memory_map: Dict[str, Any], args: Namespace) -> Dict[str, Any]:
@@ -529,7 +538,7 @@ def get_object_files_summary(memory_map: Dict[str, Any], args: Namespace) -> Dic
         object_file_mem_type['size_diff'] += size
         object_file['size_diff'] += size
 
-    return object_files
+    return rem_summary_unchanged(object_files, args)
 
 
 def get_archives_summary(memory_map: Dict[str, Any], args: Namespace) -> Dict[str, Any]:
@@ -565,7 +574,7 @@ def get_archives_summary(memory_map: Dict[str, Any], args: Namespace) -> Dict[st
         archive_mem_type['size_diff'] += size
         archive['size_diff'] += size
 
-    return archives
+    return rem_summary_unchanged(archives, args)
 
 
 def _filter_memory_regions(memory_regions: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
