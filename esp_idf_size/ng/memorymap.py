@@ -283,6 +283,62 @@ def diff(memory_map_cur: Dict[str, Any], memory_map_ref: Dict[str, Any]) -> Dict
     return memory_map_diff
 
 
+def unify(memory_map: Dict[str, Any]) -> None:
+    """
+    Aggregate size information based on the abbreviated names.
+    For example .dram0.bss and .dram1.bss sections will be reported
+    under one .bss section. Archives, object files and symbols will be
+    aggregated too. This can be useful for the --diff option when
+    comparing project built with different esp-idf versions.
+    """
+
+    # Level nodes in the memory map have different children key identifier.
+    # This maps each level to sublevel name.
+    level_map: Dict[str, Optional[str]] = {
+        'sections': 'archives',
+        'archives': 'object_files',
+        'object_files': 'symbols',
+        'symbols': None,  # Leaf node, no children
+    }
+
+    def unify_items(original: Dict[str, Any], unified: Dict[str, Any], level: str) -> None:
+        # Generic function which unifies all memory map levels
+        for original_item_name, original_item_info in original.items():
+            original_item_name_abbrev = original_item_info['abbrev_name']
+            sublevel = level_map[level]
+            unified_item_info = unified.get(original_item_name_abbrev)
+            if unified_item_info is None:
+                unified_item_info = {
+                    'abbrev_name': original_item_info['abbrev_name'],
+                    'size': original_item_info['size'],
+                    'size_diff': original_item_info['size_diff'],
+                    sublevel: {},
+                }
+                unified[original_item_name_abbrev] = unified_item_info
+            else:
+                unified_item_info['size'] += original_item_info['size']
+                unified_item_info['size_diff'] += original_item_info['size_diff']
+
+            if sublevel is None:
+                # We reached the leaf(symbols) node
+                continue
+            # Unify children nodes
+            unify_items(original_item_info[sublevel], unified_item_info[sublevel], sublevel)
+
+    # Create copy of memory_types without sections, which will be filled
+    # with aggregated size information.
+    memory_types_unified: Dict[str, Any] = {k: copy.copy(v) for k, v in memory_map['memory_types'].items()}
+    for mem_type_unified_info in memory_types_unified.values():
+        mem_type_unified_info['sections'] = {}
+
+    # Go through sections, archives, object files and symbols and aggregate
+    # them based on the abbreviated name.
+    for mem_type_name, mem_type_info in memory_map['memory_types'].items():
+        unify_items(mem_type_info['sections'], memory_types_unified[mem_type_name]['sections'], 'sections')
+
+    memory_map['memory_types'] = memory_types_unified
+
+
 def walk(memory_map: Dict[str, Any], depth: str='all') -> Generator:
     """Generator which yields tuple for memory type tree entries."""
     for mem_type_name, mem_type_info in memory_map['memory_types'].items():
@@ -476,6 +532,8 @@ def get_symbols_summary(memory_map: Dict[str, Any], args: Namespace) -> Dict[str
         found = True
 
         symbol_name_full = ':'.join([archive_name, object_file_name, symbol_name])
+        if args.unify:
+            symbol_name_full = symbol_info['abbrev_name']
         if symbol_name_full not in symbols:
             symbol: Dict[str, Any] = {
                 'abbrev_name': symbol_name,
@@ -516,6 +574,8 @@ def get_object_files_summary(memory_map: Dict[str, Any], args: Namespace) -> Dic
          _, _) in walk(memory_map, depth='objects'):
 
         object_file_name_full = ':'.join([archive_name, object_file_name])
+        if args.unify:
+            object_file_name_full = object_file_info['abbrev_name']
         if object_file_name_full not in object_files:
             object_file: Dict[str, Any] = {
                 'abbrev_name': os.path.basename(object_file_name),

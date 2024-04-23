@@ -41,10 +41,6 @@ def main() -> None:
                         metavar='MAP_FILE',
                         help='Compare sizes with another project.')
 
-    parser.add_argument('--no-abbrev',
-                        action='store_true',
-                        help='Do not abbreviate section and file names.')
-
     parser.add_argument('--show-unused',
                         action='store_true',
                         help='Show unused memory types and sections.')
@@ -92,6 +88,22 @@ def main() -> None:
                         help=('Enable terminal control codes even if out is not attached to terminal. '
                               'This option is ignored if used along with the "--output-file" option.'))
 
+    # mutually exclusive options
+    # --no-abbrev used along with --unify doesn't make sense, because
+    # all entries(sections, archives, ...) are using already abbreviated names
+    group = parser.add_mutually_exclusive_group()
+    group.add_argument('--no-abbrev',
+                       action='store_true',
+                       help='Do not abbreviate section and file names.')
+
+    group.add_argument('--unify',
+                       action='store_true',
+                       help=('Use abbreviated names with aggregated size information. '
+                             'For example .dram0.bss and .dram1.bss sections will be reported '
+                             'under one .bss section. Archives, object files and symbols will be '
+                             'aggregated too. This can be useful for the --diff option when '
+                             'comparing project built with different esp-idf versions.'))
+
     ofile = sys.stdout
     try:
         args = parser.parse_args()
@@ -116,6 +128,9 @@ def main() -> None:
             if memmap['target'] != memmap['target_diff']:
                 log.warn((f'The target of the reference and other project is '
                           f'{memmap["target"]} and {memmap["target_diff"]}, respectively.'))
+
+        if args.unify:
+            memorymap.unify(memmap)
 
         if args.format in ['table', 'text']:
             format_table.show(memmap, args)
