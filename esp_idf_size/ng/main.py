@@ -106,14 +106,16 @@ def main() -> None:
         load_symbols = True if args.archive_details or args.format == 'raw' else False
 
         memmap = memorymap.get(args.input_file, load_symbols)
+        if not args.show_unused:
+            memorymap.remove_unused(memmap)
         if args.diff:
             memmap_ref = memorymap.get(args.diff, load_symbols)
+            if not args.show_unused:
+                memorymap.remove_unused(memmap_ref)
             memmap = memorymap.diff(memmap, memmap_ref)
             if memmap['target'] != memmap['target_diff']:
                 log.warn((f'The target of the reference and other project is '
                           f'{memmap["target"]} and {memmap["target_diff"]}, respectively.'))
-
-        memorymap.trim(memmap, args)
 
         if args.format in ['table', 'text']:
             format_table.show(memmap, args)

@@ -59,6 +59,8 @@ def get_summary_table(memmap: Dict[str, Any], args: Namespace) -> Table:
     table.add_column(r'Remain \[bytes]', overflow='fold', justify='right')
     table.add_column(r'Total \[bytes]', overflow='fold', justify='right')
 
+    memorymap.trim(memmap, args)
+
     # Extend memory types and sections for percentage and remain info
     for mem_type_name, mem_type_info in memmap['memory_types'].items():
         if mem_type_info['size']:
