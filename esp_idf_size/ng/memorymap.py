@@ -92,19 +92,19 @@ def get(input_fn: str, load_symbols: bool=False) -> Dict[str, Any]:
 
     proj_desc = elf_fn = map_fn = elf = target = None
 
-    # Try to guess project description file path based on map file.
-    proj_desc_fn = _get_project_description_fn(input_fn)
+    map_fn = os.path.abspath(input_fn)
+
+    memory_map['project_path'] = map_fn
+
+    dirname = os.path.dirname(map_fn)
 
     # Load project description if available.
+    proj_desc_fn = os.path.join(dirname, 'project_description.json')
     proj_desc = _get_project_description(proj_desc_fn)
 
     if proj_desc:
-        memory_map['project_path'] = proj_desc['project_path']
         target = proj_desc['target']
-        elf_fn = os.path.join(proj_desc['build_dir'], proj_desc['app_elf'])
-        map_fn = os.path.join(proj_desc['build_dir'], proj_desc['project_name'] + '.map')
-    else:
-        map_fn = input_fn
+        elf_fn = os.path.join(dirname, proj_desc['app_elf'])
 
     if elf_fn and os.path.isfile(elf_fn):
         elf = _load_elf_file(elf_fn)
@@ -789,12 +789,6 @@ def _split_map_sections(sections: List[Dict[str, Any]], regions: List[Dict[str, 
 def _abbrev(section_name: str) -> str:
     splitted = section_name.split('.')
     return f'.{splitted[-1]}'
-
-
-def _get_project_description_fn(fn: str) -> str:
-    dirname = os.path.dirname(fn)
-    fn = os.path.join(dirname, 'project_description.json')
-    return fn
 
 
 def _get_project_description(fn: str) -> Optional[Dict[str, Any]]:
