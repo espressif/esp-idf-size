@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: 2023 Espressif Systems (Shanghai) CO LTD
+# SPDX-FileCopyrightText: 2023-2024 Espressif Systems (Shanghai) CO LTD
 # SPDX-License-Identifier: Apache-2.0
 
 import sys
@@ -43,12 +43,12 @@ def set_console(file: IO[str]=sys.stdout, quiet: bool=False, no_color: bool=Fals
     global console_stdout
     global debug_on
 
-    console_stderr = Console(stderr=True, quiet=quiet, no_color=no_color, force_terminal=force_terminal)
-    width = None
-    if file is not sys.stdout:
-        # https://rich.readthedocs.io/en/stable/console.html#file-output
-        # Don't limit the output to console width if it dosn't go into stdout
-        width = 10000
+    # https://rich.readthedocs.io/en/stable/console.html#file-output
+    # Don't limit the output to console width. Rich console doesn't allow to set unlimited
+    # terminal width, so set it here to large enough size, that could be considered
+    # as unlimited.
+    width = 10000
+    console_stderr = Console(stderr=True, width=width, quiet=quiet, no_color=no_color, force_terminal=force_terminal)
     console_stdout = Console(file=file, width=width, quiet=quiet, no_color=no_color, force_terminal=force_terminal)
 
     debug_on = debug
