@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: 2023 Espressif Systems (Shanghai) CO LTD
+# SPDX-FileCopyrightText: 2023-2024 Espressif Systems (Shanghai) CO LTD
 # SPDX-License-Identifier: Apache-2.0
 
 import re
@@ -33,7 +33,7 @@ class MapFile:
         regions: List[Dict[str, Any]] = []
         found = False
         header = False
-        for ln, line in enumerate(self.lines[self.line_idx:]):
+        for ln, line in enumerate(self.lines[self.line_idx:], start=self.line_idx):
             if line.startswith('Linker script and memory map'):
                 break
 
@@ -87,7 +87,7 @@ class MapFile:
 
         target = ''
         found = False
-        for ln, line in enumerate(self.lines[self.line_idx:]):
+        for ln, line in enumerate(self.lines[self.line_idx:], start=self.line_idx):
             if line.startswith('Cross Reference Table'):
                 # We have reached end of the "Linker script and memory map" section.
                 log.warn(f'cannot find target in linker map file')
@@ -216,7 +216,7 @@ class MapFile:
         in_output_section = False
         in_input_section = False
         found = False
-        for ln, line in enumerate(self.lines[self.line_idx:]):
+        for ln, line in enumerate(self.lines[self.line_idx:], start=self.line_idx):
             if line.startswith('Cross Reference Table'):
                 # We have reached end of the "Linker script and memory map" section.
                 break
