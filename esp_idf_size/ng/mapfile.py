@@ -241,13 +241,26 @@ class MapFile:
 
                 elif output_section['address'] is None:
                     # Missing address and length key means that the output section info
-                    # is splitted on two lines. Fill in the missing address and length here.
+                    # is split on two lines or it's an empty output section without
+                    # address and size like
+                    # .xt.prop
+                    #  *(.xt.prop .xt.prop.* .gnu.linkonce.prop.*)
+                    # By default zero the missing address and length to handle the
+                    # empty output section.
+
+                    output_section['address'] = 0
+                    output_section['size'] = 0
+
                     splitted = line.split()
-                    if len(splitted) != 2:
-                        log.die((f'unexpected output section continuous line "{line}" at line {ln + 1} in '
-                                 f'"Linker script and memory map" section in "{self.fn}" map file'))
-                    output_section['address'] = int(splitted[0], 0)
-                    output_section['size'] = int(splitted[1], 0)
+                    if len(splitted) == 2:
+                        try:
+                            address = int(splitted[0], 0)
+                            size = int(splitted[1], 0)
+                            # Output section has address and length on the second line.
+                            output_section['address'] = address
+                            output_section['size'] = size
+                        except ValueError:
+                            pass
 
                 elif line.startswith(('.', 'COMMON')):
                     # New input section
