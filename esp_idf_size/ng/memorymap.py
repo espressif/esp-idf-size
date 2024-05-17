@@ -1,22 +1,21 @@
-# SPDX-FileCopyrightText: 2023 Espressif Systems (Shanghai) CO LTD
+# SPDX-FileCopyrightText: 2023-2024 Espressif Systems (Shanghai) CO LTD
 # SPDX-License-Identifier: Apache-2.0
 
 import copy
 import json
 import os
 from argparse import Namespace
+from pathlib import Path
 from typing import Any, Dict, Generator, List, Optional
 
 import yaml
-from elftools.common.exceptions import ELFError
-from elftools.elf.constants import SH_FLAGS
-from elftools.elf.elffile import ELFFile
-from elftools.elf.sections import Symbol
 
 from . import log, mapfile
+from .elf import (SHF_ALLOC, SHT_PROGBITS, STT_FUNC, STT_OBJECT, Elf,
+                  Elf_Exception, Elf_Shdr, Elf_Sym)
 
 
-def get(input_fn: str, load_symbols: bool=False) -> Dict[str, Any]:
+def get(input_fn: str, load_symbols: bool=False, use_dwarf: Optional[bool]=None) -> Dict[str, Any]:
     """
     This is the main function, which returns a dictionary representing
     the whole memory map for a given project. It's converted by formatting
@@ -100,7 +99,17 @@ def get(input_fn: str, load_symbols: bool=False) -> Dict[str, Any]:
 
     # Load project description if available.
     proj_desc_fn = os.path.join(dirname, 'project_description.json')
-    proj_desc = _get_project_description(proj_desc_fn)
+    proj_desc = _load_json_file(proj_desc_fn)
+
+    if use_dwarf is None:
+        # DWARF usage is not explicitly set, try to look into sdkconfig
+        # if LTO was enabled.
+        sdkconfig_fn = os.path.join(dirname, 'config', 'sdkconfig.json')
+        sdkconfig = _load_json_file(sdkconfig_fn)
+        if sdkconfig is not None:
+            use_dwarf = sdkconfig.get('COMPILER_LTO_LINKTIME', False)
+        else:
+            use_dwarf = False
 
     if proj_desc:
         target = proj_desc['target']
@@ -113,6 +122,10 @@ def get(input_fn: str, load_symbols: bool=False) -> Dict[str, Any]:
 
     # Parse linker map file memory regions, target and output sections
     map_file = mapfile.MapFile(map_fn)
+
+    if use_dwarf:
+        # Try to expand input sections without archive based on DWARF info.
+        _expand_input_sections(map_file, proj_desc, elf)
 
     if not target:
         # Target from project_description.json is not available, use target detected in map file.
@@ -155,7 +168,7 @@ def get(input_fn: str, load_symbols: bool=False) -> Dict[str, Any]:
     # Split output sections according to splitted memory regions
     map_sections_splitted = _split_map_sections(map_sections_filtered, memory_regions_splitted)
 
-    # Add archives info into sections. Archives contain objects and objects contains symbols.
+    # Add archives info into sections. Archives contain objects and objects contain symbols.
     _add_archives_to_sections(map_sections_splitted)
 
     # Generate the overall memory map representation
@@ -711,7 +724,7 @@ def _split_memory_regions(memory_regions: List[Dict[str, Any]], memory_types: Di
     return memory_regions_splitted
 
 
-def _filter_map_sections(sections: List[Dict[str, Any]], elf_sections: Optional[Dict[str, Any]]) -> List[Dict[str, Any]]:
+def _filter_map_sections(sections: List[Dict[str, Any]], elf_sections: Optional[Dict[str, Elf_Shdr]]) -> List[Dict[str, Any]]:
     sections_filtered: List[Dict[str, Any]] = []
     for section in sections:
         if not section['size']:
@@ -851,31 +864,30 @@ def _abbrev(section_name: str) -> str:
     return f'.{splitted[-1]}'
 
 
-def _get_project_description(fn: str) -> Optional[Dict[str, Any]]:
-    proj_desc = None
+def _load_json_file(fn: str) -> Optional[Dict[str, Any]]:
+    data = None
     try:
         with open(fn, 'r') as f:
-            proj_desc = json.load(f)
+            data = json.load(f)
     except (OSError, ValueError) as e:
-        log.debug(f'project_description.json is not available: {e}')
+        log.debug(f'{fn} is not available: {e}')
 
-    log.debug('project_description.json', proj_desc)
-    return proj_desc
+    return data
 
 
-def _load_elf_file(fn: str) -> Optional[ELFFile]:
+def _load_elf_file(fn: str) -> Optional[Elf]:
     try:
-        elf = ELFFile.load_from_path(fn)
+        elf = Elf(fn)
     except (OSError, ValueError) as e:
         log.die(f'cannot read project ELF file: {e}')
-    except ELFError as e:
+    except Elf_Exception as e:
         log.die(f'cannot parse ELF file sections: {e}')
 
     log.debug(f'elf file {fn}')
     return elf
 
 
-def _add_symbols_to_sections(elf: Optional[ELFFile], osections: List[Dict[str, Any]]) -> None:
+def _add_symbols_to_sections(elf: Optional[Elf], osections: List[Dict[str, Any]]) -> None:
     if not elf:
         # ELF is not available. Use input section names as symbols.
         for osec in osections:
@@ -889,18 +901,8 @@ def _add_symbols_to_sections(elf: Optional[ELFFile], osections: List[Dict[str, A
 
     # Get dictionary of symbols from ELF for STT_FUNC and STT_OBJECT and sort it based
     # on symbol address.
-    symbols: List[Symbol] = []
-    for section in elf.iter_sections():
-        if section.header['sh_type'] != 'SHT_SYMTAB':
-            continue
-        symtab = elf.get_section_by_name(section.name)
-        for symbol in symtab.iter_symbols():
-            if symbol['st_info']['type'] not in ['STT_FUNC', 'STT_OBJECT'] or not symbol['st_size']:
-                # Skip uninteresting symbols
-                continue
-            symbols.append(symbol)
-
-    symbols = [s for s in sorted(symbols, key=lambda s: s['st_value'] or 0)]  # or 0 help mypy
+    symbols: List[Elf_Sym] = [s for s in sorted(elf.symbols, key=lambda s: s.st_value or 0)
+                              if s.type in (STT_FUNC, STT_OBJECT) and s.st_size]  # or 0 help mypy
 
     # Get list of input sections, sorted by address, and add symbols list to each
     # input section.
@@ -916,8 +918,8 @@ def _add_symbols_to_sections(elf: Optional[ELFFile], osections: List[Dict[str, A
     isec = isections.pop(0)
     for symbol in symbols:
         sym_name = symbol.name
-        sym_addr = symbol['st_value']
-        sym_size = symbol['st_size']
+        sym_addr = symbol.st_value
+        sym_size = symbol.st_size
         while sym_addr >= isec['address'] + isec['size']:
             if not isections:
                 # Sanity check that we found input section for symbol
@@ -956,7 +958,7 @@ def _add_symbols_to_sections(elf: Optional[ELFFile], osections: List[Dict[str, A
             continue
 
         # Append '()' to function symbol
-        if symbol['st_info']['type'] == 'STT_FUNC':
+        if symbol.type == STT_FUNC:
             sym_name += '()'
 
         isec['symbols'].append({
@@ -968,28 +970,27 @@ def _add_symbols_to_sections(elf: Optional[ELFFile], osections: List[Dict[str, A
     log.debug(f'linker map output sections filtered with symbols', osections)
 
 
-def _get_elf_sections_headers(elf: Optional[ELFFile]) -> Optional[Dict[str, Any]]:
+def _get_elf_sections_headers(elf: Optional[Elf]) -> Optional[Dict[str, Elf_Shdr]]:
     if not elf:
         return None
 
-    hdrs: Dict[str, Any] = {}
-    sections_headers = {s.name: dict(s.header) for s in elf.iter_sections()}
+    hdrs: Dict[str, Elf_Shdr] = {}
 
-    for name, info in sections_headers.items():
-        if info['sh_size'] == 0:
+    for shdr in elf.shdrs:
+        if shdr.sh_size == 0:
             # Section has zero memory size, so skip it
             continue
-        if not info['sh_flags'] & SH_FLAGS.SHF_ALLOC:
+        if not shdr.sh_flags & SHF_ALLOC:
             # Section doesn't occupy memory during app execution, so skip it
             continue
-        hdrs[name] = info
+        hdrs[shdr.name] = shdr
 
-    log.debug('elf section headers', hdrs)
+    log.debug('elf section headers', hdrs.keys())
 
     return hdrs
 
 
-def _get_image_size(elf_sections: Optional[Dict[str, Any]], sections: List[Dict[str, Any]]) -> int:
+def _get_image_size(elf_sections: Optional[Dict[str, Elf_Shdr]], sections: List[Dict[str, Any]]) -> int:
     size = 0
     if not elf_sections:
         # ELF information not available
@@ -1001,9 +1002,9 @@ def _get_image_size(elf_sections: Optional[Dict[str, Any]], sections: List[Dict[
         return size
 
     for name, info in elf_sections.items():
-        if info['sh_type'] != 'SHT_PROGBITS':
+        if info.sh_type != SHT_PROGBITS:
             continue
-        size += info['sh_size']
+        size += info.sh_size
 
     return size
 
@@ -1051,6 +1052,156 @@ def _add_archives_to_sections(sections: List[Dict[str, Any]]) -> None:
         section['archives'] = archives
 
     log.debug('sections with archives', sections)
+
+
+def _expand_input_sections(map_file: mapfile.MapFile, proj_desc: Optional[Dict[str, Any]], elf: Optional[Elf]) -> None:
+    # Based on information in .debug_info section, try to find components for input sections without
+    # archive. These are generated when object file is directly linked or when LTO is used. With LTO enabled,
+    # object files from several archives may be merged into one artificial object file, which is used by compiler
+    # for optimization. Meaning linker has no information about archives and hence this info is also missing in
+    # the link map file. Instead the link map file contains artificially created object file by compiler.
+    if proj_desc is None:
+        log.warn('ignoring DWARF information because project description information is not available')
+        return
+    if elf is None:
+        log.warn('ignoring DWARF information because ELF file is not available')
+        return
+
+    def find_symbol_component(sym: Elf_Sym, components: List[Dict[str, Any]]) -> Optional[Dict[str, Any]]:
+        # Find component to which the symbol belongs to
+        for component in components:
+            # NOTE: Elf_Sym is dynamically extended with cu_path and archive_path attribute and mypy doesn't like it
+            if sym.cu_path.startswith(component['component_path']):  # type: ignore
+                # The components list is sorted based on component_path length, from longest to shortest.
+                # The longest possible match was found, so return. There is no need to search further.
+                return component
+
+        return None
+
+    def add_archives_to_symbols(symbols: Dict[int, Elf_Sym], components: List[Dict[str, Any]]) -> None:
+        # Based on CU path and information in project_description.json try to assign
+        # each symbol into archive. Symbols without CU info were already removed from
+        # the list.
+        for sym in symbols.values():
+            component = find_symbol_component(sym, components)
+            if component is None:
+                continue
+
+            # Add archive to symbol
+            sym.archive_path = component['archive_relpath']  # type: ignore
+
+    # Get symbols with CU name info if available
+    symbols: Dict[int, Elf_Sym] = elf.add_cus_to_symbols()
+
+    # Remove symbols with zero size and symbols for which we don't have CU name
+    symbols = {k: v for k, v in symbols.items() if v.st_size and v.cu_name}
+
+    # Get list of components with archive file, removing CONFIG_ONLY components
+    components = [comp for comp in proj_desc['build_component_info'].values() if comp['file']]
+
+    # Add component_path and relative, to build directory, archive path to components in posix form
+    build_dir_path = Path(proj_desc['build_dir']).as_posix()
+    for comp in components:
+        comp['component_path'] = Path(comp['dir']).as_posix()
+        comp['archive_relpath'] = Path(comp['file']).relative_to(build_dir_path).as_posix()
+
+    # Sort components in descending order based on their paths, from longest to shortest.
+    components = [comp for comp in sorted(components, key=lambda c: len(c['component_path']), reverse=True)]
+
+    # Add CU path to symbols posix form
+    for sym in symbols.values():
+        sym.cu_path = Path(str(sym.cu_name)).as_posix()  # type: ignore
+
+    # Add 'archive_path' attribute to each symbol if available.
+    # The native path form created in the two steps above are used
+    # to quickly find if symbol's CU is within component's directory.
+    add_archives_to_symbols(symbols, components)
+
+    # Remove symbols without archive information
+    symbols = {k: v for k, v in symbols.items() if hasattr(v, 'archive_path')}
+
+    # Sort symbols based on their addresses
+    symbols = {k: v for k, v in sorted(symbols.items(), key=lambda item: item[0])}
+
+    for osec in map_file.sections:
+        isecs_new: List[Dict[str, Any]] = []
+        for isec in osec['input_sections']:
+            if isec['archive'] != '(exe)':
+                # We have proper archive info, so just use the input section as is
+                isecs_new.append(isec)
+                continue
+            # Go through symbols, for which we have CU names, and create new input
+            # sections.
+            for addr, sym in symbols.items():
+                if addr < isec['address']:
+                    # Symbol is not part of this input section
+                    continue
+                elif addr == isec['address'] and isec['size']:
+                    # Symbol starts at the same address as input section.
+                    # Create new input section covered by the symbol, insert it
+                    # into isecs_new and adjust isec address and size.
+                    # Do this only if there is some size left, because
+                    # previous symbol may have covered the rest of the input section.
+                    isec_new = {
+                        'name': sym.name,
+                        'address': sym.st_value,
+                        'size': sym.st_size,
+                        'archive': sym.archive_path,  # type: ignore
+                        'object_file': Path(str(sym.cu_name)).name,
+                        'fill': 0,
+                    }
+                    isecs_new.append(isec_new)
+                    isec['address'] += sym.st_size
+                    isec['size'] -= sym.st_size
+
+                elif addr < isec['address'] + isec['size']:
+                    # There is a gap between isec address and symbol address, for which
+                    # we have no symbol with CU info. Create copy of the original
+                    # isec with reduced size and keep it in the artificial '(exe)' archive.
+                    # The gap may be because of align, maybe we can account it into previous
+                    # symbol if it doesn't cross some threshold?
+                    isec_new = {
+                        'name': isec['name'],
+                        'address': isec['address'],
+                        'size': sym.st_value - isec['address'],
+                        'archive': '(exe)',
+                        'object_file': isec['object_file'],
+                        'fill': 0,
+                    }
+                    isecs_new.append(isec_new)
+                    isec['address'] += isec_new['size']
+                    isec['size'] -= isec_new['size']
+
+                    # Now add new isec for symbol as if it would have the same
+                    # address as input section.
+                    isec_new = {
+                        'name': sym.name,
+                        'address': sym.st_value,
+                        'size': sym.st_size,
+                        'archive': sym.archive_path,  # type: ignore
+                        'object_file': Path(str(sym.cu_name)).name,
+                        'fill': 0,
+                    }
+                    isecs_new.append(isec_new)
+                    isec['address'] += sym.st_size
+                    isec['size'] -= sym.st_size
+                else:
+                    # No other symbols fit into this input section
+                    if isec['size'] or not isecs_new:
+                        # There is some part(tail) of the original input section, which
+                        # was not covered by any symbol. Or no symbol fits into this
+                        # input section at all and isecs_new is empty.
+                        isecs_new.append(isec)
+                    else:
+                        # Whole input section was covered by symbols. If it had filling,
+                        # account it into the lastly added input section.
+                        isecs_new[-1]['fill'] = isec['fill']
+                    break
+
+        # Finally assign expanded input sections into the output section
+        osec['input_sections'] = isecs_new
+
+    log.debug(f'linker map output sections expanded', map_file.sections)
 
 
 def _get_memory_types(target: str) -> Dict[str, Any]:

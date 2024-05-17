@@ -1,3 +1,5 @@
+# SPDX-FileCopyrightText: 2024 Espressif Systems (Shanghai) CO LTD
+# SPDX-License-Identifier: Apache-2.0
 import os.path
 
 from setuptools import find_packages, setup
@@ -37,8 +39,7 @@ setup(
     python_requires='>=3.7',
     install_requires=[
         'pyyaml',
-        'rich',
-        'pyelftools'],
+        'rich'],
     extras_require={
         'dev': [
             'pre-commit',

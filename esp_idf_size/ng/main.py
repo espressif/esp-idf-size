@@ -1,14 +1,24 @@
 #!/usr/bin/env python
 
-# SPDX-FileCopyrightText: 2023 Espressif Systems (Shanghai) CO LTD
+# SPDX-FileCopyrightText: 2023-2024 Espressif Systems (Shanghai) CO LTD
 # SPDX-License-Identifier: Apache-2.0
 
 import argparse
 import os
 import sys
+from typing import Any, Optional, Sequence, Union
 
 from . import (format_csv, format_json, format_raw, format_table, format_tree,
                log, memorymap)
+
+
+class ToggleAction(argparse.Action):
+    def __call__(self,
+                 parser: argparse.ArgumentParser,
+                 namespace: argparse.Namespace,
+                 values: Union[str, Sequence[Any], None],
+                 option_string: Optional[str] = None) -> None:
+        setattr(namespace, self.dest, option_string and not option_string.startswith('--no-'))
 
 
 def main() -> None:
@@ -48,6 +58,14 @@ def main() -> None:
     parser.add_argument('--show-unchanged',
                         action='store_true',
                         help='Show unchanged items for --diff operation.')
+
+    parser.add_argument('--lto', '--no-lto',
+                        dest='use_dwarf',
+                        action=ToggleAction,
+                        nargs=0,
+                        help=('Enable or disable usage of DWARF debugging information to identify '
+                              'archives for symbols without archive. Intended to be used if LTO is enabled. '
+                              'If not specified, detect LTO usage from sdkconfig.json, if available.'))
 
     parser.add_argument('-d', '--debug',
                         action='store_true',
@@ -115,13 +133,17 @@ def main() -> None:
         log.set_console(ofile, args.quiet, args.no_color, args.force_terminal, args.debug)
 
         args.abbrev = not args.no_abbrev
-        load_symbols = True if args.archive_details or args.format == 'raw' else False
+        load_symbols = args.archive_details or args.format == 'raw'
 
-        memmap = memorymap.get(args.input_file, load_symbols)
+        if args.use_dwarf:
+            # We need DWARF only for detailed outputs like archives
+            args.use_dwarf = any((args.archive_details, args.archives, args.files, args.format == 'raw'))
+
+        memmap = memorymap.get(args.input_file, load_symbols, args.use_dwarf)
         if not args.show_unused:
             memorymap.remove_unused(memmap)
         if args.diff:
-            memmap_ref = memorymap.get(args.diff, load_symbols)
+            memmap_ref = memorymap.get(args.diff, load_symbols, args.use_dwarf)
             if not args.show_unused:
                 memorymap.remove_unused(memmap_ref)
             memmap = memorymap.diff(memmap, memmap_ref)
