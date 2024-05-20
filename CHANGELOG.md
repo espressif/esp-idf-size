@@ -1,3 +1,19 @@
+## v1.4.0 (2024-05-20)
+
+### New Features
+
+- **ng**: support for projects built with enabled LTO
+- **ng**: initial version of ELF/DWARF parser
+- add --unify option allowing to aggregate size information
+
+### Bug Fixes
+
+- **ng**: handle output sections with no content in map file
+- **ng**: fix line enumeration in link map file parser
+- **ng**: remove console width limit
+- **ng**: fix map and elf file detection
+- **ng**: fix memory map trimming for diff output
+
 ## v1.3.0 (2024-04-15)
 
 ### New Features
