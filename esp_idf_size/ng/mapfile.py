@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: 2023 Espressif Systems (Shanghai) CO LTD
+# SPDX-FileCopyrightText: 2023-2024 Espressif Systems (Shanghai) CO LTD
 # SPDX-License-Identifier: Apache-2.0
 
 import re
@@ -33,7 +33,7 @@ class MapFile:
         regions: List[Dict[str, Any]] = []
         found = False
         header = False
-        for ln, line in enumerate(self.lines[self.line_idx:]):
+        for ln, line in enumerate(self.lines[self.line_idx:], start=self.line_idx):
             if line.startswith('Linker script and memory map'):
                 break
 
@@ -87,7 +87,7 @@ class MapFile:
 
         target = ''
         found = False
-        for ln, line in enumerate(self.lines[self.line_idx:]):
+        for ln, line in enumerate(self.lines[self.line_idx:], start=self.line_idx):
             if line.startswith('Cross Reference Table'):
                 # We have reached end of the "Linker script and memory map" section.
                 log.warn(f'cannot find target in linker map file')
@@ -216,7 +216,7 @@ class MapFile:
         in_output_section = False
         in_input_section = False
         found = False
-        for ln, line in enumerate(self.lines[self.line_idx:]):
+        for ln, line in enumerate(self.lines[self.line_idx:], start=self.line_idx):
             if line.startswith('Cross Reference Table'):
                 # We have reached end of the "Linker script and memory map" section.
                 break
@@ -241,13 +241,26 @@ class MapFile:
 
                 elif output_section['address'] is None:
                     # Missing address and length key means that the output section info
-                    # is splitted on two lines. Fill in the missing address and length here.
+                    # is split on two lines or it's an empty output section without
+                    # address and size like
+                    # .xt.prop
+                    #  *(.xt.prop .xt.prop.* .gnu.linkonce.prop.*)
+                    # By default zero the missing address and length to handle the
+                    # empty output section.
+
+                    output_section['address'] = 0
+                    output_section['size'] = 0
+
                     splitted = line.split()
-                    if len(splitted) != 2:
-                        log.die((f'unexpected output section continuous line "{line}" at line {ln + 1} in '
-                                 f'"Linker script and memory map" section in "{self.fn}" map file'))
-                    output_section['address'] = int(splitted[0], 0)
-                    output_section['size'] = int(splitted[1], 0)
+                    if len(splitted) == 2:
+                        try:
+                            address = int(splitted[0], 0)
+                            size = int(splitted[1], 0)
+                            # Output section has address and length on the second line.
+                            output_section['address'] = address
+                            output_section['size'] = size
+                        except ValueError:
+                            pass
 
                 elif line.startswith(('.', 'COMMON')):
                     # New input section
