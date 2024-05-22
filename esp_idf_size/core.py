@@ -6,7 +6,7 @@
 # Includes information which is not shown in "xtensa-esp32-elf-size",
 # or easy to parse from "xtensa-esp32-elf-objdump" or raw map files.
 #
-# SPDX-FileCopyrightText: 2017-2023 Espressif Systems (Shanghai) CO LTD
+# SPDX-FileCopyrightText: 2017-2024 Espressif Systems (Shanghai) CO LTD
 # SPDX-License-Identifier: Apache-2.0
 #
 import argparse
@@ -100,23 +100,28 @@ class MemRegions(object):
     def _get_first_region(self, start: int, length: int) -> Tuple[Union['MemRegions.MemRegDef', None], int]:
         for region in self.chip_mem_regions:  # type: ignore
             if region.primary_addr <= start < region.primary_addr + region.length:
-                return (region, length)
+                return (region, min(length, region.primary_addr + region.length - start))
             if region.secondary_addr and region.secondary_addr <= start < region.secondary_addr + region.length:
-                return (region, length)
+                return (region, min(length, region.secondary_addr + region.length - start))
         print('WARNING: Given section not found in any memory region.')
         print('Check whether the LD file is compatible with the definitions in get_mem_regions in esp_idf_size')
         return (None, length)
 
     def _get_regions(self, start: int, length: int, name: Optional[str]=None) -> List:
         ret = []
+        last_region = None
         while length > 0:
             (region, cur_len) = self._get_first_region(start, length)
+            # If region/section does not fit into any memory type, assign it
+            # to the last memory type so the overflow is correctly reported.
+            region = region or last_region
             if region is None:
                 # skip regions that not in given section
                 length -= cur_len
                 start += cur_len
                 continue
             ret.append(MemRegions.Region(start, cur_len, region, name))
+            last_region = region
             length -= cur_len
             start += cur_len
 
@@ -601,19 +606,43 @@ class StructureForSummary(object):
         def in_iram(x: MemRegions.Region) -> bool:
             return x.region.type == MemRegions.IRAM_ID and x.region.secondary_addr == 0  # type: ignore
 
+        def filter_diram_aliases(regions: Iterable) -> List[MemRegions.Region]:
+            # To accurately calculate the available diram size, it's essential to eliminate aliases.
+            # Otherwise, the reported total available diram size will be doubled.
+            # Alias is region/segment, as defined in map file, which points to the
+            # same physical memory as other region/segment. Note that segments
+            # are split according to chip memory types in _get_regions.
+            regions_filtered: List[MemRegions.Region] = []
+
+            for reg in regions:
+                for reg_filtered in regions_filtered:
+                    if reg.region.type is not reg_filtered.region.type:
+                        # chip regions are different, skip
+                        continue
+                    if reg.len != reg_filtered.len:
+                        # memory regions/segments have different size, skip
+                        continue
+                    if abs(reg.start - reg_filtered.start) != abs(reg.region.primary_addr - reg.region.secondary_addr):
+                        # memory region/segment offset is different from chip region offset, skip
+                        continue
+                    # Alias found, don't add it into the final list
+                    break
+
+                else:
+                    # No alias found for region/segment, add it into the final list
+                    regions_filtered.append(reg)
+
+            return regions_filtered
+
         r = StructureForSummary()
 
         diram_filter = filter(in_diram, segments)
-        r.diram_total = get_size(diram_filter)
+        r.diram_total = get_size(filter_diram_aliases(diram_filter))
 
         dram_filter = filter(in_dram, segments)
         r.dram_total = get_size(dram_filter)
         iram_filter = filter(in_iram, segments)
         r.iram_total = get_size(iram_filter)
-
-        # This fixes counting the diram twice if the cache fills the iram entirely
-        if r.iram_total == 0:
-            r.diram_total //= 2
 
         def filter_in_section(sections: Iterable[MemRegions.Region], section_to_check: str) -> List[MemRegions.Region]:
             return list(filter(lambda x: LinkingSections.in_section(x.section, section_to_check), sections))  # type: ignore

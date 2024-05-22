@@ -4187,7 +4187,7 @@ Total image size:  134103 bytes (.bin may be padded larger)
 ***
 Running esp_idf_size on bootloader for esp32s2...
 Total sizes:
-Used stat D/IRAM:   22569 bytes (  -1065 remain, 105.0% used) Overflow detected! You can run idf.py size-files for more information.
+Used stat D/IRAM:   22569 bytes (  20439 remain, 52.5% used)
       .data size:       4 bytes
       .bss  size:     264 bytes
       .text size:   16125 bytes
@@ -4197,7 +4197,7 @@ Total image size:   22305 bytes (.bin may be padded larger)
 ***
 Running esp_idf_size on bootloader for esp32s2 (target autodetected)...
 Total sizes:
-Used stat D/IRAM:   22569 bytes (  -1065 remain, 105.0% used) Overflow detected! You can run idf.py size-files for more information.
+Used stat D/IRAM:   22569 bytes (  20439 remain, 52.5% used)
       .data size:       4 bytes
       .bss  size:     264 bytes
       .text size:   16125 bytes
@@ -4947,6 +4947,8 @@ WARNING: Given section not found in any memory region.
 Check whether the LD file is compatible with the definitions in get_mem_regions in esp_idf_size
 WARNING: Given section not found in any memory region.
 Check whether the LD file is compatible with the definitions in get_mem_regions in esp_idf_size
+WARNING: Given section not found in any memory region.
+Check whether the LD file is compatible with the definitions in get_mem_regions in esp_idf_size
 Total sizes:
 Used stat D/IRAM:  551174 bytes (-223494 remain, 168.2% used) Overflow detected! You can run idf.py size-files for more information.
       .text size:  551174 bytes
@@ -5308,12 +5310,13 @@ Section total: 0
 ***
 Running esp_idf_size for esp32s3...
 Total sizes:
-Used static IRAM:   46786 bytes ( 239934 remain, 16.3% used)
-      .text size:   45759 bytes
+Used static IRAM:   16383 bytes (      1 remain, 100.0% used)
+      .text size:   15356 bytes
    .vectors size:    1027 bytes
-Used stat D/IRAM:   11772 bytes ( 258564 remain, 4.4% used)
+Used stat D/IRAM:   42175 bytes ( 228161 remain, 15.6% used)
       .data size:    9252 bytes
       .bss  size:    2520 bytes
+      .text size:   30403 bytes
 Used Flash size :  114851 bytes
            .text:   87463 bytes
          .rodata:   27132 bytes
@@ -5335,12 +5338,13 @@ Total image size:  200869 bytes (.bin may be padded larger)
 ***
 Running esp_idf_size for esp32s3 with overflow...
 Total sizes:
-Used static IRAM:  337906 bytes ( -51186 remain, 117.9% used) Overflow detected! You can run idf.py size-files for more information.
-      .text size:  336879 bytes
+Used static IRAM:   16383 bytes (      1 remain, 100.0% used)
+      .text size:   15356 bytes
    .vectors size:    1027 bytes
-Used stat D/IRAM:   94049 bytes ( 176287 remain, 34.8% used)
+Used stat D/IRAM:  415572 bytes (-145236 remain, 153.7% used) Overflow detected! You can run idf.py size-files for more information.
       .data size:   68929 bytes
       .bss  size:   25120 bytes
+      .text size:  321523 bytes
 Used Flash size :  454371 bytes
            .text:  366715 bytes
          .rodata:   87400 bytes
@@ -5349,12 +5353,13 @@ Total image size:  861206 bytes (.bin may be padded larger)
 ***
 Running esp_idf_size for esp32s3 (target autodetected)...
 Total sizes:
-Used static IRAM:   46786 bytes ( 239934 remain, 16.3% used)
-      .text size:   45759 bytes
+Used static IRAM:   16383 bytes (      1 remain, 100.0% used)
+      .text size:   15356 bytes
    .vectors size:    1027 bytes
-Used stat D/IRAM:   11772 bytes ( 258564 remain, 4.4% used)
+Used stat D/IRAM:   42175 bytes ( 228161 remain, 15.6% used)
       .data size:    9252 bytes
       .bss  size:    2520 bytes
+      .text size:   30403 bytes
 Used Flash size :  114851 bytes
            .text:   87463 bytes
          .rodata:   27132 bytes
@@ -5363,12 +5368,13 @@ Total image size:  170889 bytes (.bin may be padded larger)
 ***
 Running esp_idf_size --archives for esp32s3...
 Total sizes:
-Used static IRAM:   46786 bytes ( 239934 remain, 16.3% used)
-      .text size:   45759 bytes
+Used static IRAM:   16383 bytes (      1 remain, 100.0% used)
+      .text size:   15356 bytes
    .vectors size:    1027 bytes
-Used stat D/IRAM:   11772 bytes ( 258564 remain, 4.4% used)
+Used stat D/IRAM:   42175 bytes ( 228161 remain, 15.6% used)
       .data size:    9252 bytes
       .bss  size:    2520 bytes
+      .text size:   30403 bytes
 Used Flash size :  114851 bytes
            .text:   87463 bytes
          .rodata:   27132 bytes
@@ -5407,12 +5413,13 @@ Per-archive contributions to ELF file:
 ***
 Running esp_idf_size --files for esp32s3...
 Total sizes:
-Used static IRAM:   46786 bytes ( 239934 remain, 16.3% used)
-      .text size:   45759 bytes
+Used static IRAM:   16383 bytes (      1 remain, 100.0% used)
+      .text size:   15356 bytes
    .vectors size:    1027 bytes
-Used stat D/IRAM:   11772 bytes ( 258564 remain, 4.4% used)
+Used stat D/IRAM:   42175 bytes ( 228161 remain, 15.6% used)
       .data size:    9252 bytes
       .bss  size:    2520 bytes
+      .text size:   30403 bytes
 Used Flash size :  114851 bytes
            .text:   87463 bytes
          .rodata:   27132 bytes
@@ -5673,12 +5680,13 @@ esp_crypto_shared_gdma.c          0         0         0           0           0 
 ***
 Running esp_idf_size --archive_details for esp32s3...
 Total sizes:
-Used static IRAM:   46786 bytes ( 239934 remain, 16.3% used)
-      .text size:   45759 bytes
+Used static IRAM:   16383 bytes (      1 remain, 100.0% used)
+      .text size:   15356 bytes
    .vectors size:    1027 bytes
-Used stat D/IRAM:   11772 bytes ( 258564 remain, 4.4% used)
+Used stat D/IRAM:   42175 bytes ( 228161 remain, 15.6% used)
       .data size:    9252 bytes
       .bss  size:    2520 bytes
+      .text size:   30403 bytes
 Used Flash size :  114851 bytes
            .text:   87463 bytes
          .rodata:   27132 bytes
@@ -5791,6 +5799,8 @@ Total image size:  102490 bytes (.bin may be padded larger)
 
 ***
 Running esp_idf_size for esp32c6 with overflow...
+WARNING: Given section not found in any memory region.
+Check whether the LD file is compatible with the definitions in get_mem_regions in esp_idf_size
 Total sizes:
 Used stat D/IRAM:  682896 bytes (-158608 remain, 130.3% used) Overflow detected! You can run idf.py size-files for more information.
       .data size:    3402 bytes
@@ -7088,7 +7098,7 @@ Section total: 0
 ***
 Running esp_idf_size for esp32c61...
 Total sizes:
-Used stat D/IRAM:   34584 bytes ( 125920 remain, 21.5% used)
+Used stat D/IRAM:   34584 bytes ( 286424 remain, 10.8% used)
       .data size:    2929 bytes
       .bss  size:    3696 bytes
       .text size:   27956 bytes
@@ -7101,7 +7111,7 @@ Total image size:  117813 bytes (.bin may be padded larger)
 ***
 Running esp_idf_size for esp32c61 (target autodetected)...
 Total sizes:
-Used stat D/IRAM:   34584 bytes ( 125920 remain, 21.5% used)
+Used stat D/IRAM:   34584 bytes ( 286424 remain, 10.8% used)
       .data size:    2929 bytes
       .bss  size:    3696 bytes
       .text size:   27956 bytes
@@ -7114,7 +7124,7 @@ Total image size:  117813 bytes (.bin may be padded larger)
 ***
 Running esp_idf_size --archives for esp32c61...
 Total sizes:
-Used stat D/IRAM:   34584 bytes ( 125920 remain, 21.5% used)
+Used stat D/IRAM:   34584 bytes ( 286424 remain, 10.8% used)
       .data size:    2929 bytes
       .bss  size:    3696 bytes
       .text size:   27956 bytes
@@ -7153,7 +7163,7 @@ Per-archive contributions to ELF file:
 ***
 Running esp_idf_size --files for esp32c61...
 Total sizes:
-Used stat D/IRAM:   34584 bytes ( 125920 remain, 21.5% used)
+Used stat D/IRAM:   34584 bytes ( 286424 remain, 10.8% used)
       .data size:    2929 bytes
       .bss  size:    3696 bytes
       .text size:   27956 bytes
@@ -7329,7 +7339,7 @@ fpga_overrides_rng.c.obj          0       0         0           0            0  
 ***
 Running esp_idf_size --archive_details for esp32c61...
 Total sizes:
-Used stat D/IRAM:   34584 bytes ( 125920 remain, 21.5% used)
+Used stat D/IRAM:   34584 bytes ( 286424 remain, 10.8% used)
       .data size:    2929 bytes
       .bss  size:    3696 bytes
       .text size:   27956 bytes
@@ -19083,22 +19093,22 @@ Producing JSON output for esp32s3...
     "used_dram_ratio": 0,
     "dram_remain": 0,
     "iram_vectors": 1027,
-    "iram_text": 45759,
+    "iram_text": 15356,
     "iram_other": 0,
-    "used_iram": 46786,
-    "iram_total": 286720,
-    "used_iram_ratio": 0.16317661830357144,
-    "iram_remain": 239934,
+    "used_iram": 16383,
+    "iram_total": 16384,
+    "used_iram_ratio": 0.99993896484375,
+    "iram_remain": 1,
     "diram_data": 9252,
     "diram_bss": 2520,
-    "diram_text": 0,
+    "diram_text": 30403,
     "diram_vectors": 0,
     "diram_rodata": 0,
     "diram_other": 0,
     "diram_total": 270336,
-    "used_diram": 11772,
-    "used_diram_ratio": 0.04354580965909091,
-    "diram_remain": 258564,
+    "used_diram": 42175,
+    "used_diram_ratio": 0.15600955847537878,
+    "diram_remain": 228161,
     "flash_code": 87463,
     "flash_rodata": 27132,
     "flash_other": 256,
@@ -25185,23 +25195,25 @@ Section total: 0
 ***
 Producing CSV output for esp32s3...
 Total sizes:,,,
-Used static IRAM,46786 bytes (239934 remain 16.3% used),,,
-.text size,45759 bytes,,,
+Used static IRAM,16383 bytes (1 remain 100.0% used),,,
+.text size,15356 bytes,,,
 .vectors size,1027 bytes,,,
-Used stat D/IRAM,11772 bytes (258564 remain 4.4% used),,,
+Used stat D/IRAM,42175 bytes (228161 remain 15.6% used),,,
 .data size,9252 bytes,,,
 .bss  size,2520 bytes,,,
+.text size,30403 bytes,,,
 Used Flash size ,114851 bytes,,,
 .text,87463 bytes,,,
 .rodata,27132 bytes,,,
 Total image size,170889 bytes (.bin may be padded larger),,,
 Total sizes:,,,
-Used static IRAM,46786 bytes (239934 remain 16.3% used),,,
-.text size,45759 bytes,,,
+Used static IRAM,16383 bytes (1 remain 100.0% used),,,
+.text size,15356 bytes,,,
 .vectors size,1027 bytes,,,
-Used stat D/IRAM,11772 bytes (258564 remain 4.4% used),,,
+Used stat D/IRAM,42175 bytes (228161 remain 15.6% used),,,
 .data size,9252 bytes,,,
 .bss  size,2520 bytes,,,
+.text size,30403 bytes,,,
 Used Flash size ,114851 bytes,,,
 .text,87463 bytes,,,
 .rodata,27132 bytes,,,
@@ -25237,12 +25249,13 @@ libcxx.a,0,0,0,0,0,0,5,0,0
 libmbedcrypto.a,0,0,0,0,0,0,0,0,0
 libsoc.a,0,0,0,0,0,0,0,0,0
 Total sizes:,,,
-Used static IRAM,46786 bytes (239934 remain 16.3% used),,,
-.text size,45759 bytes,,,
+Used static IRAM,16383 bytes (1 remain 100.0% used),,,
+.text size,15356 bytes,,,
 .vectors size,1027 bytes,,,
-Used stat D/IRAM,11772 bytes (258564 remain 4.4% used),,,
+Used stat D/IRAM,42175 bytes (228161 remain 15.6% used),,,
 .data size,9252 bytes,,,
 .bss  size,2520 bytes,,,
+.text size,30403 bytes,,,
 Used Flash size ,114851 bytes,,,
 .text,87463 bytes,,,
 .rodata,27132 bytes,,,
@@ -25500,12 +25513,13 @@ _fixdfsi.o,0,0,0,0,0,0,0,0,0
 _floatsidf.o,0,0,0,0,0,0,0,0,0
 _muldf3.o,0,0,0,0,0,0,0,0,0
 Total sizes:,,,
-Used static IRAM,46786 bytes (239934 remain 16.3% used),,,
-.text size,45759 bytes,,,
+Used static IRAM,16383 bytes (1 remain 100.0% used),,,
+.text size,15356 bytes,,,
 .vectors size,1027 bytes,,,
-Used stat D/IRAM,11772 bytes (258564 remain 4.4% used),,,
+Used stat D/IRAM,42175 bytes (228161 remain 15.6% used),,,
 .data size,9252 bytes,,,
 .bss  size,2520 bytes,,,
+.text size,30403 bytes,,,
 Used Flash size ,114851 bytes,,,
 .text,87463 bytes,,,
 .rodata,27132 bytes,,,
