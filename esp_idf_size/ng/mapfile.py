@@ -7,6 +7,10 @@ from typing import Any, Dict, List, Tuple
 from . import log
 
 
+class MapFileException(Exception):
+    pass
+
+
 class MapFile:
     # Explicit bytes of data in output section
     EXPLICIT_BYTES = ['BYTE', 'SHORT', 'LONG', 'QUAD', 'SQUAD']
@@ -18,14 +22,13 @@ class MapFile:
         self.memory_regions = self._get_memory_regions()
         self.target = self._get_target()
         self.sections = self._get_sections()
-        self._validate_sections(self.sections)
 
     def _get_mapfile_lines(self, fn: str) -> List[str]:
         try:
             with open(fn, 'r') as f:
                 lines = f.read().splitlines()
         except (OSError, ValueError) as e:
-            log.die(f'cannot read linker map file: {e}')
+            raise MapFileException(f'cannot read linker map file: {e}')
 
         return lines
 
@@ -57,8 +60,8 @@ class MapFile:
                 name, origin, length = splitted
                 attrs = ''
             else:
-                log.die((f'unexpected format of memory region "{line}" at line {ln + 1} in '
-                         f'"Memory Configuration" section in "{self.fn}" map file'))
+                raise MapFileException((f'unexpected format of memory region "{line}" at line {ln + 1} in '
+                                        f'"Memory Configuration" section in "{self.fn}" map file'))
 
             regions.append({
                 'name': name,
@@ -68,7 +71,7 @@ class MapFile:
             })
 
         if not found or not header:
-            log.die(f'cannot parse "Memory Configuration" section in "{self.fn}" map file')
+            raise MapFileException(f'cannot parse "Memory Configuration" section in "{self.fn}" map file')
 
         log.debug('linker map memory regions', regions)
 
@@ -285,16 +288,16 @@ class MapFile:
                         input_section['size'] = int(splitted[2], 0)
                         input_section['archive'], input_section['object_file'] = get_archive_object_file(splitted[3])
                     else:
-                        log.die((f'unexpected format of input section "{line}" at line {ln + 1} in '
-                                 f'"Linker script and memory map" section in "{self.fn}" map file'))
+                        raise MapFileException((f'unexpected format of input section "{line}" at line {ln + 1} in '
+                                                f'"Linker script and memory map" section in "{self.fn}" map file'))
 
                 elif in_input_section:
                     if input_section['address'] is None:
                         # Handle input section address, size and archive(object_file) on a separate line
                         splitted = line.split()
                         if len(splitted) != 3:
-                            log.die((f'unexpected input section continuous line "{line}" at line {ln + 1} in '
-                                     f'"Linker script and memory map" section in "{self.fn}" map file'))
+                            raise MapFileException((f'unexpected input section continuous line "{line}" at line {ln + 1} in '
+                                                    f'"Linker script and memory map" section in "{self.fn}" map file'))
                         input_section['address'] = int(splitted[0], 0)
                         input_section['size'] = int(splitted[1], 0)
                         input_section['archive'], input_section['object_file'] = get_archive_object_file(splitted[2])
@@ -302,8 +305,8 @@ class MapFile:
                     elif line.startswith('*fill*'):
                         splitted = line.split()
                         if len(splitted) != 3:
-                            log.die((f'unexpected "*fill*" line "{line}" at line {ln + 1} in '
-                                     f'"Linker script and memory map" section in "{self.fn}" map file'))
+                            raise MapFileException((f'unexpected "*fill*" line "{line}" at line {ln + 1} in '
+                                                    f'"Linker script and memory map" section in "{self.fn}" map file'))
                         address = int(splitted[1], 0)
                         size = int(splitted[2], 0)
                         if input_section['address'] == address:
@@ -354,11 +357,11 @@ class MapFile:
                     output_section['address'] = int(splitted[1], 0)
                     output_section['size'] = int(splitted[2], 0)
                 else:
-                    log.die((f'unexpected format of output section "{line}" at line {ln + 1} in '
-                             f'"Linker script and memory map" section in "{self.fn}" map file'))
+                    raise MapFileException((f'unexpected format of output section "{line}" at line {ln + 1} in '
+                                            f'"Linker script and memory map" section in "{self.fn}" map file'))
 
         if not found:
-            log.die('cannot parse "Linker script and memory map" section in "{self.fn}" map file')
+            raise MapFileException('cannot parse "Linker script and memory map" section in "{self.fn}" map file')
 
         log.debug('linker map output sections', output_sections)
 
@@ -380,8 +383,12 @@ class MapFile:
                 if not input_section['size']:
                     continue
                 if start_addr + offset != input_section['address']:
-                    log.die((f'Input section {input_section["name"]} at {hex(input_section["address"])} '
-                             f'is not at expected address {hex(start_addr + offset)}. '
-                             f'This signals error in the linker map parser. Please consider filing a '
-                             f'bug report with the linker map file attached.'))
+                    msg = (f'Input section {input_section["name"]} at {hex(input_section["address"])} '
+                           f'is not at expected address {hex(start_addr + offset)}. '
+                           f'This signals error in the linker map parser. Please consider filing a '
+                           f'bug report with the linker map file attached.')
+                    raise MapFileException(msg)
                 offset += input_section['size'] + input_section['fill']
+
+    def validate(self) -> None:
+        self._validate_sections(self.sections)

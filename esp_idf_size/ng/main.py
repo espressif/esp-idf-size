@@ -122,7 +122,7 @@ def main() -> None:
                              'aggregated too. This can be useful for the --diff option when '
                              'comparing project built with different esp-idf versions.'))
 
-    ofile = sys.stdout
+    ofile = None
     try:
         args = parser.parse_args()
 
@@ -130,7 +130,12 @@ def main() -> None:
             args.force_terminal = False
             ofile = open(args.output_file, 'w')
 
-        log.set_console(ofile, args.quiet, args.no_color, args.force_terminal, args.debug)
+        log.set_console(file_stdout=ofile,
+                        file_stderr=None,
+                        quiet=args.quiet,
+                        no_color=args.no_color,
+                        force_terminal=args.force_terminal,
+                        debug=args.debug)
 
         args.abbrev = not args.no_abbrev
         load_symbols = args.archive_details or args.format == 'raw'
@@ -164,6 +169,8 @@ def main() -> None:
             format_csv.show(memmap, args)
         elif args.format == 'tree':
             format_tree.show(memmap, args)
+    except (memorymap.MemMapException) as e:
+        log.die(str(e))
     except KeyboardInterrupt:
         sys.exit(1)
     finally:
