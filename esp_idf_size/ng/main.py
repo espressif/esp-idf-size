@@ -83,7 +83,16 @@ def main() -> None:
                               'Default is 1 and column 0, containing row description, cannot be used. '
                               'The name of the column can be utilized in place of its numerical identifier. '
                               'Applies only to table and csv formats, otherwise ignored.'))
-
+    parser.add_argument('-F', '--filter',
+                        metavar='PATTERN',
+                        action='append',
+                        help=('Use the provided PATTERN to filter archives, object files, or '
+                              'symbols in table or CSV formats. The pattern can include wildcards: '
+                              '"*" - matches any sequence of characters, '
+                              '"?" - matches any single character, '
+                              '"[seq]" - matches any character in the sequence, '
+                              '"[!seq]" - matches any character not in the sequence. '
+                              'This option can be used multiple times, functioning as a logical OR.'))
     parser.add_argument('--sort-diff',
                         action='store_true',
                         help=('Sort entries based on diff value instead of size.'))
