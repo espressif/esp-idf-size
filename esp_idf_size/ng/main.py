@@ -6,6 +6,7 @@
 import argparse
 import os
 import sys
+from pathlib import Path
 from typing import Any, Optional, Sequence, Union
 
 from . import (format_csv, format_json, format_raw, format_table, format_tree,
@@ -19,6 +20,25 @@ class ToggleAction(argparse.Action):
                  values: Union[str, Sequence[Any], None],
                  option_string: Optional[str] = None) -> None:
         setattr(namespace, self.dest, option_string and not option_string.startswith('--no-'))
+
+
+class DocAction(argparse.Action):
+    def __call__(self,
+                 parser: argparse.ArgumentParser,
+                 namespace: argparse.Namespace,
+                 values: Union[str, Sequence[Any], None],
+                 option_string: Optional[str] = None) -> None:
+        from rich.console import Console
+        from rich.markdown import Markdown
+
+        console = Console()
+        readme_path = Path(os.path.realpath(os.path.dirname(__file__))) / 'docs' / 'readme.md'
+        with open(readme_path) as fd:
+            readme = fd.read()
+            md = Markdown(readme)
+            console.print(md)
+
+        parser.exit()
 
 
 def main() -> None:
@@ -114,6 +134,11 @@ def main() -> None:
                         default=bool(os.environ.get('ESP_IDF_SIZE_FORCE_TERMINAL')) or None,
                         help=('Enable terminal control codes even if out is not attached to terminal. '
                               'This option is ignored if used along with the "--output-file" option.'))
+
+    parser.add_argument('--doc',
+                        action=DocAction,
+                        nargs=0,
+                        help=('Display more comprehensive documentation.'))
 
     # mutually exclusive options
     # --no-abbrev used along with --unify doesn't make sense, because
