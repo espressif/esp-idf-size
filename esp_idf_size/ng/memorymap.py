@@ -1,6 +1,56 @@
 # SPDX-FileCopyrightText: 2023-2024 Espressif Systems (Shanghai) CO LTD
 # SPDX-License-Identifier: Apache-2.0
 
+"""Creates a generic memory map representation and provides operations on top of it.
+
+The generic memory map is primarily based on the link map file and can be supplemented
+with information from the ELF/DWARF and project_description.json files.
+
+Usage examples:
+    # NOTE: The memorymap module might output warnings or debug information to stderr or file.
+    #       This is generally unnecessary, but configuring the console could assist in
+    #       troubleshooting. For further details, refer to the esp_idf_size.log module
+    #       documentation. To view any stderr output, please include the following lines.
+    #       from esp_idf_size import log
+    # log.set_console()
+
+    Example1: Display memory type usage
+
+        import sys
+        from esp_idf_size import memorymap
+
+        try:
+            memmap = memorymap.get(sys.argv[1])
+        except memorymap.MemMapException as e:
+            print(e, file=sys.stderr)
+
+        for mem_type_name, mem_type_info in memmap['memory_types'].items():
+            used = mem_type_info['used']
+            size = mem_type_info['size']
+            print(f'{mem_type_name}: used: {used}, size: {size}')
+
+    Example 2: Display the differences in memory type usage between two projects
+
+        import sys
+        from esp_idf_size import memorymap
+
+        try:
+            memmap_cur = memorymap.get(sys.argv[1])
+            memmap_ref = memorymap.get(sys.argv[2])
+        except memorymap.MemMapException as e:
+            print(e, file=sys.stderr)
+
+        memmap_diff = memorymap.diff(memmap_cur, memmap_ref)
+        memorymap.unify(memmap_diff)
+
+        for mem_type_name, mem_type_info in memmap_diff['memory_types'].items():
+            size_diff = mem_type_info['size_diff']
+            used_diff = mem_type_info['used_diff']
+            print(f'{mem_type_name}: used_diff: {used_diff}, size_diff: {size_diff}')
+"""
+
+__all__ = ['get', 'diff', 'unify', 'MemMapException']
+
 import copy
 import json
 import os
@@ -14,72 +64,101 @@ from . import log, mapfile
 from .elf import (SHF_ALLOC, SHT_PROGBITS, STT_FUNC, STT_OBJECT, Elf,
                   Elf_Exception, Elf_Shdr, Elf_Sym)
 
+VERSION = '1.0'
 
-def get(input_fn: str, load_symbols: bool=False, use_dwarf: Optional[bool]=None) -> Dict[str, Any]:
-    """
-    This is the main function, which returns a dictionary representing
-    the whole memory map for a given project. It's converted by formatting
-    functions to a requested format(table, json, cvs).
 
-    Memory types are defined in chip info yaml files. These define the memory
-    partitioning and all memory is divided into these memory types.
+class MemMapException(Exception):
+    """Raised for errors originating from memorymap module."""
+    pass
 
-    Memory regions are defined in linker map file based on the MEMORY
-    command in linker script. Memory regions are split according to the
-    memory types. For example iram0_0_seg memory region for esp32s3 may span across
-    multiple memory types defined in esp32s3.yaml(IRAM and DRAM_1). Such memory
-    regions are split, so they fit into the defined memory types. This allows
-    to correctly account memory usage for a specified memory type. Previously
-    e.g. the total IRAM size included also DIRAM size.
 
-    Output memory sections, here sometimes referred simply as sections, as loaded
-    from linker's map file are split according to divided memory regions.
+def get(input_fn: str, load_symbols: bool=True, use_dwarf: Optional[bool]=None) -> Dict[str, Any]:
+    """Generate memory map representing the static allocations in ESP-IDF project.
 
-    Example:
-    {
-        'target': 'esp32s3',
-        'target_diff': '',
-        'image_size': 207313,
-        'image_size_diff': 0,
-        'project_path': '/home/fhrbata/work/esp-idf/examples/get-started/hello_world',
-        'project_path_diff': '',
-        'memory_types': {
-            'IRAM': {
-                'size': 16384,
-                'size_diff': 0,
-                'used': 16383,
-                'used_diff': 0,
-                'sections': {
-                    '.iram0.text': {
-                        'abbrev_name': '.text',
-                        'size': 15356,
+    Creates a dictionary that outlines the complete memory map for a specified project
+    using data from the link map file. This information can be supplemented with details
+    from ELF/DWARF and project_description.json files, which are located relatively to the
+    provided link map file.
+
+    Args:
+        input_fn:
+            Path to the link map file.
+        load_symbols:
+            Enable/disable the loading of symbols. In certain scenarios, such as assessing
+            overall memory usage, symbol information may not be necessary. Disabling this
+            feature can slightly speed up the creation of the memory map.
+            The default setting is True.
+        use_dwarf:
+            Enable/disable the use of DWARF info, or set to None for auto-detection. When LTO
+            optimization is enabled, archive information is no longer available in the link map
+            file, as the compiler merges objects from multiple archives into a single artificial
+            object. Note that ESP-IDF currently does not support LTO.
+            The default setting is None.
+
+    Returns:
+        Dictionary with memory map containing metadata and a `memory_types` key that organizes
+        the memory details into a tree structure. Memory types are defined in the chip information
+        YAML file, which describes the memory partitioning and classifies all memory into these
+        types.
+
+        Memory type sizes are determined by memory regions, as specified in the link map file using
+        the MEMORY command in the linker script. These regions are divided according to memory type
+        definitions, enabling precise tracking of size and usage for each memory type. For instance,
+        the iram0_0_seg memory region for the esp32s3 might encompass multiple memory types defined
+        in esp32s3.yaml (IRAM and DRAM_1).
+
+        Each memory type includes a tree hierarchy: sections, which contain archives; archives, which
+        contain object files; and object files, which contain symbols. Every object in this hierarchy
+        holds information about its size within the memory type.
+
+        Example:
+            {
+                'version': '1.0',
+                'target': 'esp32s3',
+                'target_diff': '',
+                'image_size': 207313,
+                'image_size_diff': 0,
+                'project_path': '/home/fhrbata/work/esp-idf/examples/get-started/hello_world',
+                'project_path_diff': '',
+                'memory_types': {
+                    'IRAM': {
+                        'size': 16384,
                         'size_diff': 0,
-                        'archives': {
-                            'esp-idf/esp_system/libesp_system.a': {
-                                'abbrev_name': 'libesp_system.a',
-                                'size': 3335,
+                        'used': 16383,
+                        'used_diff': 0,
+                        'sections': {
+                            '.iram0.text': {
+                                'abbrev_name': '.text',
+                                'size': 15356,
                                 'size_diff': 0,
-                                'object_files': {
-                                    'cpu_start.c.obj': {
-                                        'abbrev_name': 'cpu_start.c.obj',
-                                        'size': 1157,
+                                'archives': {
+                                    'esp-idf/esp_system/libesp_system.a': {
+                                        'abbrev_name': 'libesp_system.a',
+                                        'size': 3335,
                                         'size_diff': 0,
-                                        'symbols': {
-                                            '.iram1.0.literal': {
-                                                'abbrev_name': '.iram1.0.literal',
-                                                'size': 68,
-                                                'size_diff': 0},
+                                        'object_files': {
+                                            'cpu_start.c.obj': {
+                                                'abbrev_name': 'cpu_start.c.obj',
+                                                'size': 1157,
+                                                'size_diff': 0,
+                                                'symbols': {
+                                                    '.iram1.0.literal': {
+                                                        'abbrev_name': '.iram1.0.literal',
+                                                        'size': 68,
+                                                        'size_diff': 0},
 
 
-    The "*_diff" values contains zero by default, but when the current map is compared with other referenced
-    map, these fields will contain current - referenced value.
+        The `*_diff` values are set to zero by default. However, when the memory map is compared
+        with another referenced memory map, these fields will contain the difference between
+        the memory map and referenced memory map values.
 
-
-    Some memory regions may map into the same memory. This is handled by comparing memory regions offsets with offsets
-    specified in yaml files(primary and secondary address). For more information please see _get_mem_type_map().
+    Raises:
+        MemMapException:
+            Details about the error that occurred during the creation of the memory map.
     """
 
     memory_map: Dict[str, Any] = {
+        'version': VERSION,
         'target': '',
         'target_diff': '',
         'image_size': 0,
@@ -115,13 +194,23 @@ def get(input_fn: str, load_symbols: bool=False, use_dwarf: Optional[bool]=None)
         target = proj_desc['target']
         elf_fn = os.path.join(dirname, proj_desc['app_elf'])
 
+    # Parse linker map file memory regions, target and output sections
+    try:
+        map_file = mapfile.MapFile(map_fn)
+    except (mapfile.MapFileException) as e:
+        raise MemMapException(e)
+
+    # Validate the parsed map file. If validation fails, it is not a critical
+    # error, but the parsing might need correction or adjustment, so print a warning.
+    try:
+        map_file.validate()
+    except (mapfile.MapFileException) as e:
+        log.warn(str(e))
+
     if elf_fn and os.path.isfile(elf_fn):
         elf = _load_elf_file(elf_fn)
     else:
         log.debug(f'elf file is not available')
-
-    # Parse linker map file memory regions, target and output sections
-    map_file = mapfile.MapFile(map_fn)
 
     if use_dwarf:
         # Try to expand input sections without archive based on DWARF info.
@@ -132,7 +221,7 @@ def get(input_fn: str, load_symbols: bool=False, use_dwarf: Optional[bool]=None)
         target = map_file.target
 
     if not target:
-        log.die(f'cannot determine chip target')
+        raise MemMapException(f'cannot determine chip target')
 
     memory_map['target'] = target
 
@@ -180,15 +269,30 @@ def get(input_fn: str, load_symbols: bool=False, use_dwarf: Optional[bool]=None)
 
 
 def diff(memory_map_cur: Dict[str, Any], memory_map_ref: Dict[str, Any]) -> Dict[str, Any]:
-    """
-    Return memory map in the same format as the get() function, but all "*_diff" variables are
-    properly filled with memory_map_cur - memory_map_ref value.
+    """Return new memory map with size differences
 
-    This creates new memory_map_diff, which is a copy memory_map_cur. It's extended for
-    entries, which are present in memory_map_ref only, so the memory_map_diff is a union of
-    memory_map_cur and memory_map_ref. The memory_map_diff is walked through and all size and
-    "*_diff" values are fixed.
+    Return a memory map in the same format as the `get()` function, but with
+    all "*_diff" keys populated with the difference between `memory_map_cur` and
+    `memory_map_ref`.
+
+    This generates a new `memory_map_diff`, which is a copy of `memory_map_cur`.
+    It is expanded to include entries that are only present in `memory_map_ref`,
+    making `memory_map_diff` a union of `memory_map_cur` and `memory_map_ref`.
+    The `memory_map_diff` is then processed to adjust all size and "*_diff"
+    values accordingly.
+
+    Args:
+        memory_map_cur:
+            Current memory map dictionary returned by the `get()` function.
+        memory_map_ref:
+            Reference memory map dictionary returned by the `get()` function.
+
+    Returns:
+        A new memory map dictionary containing information about size differences between
+        `memory_map_cur` and `memory_map_ref`. Each entry has a single difference value
+        representing `memory_map_cur` minus `memory_map_ref`.
     """
+
     memory_map_diff: Dict[str, Any]
 
     # Merge current memory map with referenced memory map into memory_map_diff, which
@@ -297,12 +401,21 @@ def diff(memory_map_cur: Dict[str, Any], memory_map_ref: Dict[str, Any]) -> Dict
 
 
 def unify(memory_map: Dict[str, Any]) -> None:
-    """
-    Aggregate size information based on the abbreviated names.
-    For example .dram0.bss and .dram1.bss sections will be reported
-    under one .bss section. Archives, object files and symbols will be
-    aggregated too. This can be useful for the --diff option when
-    comparing project built with different esp-idf versions.
+    """Aggregate size information using the abbreviated names.
+
+    By default, `get()` function returns memory map with archive and object
+    file paths as reported by the link map file. It also stores abbreviated
+    names, which are the basenames of these paths. In some cases, it might be
+    useful to use the abbreviated names instead of the paths. For example, after
+    calling the `unify()` function, the .dram0.bss and .dram1.bss sections will
+    be combined under a generic .bss section. Archives, object files, and symbols
+    will be aggregated as well. This can be helpful for the `diff()` function when
+    comparing projects built with different esp-idf versions, where the paths,
+    particularly for the toolchain, may vary.
+
+    Args:
+        memory_map:
+            Memory map dictionary returned by the `get()` function.
     """
 
     # Level nodes in the memory map have different children key identifier.
@@ -879,9 +992,9 @@ def _load_elf_file(fn: str) -> Optional[Elf]:
     try:
         elf = Elf(fn)
     except (OSError, ValueError) as e:
-        log.die(f'cannot read project ELF file: {e}')
+        raise MemMapException(f'cannot read project ELF file {fn}: {e}')
     except Elf_Exception as e:
-        log.die(f'cannot parse ELF file sections: {e}')
+        raise MemMapException(f'cannot parse ELF file {fn}: {e}')
 
     log.debug(f'elf file {fn}')
     return elf
@@ -923,7 +1036,7 @@ def _add_symbols_to_sections(elf: Optional[Elf], osections: List[Dict[str, Any]]
         while sym_addr >= isec['address'] + isec['size']:
             if not isections:
                 # Sanity check that we found input section for symbol
-                log.die(f'cannot find input section for symbol {sym_name}({sym_addr})')
+                raise MemMapException(f'cannot find input section for symbol {sym_name}({sym_addr})')
 
             if not isec['symbols']:
                 # Input section does not have any ELF symbols assigned.
@@ -948,9 +1061,9 @@ def _add_symbols_to_sections(elf: Optional[Elf], osections: List[Dict[str, Any]]
 
         if sym_addr + sym_size > isec['address'] + isec['size']:
             # Sanity check that symbol fits into input section
-            log.die((f'symbol name: {sym_name}, addr: {sym_addr}, size: {sym_size} '
-                     f'does not fit into input section name: {isec["name"]}, '
-                     f'addr: {isec["address"]}, size: {isec["size"]}'))
+            raise MemMapException((f'symbol name: {sym_name}, addr: {sym_addr}, size: {sym_size} '
+                                   f'does not fit into input section name: {isec["name"]}, '
+                                   f'addr: {isec["address"]}, size: {isec["size"]}'))
 
         if sym_addr < isec['address']:
             # Symbol is not part of the current input section. It must be
@@ -1213,7 +1326,7 @@ def _get_memory_types(target: str) -> Dict[str, Any]:
         with open(fn, 'r') as f:
             memory_types = yaml.safe_load(f)
     except (OSError, ValueError) as e:
-        log.die(f'cannot read memory types file: {e}')
+        raise MemMapException(f'cannot read memory types file: {e}')
 
     for name, info in memory_types.items():
         info['primary_address'] = eval(str(info['primary_address']))
