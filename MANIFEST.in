@@ -1,1 +1,2 @@
 include esp_idf_size/chip_info/*
+include esp_idf_size/ng/docs/readme.md
