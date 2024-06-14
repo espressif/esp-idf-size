@@ -227,6 +227,7 @@ def _get_table_sorted(summary: Dict[str, Any], table: Table, args: Namespace) ->
 
 def get_object_files_table(memmap: Dict[str, Any], args: Namespace) -> Table:
     object_files_summary = memorymap.get_object_files_summary(memmap, args)
+    object_files_summary = memorymap.get_summary_filtered(object_files_summary, args)
 
     table = Table(title='Per-file contributions to ELF file')
     table.add_column('Object File', overflow='fold')
@@ -249,6 +250,7 @@ def get_object_files_table(memmap: Dict[str, Any], args: Namespace) -> Table:
 
 def get_archives_table(memmap: Dict[str, Any], args: Namespace) -> Table:
     archives_summary = memorymap.get_archives_summary(memmap, args)
+    archives_summary = memorymap.get_summary_filtered(archives_summary, args)
 
     table = Table(title='Per-archive contributions to ELF file')
     table.add_column('Archive File', overflow='fold')
@@ -271,6 +273,7 @@ def get_archives_table(memmap: Dict[str, Any], args: Namespace) -> Table:
 
 def get_symbols_table(memmap: Dict[str, Any], args: Namespace) -> Table:
     symbols_summary = memorymap.get_symbols_summary(memmap, args)
+    symbols_summary = memorymap.get_summary_filtered(symbols_summary, args)
 
     table = Table(title=f'Symbols within archive: {args.archive_details} (Not all symbols may be reported)')
     table.add_column('Symbol', overflow='fold')

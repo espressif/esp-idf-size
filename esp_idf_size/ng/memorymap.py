@@ -55,6 +55,7 @@ import copy
 import json
 import os
 from argparse import Namespace
+from fnmatch import fnmatch
 from pathlib import Path
 from typing import Any, Dict, Generator, List, Optional
 
@@ -630,6 +631,28 @@ def get_summary_sorted(entries: Dict[str, Any], args: Namespace) -> Dict[str, An
             mem_type_info['sections'] = sort_dict_by_key(mem_type_info['sections'], sort_key, reverse)
 
     return entries
+
+
+def get_summary_filtered(entries: Dict[str, Any], args: Namespace) -> Dict[str, Any]:
+    # Helper to filter archives, files, and symbols for comprehensive reports
+
+    if args.filter is None:
+        return entries
+
+    entries_filtered: Dict[str, Any] = {}
+
+    for entry_name, entry_info in entries.items():
+        if args.abbrev:
+            name = entry_info['abbrev_name']
+        else:
+            name = entry_name
+
+        for pattern in args.filter:
+            if fnmatch(name, pattern):
+                entries_filtered[entry_name] = entry_info
+                break
+
+    return entries_filtered
 
 
 def rem_summary_unchanged(entries: Dict[str, Any], args: Namespace) -> Dict[str, Any]:
