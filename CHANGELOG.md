@@ -1,3 +1,14 @@
+## v1.5.0 (2024-06-17)
+
+### New Features
+
+- **ng**: add filtering for archives, files, and symbols in table and CSV formats
+- **ng**: initial support for memorymap API
+
+### Bug Fixes
+
+- correctly handle DIRAM and overflows reports
+
 ## v1.4.0 (2024-05-20)
 
 ### New Features
