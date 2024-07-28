@@ -278,7 +278,8 @@ class MapFile:
                         'object_file': '',
                         'fill': 0,
                     }
-                    splitted = line.split()
+                    # The archive path in the input section might contain spaces.
+                    splitted = line.split(maxsplit=3)
                     if len(splitted) == 1:
                         # Same as for output section. We have just the name and the rest is on the next line.
                         input_section['name'] = splitted[0]
@@ -293,8 +294,9 @@ class MapFile:
 
                 elif in_input_section:
                     if input_section['address'] is None:
-                        # Handle input section address, size and archive(object_file) on a separate line
-                        splitted = line.split()
+                        # Handle input section address, size and archive(object_file) on a separate line.
+                        # The archive path in the input section might contain spaces.
+                        splitted = line.split(maxsplit=2)
                         if len(splitted) != 3:
                             raise MapFileException((f'unexpected input section continuous line "{line}" at line {ln + 1} in '
                                                     f'"Linker script and memory map" section in "{self.fn}" map file'))
