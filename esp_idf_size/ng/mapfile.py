@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: Apache-2.0
 
 import re
-from typing import Any, Dict, List, Tuple
+from typing import Any, Dict, List, Optional, Tuple
 
 from . import log
 
@@ -22,6 +22,7 @@ class MapFile:
         self.memory_regions = self._get_memory_regions()
         self.target = self._get_target()
         self.sections = self._get_sections()
+        self.cross_reference_table = self._get_cross_reference_table()
 
     def _get_mapfile_lines(self, fn: str) -> List[str]:
         try:
@@ -76,7 +77,7 @@ class MapFile:
         log.debug('linker map memory regions', regions)
 
         # Skip already processed lines
-        self.line_idx += ln
+        self.line_idx = ln
 
         return regions
 
@@ -121,17 +122,17 @@ class MapFile:
         # self.line_idx += ln
         return target
 
-    def _get_sections(self) -> List[Dict[str, Any]]:
-        def get_archive_object_file(s: str) -> Tuple[str,str]:
-            idx = s.find('(')
-            if idx == -1:
-                # Object file linked directly without archive. As in the original parser,
-                # assign a default archive for such object file.
-                return ('(exe)', s)
-            archive = s[:idx]
-            object_file = s[idx + 1:-1]
-            return (archive, object_file)
+    def _get_archive_object_file(self, s: str) -> Tuple[str,str]:
+        idx = s.find('(')
+        if idx == -1:
+            # Object file linked directly without archive. As in the original parser,
+            # assign a default archive for such object file.
+            return ('(exe)', s)
+        archive = s[:idx]
+        object_file = s[idx + 1:-1]
+        return (archive, object_file)
 
+    def _get_sections(self) -> List[Dict[str, Any]]:
         def add_input_section(output_section: Dict[str, Any], input_section: Dict[str, Any]) -> None:
             '''
             The linker map may contain input sections with different sizes at the same address. This
@@ -287,7 +288,7 @@ class MapFile:
                         input_section['name'] = splitted[0]
                         input_section['address'] = int(splitted[1], 0)
                         input_section['size'] = int(splitted[2], 0)
-                        input_section['archive'], input_section['object_file'] = get_archive_object_file(splitted[3])
+                        input_section['archive'], input_section['object_file'] = self._get_archive_object_file(splitted[3])
                     else:
                         raise MapFileException((f'unexpected format of input section "{line}" at line {ln + 1} in '
                                                 f'"Linker script and memory map" section in "{self.fn}" map file'))
@@ -302,7 +303,7 @@ class MapFile:
                                                     f'"Linker script and memory map" section in "{self.fn}" map file'))
                         input_section['address'] = int(splitted[0], 0)
                         input_section['size'] = int(splitted[1], 0)
-                        input_section['archive'], input_section['object_file'] = get_archive_object_file(splitted[2])
+                        input_section['archive'], input_section['object_file'] = self._get_archive_object_file(splitted[2])
 
                     elif line.startswith('*fill*'):
                         splitted = line.split()
@@ -368,7 +369,7 @@ class MapFile:
         log.debug('linker map output sections', output_sections)
 
         # Skip already processed lines
-        self.line_idx += ln
+        self.line_idx = ln
 
         return output_sections
 
@@ -394,3 +395,50 @@ class MapFile:
 
     def validate(self) -> None:
         self._validate_sections(self.sections)
+
+    def _get_cross_reference_table(self) -> Optional[Dict[str, Any]]:
+        # Load Cross Reference Table
+        # crt format: { symbol: [(archive, object), (archive, object), ...], ...}
+        # where first (archive, object) tuple is location of symbol definition and
+        # following tuples are symbol reference locations.
+        crt: Dict[str, Any] = {}
+        found = False
+        header = False
+        symbol = None
+
+        for ln, line in enumerate(self.lines[self.line_idx:], start=self.line_idx):
+            if not found:
+                if line.startswith('Cross Reference Table'):
+                    found = True
+                    continue
+
+            if not header:
+                if line.startswith('Symbol'):
+                    header = True
+                continue
+
+            if not line:
+                # This is merely a precautionary check, as the Cross Reference Table should be the
+                # final section in the map file.
+                break
+
+            if not line.startswith((' ', '\t')):
+                splitted = line.split(maxsplit=1)
+                if len(splitted) != 2:
+                    log.err(f'unexpected format of cross reference table entry "${line}"')
+
+                symbol = splitted[0]
+                definition = splitted[1]
+                crt[symbol] = [self._get_archive_object_file(definition)]
+            else:
+                line = line.strip()
+                if symbol is None:
+                    log.err(f'no symbol for "${line}" reference in the cross reference table')
+                    return None
+                else:
+                    crt[symbol].append(self._get_archive_object_file(line.strip()))
+
+        # Skip already processed lines
+        self.line_idx += ln
+
+        return crt or None

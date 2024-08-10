@@ -73,7 +73,9 @@ class MemMapException(Exception):
     pass
 
 
-def get(input_fn: str, load_symbols: bool=True, use_dwarf: Optional[bool]=None) -> Dict[str, Any]:
+def get(input_fn: str, load_symbols: bool=True, use_dwarf: Optional[bool]=None,
+        map_file: Optional[mapfile.MapFile]=None,
+        elf: Optional[Elf]=None) -> Dict[str, Any]:
     """Generate memory map representing the static allocations in ESP-IDF project.
 
     Creates a dictionary that outlines the complete memory map for a specified project
@@ -95,6 +97,10 @@ def get(input_fn: str, load_symbols: bool=True, use_dwarf: Optional[bool]=None) 
             file, as the compiler merges objects from multiple archives into a single artificial
             object. Note that ESP-IDF currently does not support LTO.
             The default setting is None.
+        map_file:
+            An instance of the  mapfile.MapFile class. If not provided, it will be created.
+        elf:
+            An instance of the elf.Elf class. If required but not provided, it will be created.
 
     Returns:
         Dictionary with memory map containing metadata and a `memory_types` key that organizes
@@ -169,22 +175,19 @@ def get(input_fn: str, load_symbols: bool=True, use_dwarf: Optional[bool]=None) 
         'memory_types': {},
     }
 
-    proj_desc = elf_fn = map_fn = elf = target = None
+    proj_desc = map_fn = elf = target = None
 
     map_fn = os.path.abspath(input_fn)
 
     memory_map['project_path'] = map_fn
 
-    dirname = os.path.dirname(map_fn)
-
     # Load project description if available.
-    proj_desc_fn = os.path.join(dirname, 'project_description.json')
-    proj_desc = _load_json_file(proj_desc_fn)
+    proj_desc = get_proj_desc(map_fn)
 
     if use_dwarf is None:
         # DWARF usage is not explicitly set, try to look into sdkconfig
         # if LTO was enabled.
-        sdkconfig_fn = os.path.join(dirname, 'config', 'sdkconfig.json')
+        sdkconfig_fn = os.path.join(os.path.dirname(map_fn), 'config', 'sdkconfig.json')
         sdkconfig = _load_json_file(sdkconfig_fn)
         if sdkconfig is not None:
             use_dwarf = sdkconfig.get('COMPILER_LTO_LINKTIME', False)
@@ -193,11 +196,11 @@ def get(input_fn: str, load_symbols: bool=True, use_dwarf: Optional[bool]=None) 
 
     if proj_desc:
         target = proj_desc['target']
-        elf_fn = os.path.join(dirname, proj_desc['app_elf'])
 
-    # Parse linker map file memory regions, target and output sections
+    # Parse linker map file memory regions, target, output sections and
+    # cross reference table
     try:
-        map_file = mapfile.MapFile(map_fn)
+        map_file = map_file or mapfile.MapFile(map_fn)
     except (mapfile.MapFileException) as e:
         raise MemMapException(e)
 
@@ -208,9 +211,8 @@ def get(input_fn: str, load_symbols: bool=True, use_dwarf: Optional[bool]=None) 
     except (mapfile.MapFileException) as e:
         log.warn(str(e))
 
-    if elf_fn and os.path.isfile(elf_fn):
-        elf = _load_elf_file(elf_fn)
-    else:
+    elf = elf or get_elf(map_fn, proj_desc)
+    if elf is None:
         log.debug(f'elf file is not available')
 
     if use_dwarf:
@@ -648,7 +650,7 @@ def get_summary_filtered(entries: Dict[str, Any], args: Namespace) -> Dict[str, 
             name = entry_name
 
         for pattern in args.filter:
-            if fnmatch(name, pattern):
+            if fnmatch(name, f'*{pattern}*'):
                 entries_filtered[entry_name] = entry_info
                 break
 
@@ -1012,12 +1014,13 @@ def _load_json_file(fn: str) -> Optional[Dict[str, Any]]:
 
 
 def _load_elf_file(fn: str) -> Optional[Elf]:
+    elf = None
     try:
         elf = Elf(fn)
     except (OSError, ValueError) as e:
-        raise MemMapException(f'cannot read project ELF file {fn}: {e}')
+        log.err(f'cannot read project ELF file {fn}: {e}')
     except Elf_Exception as e:
-        raise MemMapException(f'cannot parse ELF file {fn}: {e}')
+        log.err(f'cannot parse ELF file {fn}: {e}')
 
     log.debug(f'elf file {fn}')
     return elf
@@ -1478,3 +1481,23 @@ def _get_mem_type_map(memory_types: Dict[str, Any],
                       f'size: {map_section["size"]}) to any memory type'))
 
     return memory_map
+
+
+def get_proj_desc(map_fn: str) -> Optional[Dict[str, Any]]:
+    dirname = os.path.dirname(map_fn)
+    proj_desc_fn = os.path.join(dirname, 'project_description.json')
+    proj_desc = _load_json_file(proj_desc_fn)
+    return proj_desc
+
+
+def get_elf(map_fn: str, proj_desc: Optional[Dict[str, Any]]=None) -> Optional[Elf]:
+    proj_desc = proj_desc or get_proj_desc(map_fn)
+    if proj_desc is None:
+        return None
+    # Avoid using build_dir from proj_desc, as the project might have been relocated to a different directory.
+    dirname = os.path.dirname(map_fn)
+    elf_fn = os.path.join(dirname, proj_desc['app_elf'])
+    if not os.path.isfile(elf_fn):
+        return None
+    elf = _load_elf_file(elf_fn)
+    return elf

@@ -9,8 +9,8 @@ import sys
 from pathlib import Path
 from typing import Any, Optional, Sequence, Union
 
-from . import (format_csv, format_json, format_raw, format_table, format_tree,
-               log, memorymap)
+from . import (format_csv, format_dot, format_json, format_raw, format_table,
+               format_tree, log, mapfile, memorymap)
 
 
 class ToggleAction(argparse.Action):
@@ -51,17 +51,33 @@ def main() -> None:
 
     format_group = parser.add_mutually_exclusive_group()
     format_group.add_argument('--format',
-                              choices=['table', 'text', 'tree', 'csv', 'json2', 'raw'],
+                              choices=['table', 'text', 'tree', 'csv', 'json2', 'raw', 'dot'],
                               default='table',
-                              help='Specify output format: table(text), tree, csv, json2 or raw')
+                              help='Specify output format: table(text), tree, CSV, JSON, raw or DOT.')
 
     parser.add_argument('--archives',
                         action='store_true',
                         help='Print per-archive sizes.')
 
+    deps_group = parser.add_argument_group('Archive dependencies')
+
+    deps_group.add_argument('--archive-dependencies', '--archive-deps',
+                            action='store_true',
+                            help='Display dependencies or reverse dependencies for all archives.')
+
+    deps_group.add_argument('--dep-symbols', '--dep-syms',
+                            action='store_true',
+                            help='Include dependency symbols for the --archive-dependencies option.')
+
+    deps_group.add_argument('--dep-reverse', '--dep-rev',
+                            action='store_true',
+                            help=('Use reverse dependencies for the --archive-dependencies option. '
+                                  'This will show the reverse dependencies of archives, instead '
+                                  'of archives dependencies.'))
+
     parser.add_argument('--archive-details', '--archive_details',
                         metavar='ARCHIVE_NAME',
-                        help='Print detailed symbols per archive')
+                        help='Print detailed symbols per archive.')
 
     parser.add_argument('--files',
                         action='store_true',
@@ -70,6 +86,18 @@ def main() -> None:
     parser.add_argument('--diff',
                         metavar='MAP_FILE',
                         help='Compare sizes with another project.')
+
+    parser.add_argument('--no-abbrev',
+                        action='store_true',
+                        help='Do not abbreviate section and file names.')
+
+    parser.add_argument('--unify',
+                        action='store_true',
+                        help=('Use abbreviated names with aggregated size information. '
+                              'For example .dram0.bss and .dram1.bss sections will be reported '
+                              'under one .bss section. Archives, object files and symbols will be '
+                              'aggregated too. This can be useful for the --diff option when '
+                              'comparing project built with different esp-idf versions.'))
 
     parser.add_argument('--show-unused',
                         action='store_true',
@@ -102,17 +130,20 @@ def main() -> None:
                               'Column can be specified also as negative number, where -1 means last column. '
                               'Default is 1 and column 0, containing row description, cannot be used. '
                               'The name of the column can be utilized in place of its numerical identifier. '
-                              'Applies only to table and csv formats, otherwise ignored.'))
+                              'Applies only to table and CSV formats, except when --archive-dependencies '
+                              'is used; otherwise, it is ignored.'))
+
     parser.add_argument('-F', '--filter',
                         metavar='PATTERN',
                         action='append',
                         help=('Use the provided PATTERN to filter archives, object files, or '
-                              'symbols in table or CSV formats. The pattern can include wildcards: '
+                              'symbols in table, CSV or DOT formats. The pattern can include wildcards: '
                               '"*" - matches any sequence of characters, '
                               '"?" - matches any single character, '
                               '"[seq]" - matches any character in the sequence, '
                               '"[!seq]" - matches any character not in the sequence. '
                               'This option can be used multiple times, functioning as a logical OR.'))
+
     parser.add_argument('--sort-diff',
                         action='store_true',
                         help=('Sort entries based on diff value instead of size.'))
@@ -140,22 +171,6 @@ def main() -> None:
                         nargs=0,
                         help=('Display more comprehensive documentation.'))
 
-    # mutually exclusive options
-    # --no-abbrev used along with --unify doesn't make sense, because
-    # all entries(sections, archives, ...) are using already abbreviated names
-    group = parser.add_mutually_exclusive_group()
-    group.add_argument('--no-abbrev',
-                       action='store_true',
-                       help='Do not abbreviate section and file names.')
-
-    group.add_argument('--unify',
-                       action='store_true',
-                       help=('Use abbreviated names with aggregated size information. '
-                             'For example .dram0.bss and .dram1.bss sections will be reported '
-                             'under one .bss section. Archives, object files and symbols will be '
-                             'aggregated too. This can be useful for the --diff option when '
-                             'comparing project built with different esp-idf versions.'))
-
     ofile = None
     try:
         args = parser.parse_args()
@@ -171,14 +186,28 @@ def main() -> None:
                         force_terminal=args.force_terminal,
                         debug=args.debug)
 
+        if args.no_abbrev and args.unify:
+            # --no-abbrev used along with --unify doesn't make sense, because
+            # all entries(sections, archives, ...) are using already abbreviated names
+            args.no_abbrev = False
+            log.warn('The "--no-abbrev" option cannot be used with the "--unify" option and will be ignored.')
+
+        if args.archive_dependencies and args.diff:
+            # --archive-dependencies rely on a cross-reference table, so it cannot be used with the --diff option.
+            args.diff = None
+            log.warn('The "--diff" option cannot be used with the "--archive-dependencies" option and will be ignored.')
+
         args.abbrev = not args.no_abbrev
+
         load_symbols = args.archive_details or args.format == 'raw'
 
         if args.use_dwarf:
             # We need DWARF only for detailed outputs like archives
             args.use_dwarf = any((args.archive_details, args.archives, args.files, args.format == 'raw'))
 
-        memmap = memorymap.get(args.input_file, load_symbols, args.use_dwarf)
+        map_file = mapfile.MapFile(args.input_file)
+        elf = memorymap.get_elf(args.input_file)
+        memmap = memorymap.get(args.input_file, load_symbols, args.use_dwarf, map_file, elf)
         if not args.show_unused:
             memorymap.remove_unused(memmap)
         if args.diff:
@@ -194,16 +223,18 @@ def main() -> None:
             memorymap.unify(memmap)
 
         if args.format in ['table', 'text']:
-            format_table.show(memmap, args)
+            format_table.show(memmap, map_file, elf, args)
         elif args.format == 'json2':
-            format_json.show(memmap, args)
+            format_json.show(memmap, map_file, elf, args)
         elif args.format == 'raw':
-            format_raw.show(memmap, args)
+            format_raw.show(memmap, map_file, elf, args)
         elif args.format == 'csv':
-            format_csv.show(memmap, args)
+            format_csv.show(memmap, map_file, elf, args)
         elif args.format == 'tree':
-            format_tree.show(memmap, args)
-    except (memorymap.MemMapException) as e:
+            format_tree.show(memmap, map_file, elf, args)
+        elif args.format == 'dot':
+            format_dot.show(memmap, map_file, elf, args)
+    except (memorymap.MemMapException, mapfile.MapFileException) as e:
         log.die(str(e))
     except KeyboardInterrupt:
         sys.exit(1)

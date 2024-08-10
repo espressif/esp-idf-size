@@ -1,15 +1,16 @@
-# SPDX-FileCopyrightText: 2023 Espressif Systems (Shanghai) CO LTD
+# SPDX-FileCopyrightText: 2023-2024 Espressif Systems (Shanghai) CO LTD
 # SPDX-License-Identifier: Apache-2.0
 
 from argparse import Namespace
 from collections import namedtuple
-from typing import Any, Dict, List, Union
+from typing import Any, Dict, List, Optional, Union
 
 from rich.markup import escape
 from rich.table import Table
 from rich.text import Text
 
-from . import log, memorymap
+from . import deps, log, mapfile, memorymap
+from .elf import Elf
 
 
 def show_diff_info(memmap: Dict[str, Any], args: Namespace) -> None:
@@ -294,6 +295,46 @@ def get_symbols_table(memmap: Dict[str, Any], args: Namespace) -> Table:
     return table
 
 
+def get_archives_dependencies_table(memmap: Dict[str, Any], map_file: mapfile.MapFile,
+                                    elf: Optional[Elf], args: Namespace) -> Table:
+    arch_deps = deps.get_archives_dependencies(map_file, memmap, elf, args)
+    arch_deps = memorymap.get_summary_filtered(arch_deps, args)
+
+    if args.dep_reverse:
+        title = 'Table of reverse dependencies for archives'
+        dep_col_name = 'Dependents'
+    else:
+        title = 'Table of dependencies for archives'
+        dep_col_name = 'Dependencies'
+
+    table = Table(title=title)
+    table.add_column('Archive', overflow='fold', style='dark_orange3')
+    table.add_column('Archive Size', overflow='fold')
+    table.add_column(dep_col_name, overflow='fold', style='bright_blue')
+    table.add_column(f'{dep_col_name} Sizes', overflow='fold')
+    if args.dep_symbols:
+        table.add_column('Symbols', overflow='fold')
+
+    for arch_name, arch_info in arch_deps.items():
+        arch_name_abbrev = arch_info['abbrev_name'] if args.abbrev else arch_name
+        for cnt, arch_dep in enumerate(arch_info['archives'].items(), start=1):
+            arch_dep_name, arch_dep_info = arch_dep
+            arch_dep_name_abbrev = arch_dep_info['abbrev_name'] if args.abbrev else arch_dep_name
+            if cnt == 1:
+                row = [arch_name_abbrev, str(arch_info['size']), arch_dep_name_abbrev, str(arch_dep_info['size'])]
+            else:
+                row = ['', '', arch_dep_name_abbrev, str(arch_dep_info['size'])]
+
+            if args.dep_symbols:
+                row += ['\n'.join(arch_dep_info['symbols'])]
+            if cnt == len(arch_info['archives']):
+                table.add_row(*row, end_section=True)
+            else:
+                table.add_row(*row)
+
+    return table
+
+
 def show_summary(memmap: Dict[str, Any], args: Namespace) -> None:
     show_diff_info(memmap, args)
     table = get_summary_table(memmap, args)
@@ -319,11 +360,19 @@ def show_object_files(memmap: Dict[str, Any], args: Namespace) -> None:
     log.print(table)
 
 
-def show(memmap: Dict[str, Any], args: Namespace) -> None:
+def show_archives_dependencies(memmap: Dict[str, Any], map_file: mapfile.MapFile,
+                               elf: Optional[Elf], args: Namespace) -> None:
+    table = get_archives_dependencies_table(memmap, map_file, elf, args)
+    log.print(table)
+
+
+def show(memmap: Dict[str, Any], map_file: mapfile.MapFile, elf: Optional[Elf], args: Namespace) -> None:
     if args.archives:
         show_archives(memmap, args)
     elif args.archive_details:
         show_symbols(memmap, args)
+    elif args.archive_dependencies:
+        show_archives_dependencies(memmap, map_file, elf, args)
     elif args.files:
         show_object_files(memmap, args)
     else:
