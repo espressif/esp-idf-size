@@ -4,17 +4,16 @@
 #   secondary_address: value if exist
 DRAM:
   primary_address: 0x40800000
-  length: 0x80000
+  length: 0x60000
   secondary_address: 0x40800000
-  name: DIRAM
+  name: HP SRAM
 CACHE_I:
-  primary_address: 0x41000000
-  length: 0x1000000
-  name: Flash Code
-CACHE_D:
-  primary_address: 0x41000000
-  length: 0x1000000
-  name: Flash Data
+  primary_address: 0x42000000
+  length: 0x2000000
+  name: Flash
+CACHE_D: # This could be removed, but keep it for consistency with other definitions.
+  primary_address: 0x42000000
+  length: 0x2000000
 RTC_SLOW_D:
   primary_address: 0x50000000
   length: 0x4000
