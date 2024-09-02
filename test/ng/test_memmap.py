@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: 2023 Espressif Systems (Shanghai) CO LTD
+# SPDX-FileCopyrightText: 2023-2024 Espressif Systems (Shanghai) CO LTD
 # SPDX-License-Identifier: Apache-2.0
 
 import json
@@ -93,33 +93,36 @@ if __name__ == '__main__':
 
         run([sys.executable, IDF_PY_PATH, '--preview', 'set-target', target], cwd=project_path, check=True)
         run([sys.executable, IDF_PY_PATH, 'app'], cwd=project_path, check=True)
-        run([sys.executable, '-m', 'esp_idf_size.ng', '--format', 'raw', '-o', str(outdir / 'memmap.json'),
-             str(project_path / 'build' / 'project_description.json')],
-            cwd=project_path, check=True)
 
         with open(project_path / 'build' / 'project_description.json') as f:
             proj_desc = json.load(f)
 
+        map_file = str(project_path / 'build' / (proj_desc['project_name'] + '.map'))
+
+        run([sys.executable, '-m', 'esp_idf_size.ng', '--format', 'raw', '-o', str(outdir / 'memmap.json'),
+             map_file],
+            cwd=project_path, check=True)
+
         shutil.copy(project_path / 'build' / proj_desc['app_elf'], outdir)
-        shutil.copy(project_path / 'build' / (proj_desc['project_name'] + '.map'), outdir)
+        shutil.copy(project_path / 'build' / map_file, outdir)
         shutil.copy(project_path / 'build' / 'project_description.json', outdir)
 
         # Generate output format artifacts
         run([sys.executable, '-m', 'esp_idf_size.ng', '--format', 'table', '-o', str(outdir / 'summary.table'),
-             str(project_path / 'build' / 'project_description.json')],
+             map_file],
             cwd=project_path, check=True)
 
         run([sys.executable, '-m', 'esp_idf_size.ng', '--format', 'table',
              '--archives', '-o', str(outdir / 'archives.table'),
-             str(project_path / 'build' / 'project_description.json')],
+             map_file],
             cwd=project_path, check=True)
 
         run([sys.executable, '-m', 'esp_idf_size.ng', '--format', 'table',
              '--files', '-o', str(outdir / 'files.table'),
-             str(project_path / 'build' / 'project_description.json')],
+             map_file],
             cwd=project_path, check=True)
 
         run([sys.executable, '-m', 'esp_idf_size.ng', '--format', 'table',
              '--archive-details', 'libesp_system.a', '-o', str(outdir / 'archive_details.table'),
-             str(project_path / 'build' / 'project_description.json')],
+             map_file],
             cwd=project_path, check=True)
