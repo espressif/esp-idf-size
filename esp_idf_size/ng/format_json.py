@@ -1,11 +1,12 @@
-# SPDX-FileCopyrightText: 2023 Espressif Systems (Shanghai) CO LTD
+# SPDX-FileCopyrightText: 2023-2024 Espressif Systems (Shanghai) CO LTD
 # SPDX-License-Identifier: Apache-2.0
 
 import json
 from argparse import Namespace
-from typing import Any, Dict
+from typing import Any, Dict, Optional
 
-from . import log, memorymap
+from . import deps, log, mapfile, memorymap
+from .elf import Elf
 
 
 def show_summary(memmap: Dict[str, Any], args: Namespace) -> None:
@@ -52,11 +53,19 @@ def show_symbols(memmap: Dict[str, Any], args: Namespace) -> None:
     log.print(json.dumps(summary, indent=4))
 
 
-def show(memmap: Dict[str, Any], args: Namespace) -> None:
+def show_archives_dependencies(memmap: Dict[str, Any], map_file: mapfile.MapFile,
+                               elf: Optional[Elf], args: Namespace) -> None:
+    arch_deps = deps.get_archives_dependencies(map_file, memmap, elf, args)
+    log.print(json.dumps(arch_deps, indent=4))
+
+
+def show(memmap: Dict[str, Any], map_file: mapfile.MapFile, elf: Optional[Elf], args: Namespace) -> None:
     if args.archives:
         show_archives(memmap, args)
     elif args.archive_details:
         show_symbols(memmap, args)
+    elif args.archive_dependencies:
+        show_archives_dependencies(memmap, map_file, elf, args)
     elif args.files:
         show_object_files(memmap, args)
     else:

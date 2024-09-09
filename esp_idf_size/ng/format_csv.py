@@ -1,12 +1,13 @@
-# SPDX-FileCopyrightText: 2023 Espressif Systems (Shanghai) CO LTD
+# SPDX-FileCopyrightText: 2023-2024 Espressif Systems (Shanghai) CO LTD
 # SPDX-License-Identifier: Apache-2.0
 
 from argparse import Namespace
-from typing import Any, Dict
+from typing import Any, Dict, Optional
 
 from rich.table import Table
 
-from . import format_table, log
+from . import format_table, log, mapfile
+from .elf import Elf
 
 
 def show_table(table: Table) -> None:
@@ -46,11 +47,19 @@ def show_symbols(memmap: Dict[str, Any], args: Namespace) -> None:
     show_table(table)
 
 
-def show(memmap: Dict[str, Any], args: Namespace) -> None:
+def show_archives_dependencies(memmap: Dict[str, Any], map_file: mapfile.MapFile,
+                               elf: Optional[Elf], args: Namespace) -> None:
+    table = format_table.get_archives_dependencies_table(memmap, map_file, elf, args)
+    show_table(table)
+
+
+def show(memmap: Dict[str, Any], map_file: mapfile.MapFile, elf: Optional[Elf], args: Namespace) -> None:
     if args.archives:
         show_archives(memmap, args)
     elif args.archive_details:
         show_symbols(memmap, args)
+    elif args.archive_dependencies:
+        show_archives_dependencies(memmap, map_file, elf, args)
     elif args.files:
         show_object_files(memmap, args)
     else:

@@ -59,11 +59,18 @@ table format. The level of detail can be adjusted using the following options.
 
     Print detailed symbols per *ARCHIVE_NAME*
 
+esp-idf-size can also show archives' dependencies or reverse dependencies
+
+-  **--archive-dependencies**
+
+    Print archives' dependencies or reverse dependencies.
+
 ### Formating Options
 
-By default, the **table** format is used for all reports under **Reporting Options**,
-except for the **raw** format. All formats are generated from the generic memory
-map dictionary.
+By default, the **table** format is used for all reports under **Reporting Options**.
+All formats are generated from the generic memory map dictionary, except for
+the **--archive-dependencies** option, which uses the cross-reference table from the
+link map file.
 
 -  **--format** *FORMAT*
 
@@ -181,7 +188,8 @@ map dictionary.
         ...
         ```
     - **raw** : Show the unprocessed Python dictionary with the memory map.
-    This option ignores **Reporting Options**
+
+        This format ignores **Reporting Options**, with the exception of **--archive-dependencies**.
         ```
         $ python -m esp_idf_size --ng --format raw build/hello_world.map
         {
@@ -225,6 +233,14 @@ map dictionary.
                                 },
         ...
         ```
+    - **dot** : Show archives' dependencies in DOT format
+
+        It can serve as input to generate a dependencies graph for archives, such as by utilizing [Graphviz][1].
+        This format is supported only for **--archive-dependencies** report.
+        ```
+        $ python -m esp_idf_size --ng --filter main --archives-deps --format dot -o deps.dot build/hello_world.map
+        $ dot -Tpdf -o deps.pdf deps.dot
+        ```
 
 Items in the report can be modified using the following options.
 
@@ -250,14 +266,16 @@ Items in the report can be modified using the following options.
 
 ### Sorting Options
 
+Applies only to **table** and **csv** formats, except when
+**--archive-dependencies** is used; otherwise, it is ignored.
+
 - **-s** *COLUMN* or **--sort** *COLUMN*
 
     Sort **table** or **csv** format rows based on specified column number,
     starting from 0. Column can be specified also as negative number, where
     *-1* means last column. Default is *1* and column *0*, containing row
     description, cannot be used.  The name of the column can be utilized in
-    place of its numerical identifier. Applies only to **table** and **csv**
-    formats, otherwise ignored.
+    place of its numerical identifier.
 
 - **--sort-reverse**
 
@@ -272,7 +290,7 @@ Items in the report can be modified using the following options.
 -  **-F** *PATTERN*, **--filter** *PATTERN*
 
     Use the provided *PATTERN* to filter *archives*, *object files*, or
-    *symbols*(specified by **Reporting Options**) in **table** or **csv** formats.
+    *symbols*(specified by **Reporting Options**) in **table**, **csv** or **dot** formats.
     The pattern can include following wildcards:
 
     - **\***: Matches any sequence of characters.
@@ -283,9 +301,26 @@ Items in the report can be modified using the following options.
     This option can be used multiple times, functioning as a logical *OR*.
 
 ### Comparison Options
+
 - **--diff** *REFERENCE_MAP_FILE***
 
     Compare sizes with another project specified by *REFERENCE_MAP_FILE*.
+
+
+### Archives' dependencies options
+
+- **--dep-symbols**, **--dep-syms**
+
+    Include dependency symbols for the **--archive-dependencies** option. This
+    means symbols used by one archive from another. In the case of
+    **--dep-reverse**, it refers to symbols used by other archives from the
+    specified archive.
+
+- **--dep-reverse**, **--dep-rev**
+
+    Use reverse dependencies for the **--archive-dependencies** option.
+    This will show the reverse dependencies of archives, instead of archives
+    dependencies.
 
 ### General Options
 
@@ -430,3 +465,5 @@ the `esp_idf_size` Python module. Below are some basic usage examples.
         used_diff = mem_type_info['used_diff']
         print(f'{mem_type_name}: used_diff: {used_diff}, size_diff: {size_diff}')
 ```
+
+[1]: https://graphviz.org/
