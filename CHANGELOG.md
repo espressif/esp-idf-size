@@ -1,3 +1,14 @@
+## v1.6.0 (2024-09-10)
+
+### New Features
+
+- add archives' dependencies report
+
+### Bug Fixes
+
+- update the memory type ranges for the esp32c5
+- handle archive paths that contain spaces
+
 ## v1.5.0 (2024-06-17)
 
 ### New Features
