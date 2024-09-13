@@ -7,12 +7,19 @@ DRAM:
   length: 0xC0000
   secondary_address: 0x4ff00000
   name: DIRAM
-CACHE_I:
+CACHE_I_1:
   primary_address: 0x40000000
   length: 0x4000000
   name: Flash
-CACHE_D:
+CACHE_D_1:
   primary_address: 0x40000000
+  length: 0x4000000
+CACHE_I_2:
+  primary_address: 0x48000000
+  length: 0x4000000
+  name: External RAM
+CACHE_D_2:
+  primary_address: 0x48000000
   length: 0x4000000
 RTC_FAST_D:
   primary_address: 0x30100000
