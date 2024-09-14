@@ -438,17 +438,26 @@ def load_sections(map_file: TextIO) -> Dict:
     # Validate the map file
     for section in sections.values():
         src_curr = {}  # type: Dict[str, Any]
+        fill = 0
         for src in section['sources']:
             if src['size'] == 0:
                 continue
+            if src['address'] < section['address'] or src['address'] >= section['address'] + section['size']:
+                # The linker map might contain an output section featuring an input section with an address
+                # beyond the range of the output section. Skip such sections, but keep fill/padding. This happens
+                # when --enable-non-contiguous-regions is enabled for linker, e.g. on esp32p4, and there
+                # are two memory regions where the same input sections are mapped.
+                fill += src['fill']
+                continue
 
-            expected_addr = src_curr['address'] + src_curr['size'] + src_curr['fill'] if src_curr else section['sources'][0]['address']
+            expected_addr = src_curr['address'] + src_curr['size'] + src_curr['fill'] + fill if src_curr else section['sources'][0]['address']
             if src['address'] != expected_addr:
                 print('Warning: source line overlap:')
                 print('    ' + dump_src_line(src_curr))
                 print('    ' + dump_src_line(src))
 
             src_curr = src
+            fill = 0
 
     return sections
 
