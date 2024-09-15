@@ -1,0 +1,10 @@
+,<CURRENT>:,<REFERENCE>,Difference
+File,mapfile_ref.map,mapfile.map,<CURRENT> - <REFERENCE>
+Used stat D/IRAM,60134 bytes (261162 remain 18.7% used),55060,+5074,-5074 remain,0 total
+.data size,5684 bytes,4912,+772,
+.bss  size,3768 bytes,3744,+24,
+.text size,50682 bytes,46404,+4278,
+Used Flash size ,146160 bytes,126864,+19296,
+.text,103720 bytes,90360,+13360,
+.rodata,42184 bytes,36248,+5936,
+Total image size,202526 bytes (.bin may be padded larger),178180,+24346,

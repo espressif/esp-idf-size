@@ -46,6 +46,7 @@ setup(
             'coverage',
             'jsonschema',
             'pytest',
+            'pytest-cov',
             'commitizen',
         ],
     },

@@ -1,0 +1,53 @@
+Total sizes:
+Used stat D/IRAM:   56759 bytes ( 115273 remain, 33.0% used)
+      .data size:    7216 bytes
+      .bss  size:    2072 bytes
+      .text size:   46444 bytes
+   .vectors size:    1027 bytes
+Used Flash size :  119802 bytes
+           .text:   82078 bytes
+         .rodata:   37468 bytes
+Total image size:  174489 bytes (.bin may be padded larger)
+
+Symbols within the archive: libmain.a (Not all symbols may be reported)
+
+Symbols from section: .dram0.bss
+Section total: 0
+
+Symbols from section: .dram0.data
+Section total: 0
+
+Symbols from section: .flash.appdesc
+Section total: 0
+
+Symbols from section: .flash.rodata
+    app_main.str1.4 :   0
+Section total: 0
+
+Symbols from section: .flash.rodata_noload
+Section total: 0
+
+Symbols from section: .flash.text
+    app_main        : 292
+Section total: 292
+
+Symbols from section: .iram0.text
+Section total: 0
+
+Symbols from section: .iram0.vectors
+Section total: 0
+
+Symbols from section: .noinit
+Section total: 0
+
+Symbols from section: .rtc.bss
+Section total: 0
+
+Symbols from section: .rtc.data
+Section total: 0
+
+Symbols from section: .rtc.text
+Section total: 0
+
+Symbols from section: .rtc_noinit
+Section total: 0

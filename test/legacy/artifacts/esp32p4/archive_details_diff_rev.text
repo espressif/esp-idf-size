@@ -1,0 +1,89 @@
+<CURRENT> MAP file: mapfile_ref.map
+<REFERENCE> MAP file: mapfile.map
+Difference is counted as <CURRENT> - <REFERENCE>,           i.e. a positive number means that <CURRENT> is larger.
+Total sizes of <CURRENT>:                                       <REFERENCE>     Difference
+Used stat D/IRAM:   68426 bytes ( 508038 remain, 11.9% used)          68406            +20 (    -20 remain,      +0 total)
+      .data size:    6445 bytes                                        6389            +56
+      .bss  size:    5948 bytes                                        5928            +20
+      .text size:   56030 bytes                                       56086            -56
+           other:       3 bytes                                           3
+Used Flash size :  145582 bytes                                      140850          +4732
+           .text:  103330 bytes                                       99206          +4124
+         .rodata:   41764 bytes                                       41156           +608
+Total image size:  208057 bytes (.bin may be padded larger)          203325          +4732
+
+Symbols within the archive: libmain.a (Not all symbols may be reported)
+
+.dram0.bss                                  <CURRENT>  <REFERENCE>   <CURRENT> - <REFERENCE>
+    .s_led_state                                    1            0                        +1
+Section total:                                      1            0                        +1
+
+.dram0.data                                 <CURRENT>  <REFERENCE>   <CURRENT> - <REFERENCE>
+Section total:                                      0            0
+
+.dram1.bss                                  <CURRENT>  <REFERENCE>   <CURRENT> - <REFERENCE>
+Section total:                                      0            0
+
+.dram1.data                                 <CURRENT>  <REFERENCE>   <CURRENT> - <REFERENCE>
+Section total:                                      0            0
+
+.eh_frame                                   <CURRENT>  <REFERENCE>   <CURRENT> - <REFERENCE>
+Section total:                                      0            0
+
+.eh_frame_hdr                               <CURRENT>  <REFERENCE>   <CURRENT> - <REFERENCE>
+Section total:                                      0            0
+
+.flash.appdesc                              <CURRENT>  <REFERENCE>   <CURRENT> - <REFERENCE>
+Section total:                                      0            0
+
+.flash.init_array                           <CURRENT>  <REFERENCE>   <CURRENT> - <REFERENCE>
+Section total:                                      0            0
+
+.flash.rodata                               <CURRENT>  <REFERENCE>   <CURRENT> - <REFERENCE>
+    app_main.str1.4                                 0            0
+    configure_led.str1.4                            0            0Section total:                                      0            0
+
+.flash.rodata_noload                        <CURRENT>  <REFERENCE>   <CURRENT> - <REFERENCE>
+Section total:                                      0            0
+
+.flash.tbss                                 <CURRENT>  <REFERENCE>   <CURRENT> - <REFERENCE>
+Section total:                                      0            0
+
+.flash.tdata                                <CURRENT>  <REFERENCE>   <CURRENT> - <REFERENCE>
+Section total:                                      0            0
+
+.flash.text                                 <CURRENT>  <REFERENCE>   <CURRENT> - <REFERENCE>
+    app_main                                      114          356                      -242
+    blink_led                                      24            0                       +24
+    configure_led                                  64            0                       +64
+Section total:                                    202          356                      -154
+
+.iram0.bss                                  <CURRENT>  <REFERENCE>   <CURRENT> - <REFERENCE>
+Section total:                                      0            0
+
+.iram0.data                                 <CURRENT>  <REFERENCE>   <CURRENT> - <REFERENCE>
+Section total:                                      0            0
+
+.iram0.text                                 <CURRENT>  <REFERENCE>   <CURRENT> - <REFERENCE>
+Section total:                                      0            0
+
+.noinit                                     <CURRENT>  <REFERENCE>   <CURRENT> - <REFERENCE>
+Section total:                                      0            0
+
+.rtc.bss                                    <CURRENT>  <REFERENCE>   <CURRENT> - <REFERENCE>
+Section total:                                      0            0
+
+.rtc.data                                   <CURRENT>  <REFERENCE>   <CURRENT> - <REFERENCE>
+Section total:                                      0            0
+
+.rtc.text                                   <CURRENT>  <REFERENCE>   <CURRENT> - <REFERENCE>
+Section total:                                      0            0
+
+.rtc_noinit                                 <CURRENT>  <REFERENCE>   <CURRENT> - <REFERENCE>
+Section total:                                      0            0
+
+.tcm.data                                   <CURRENT>  <REFERENCE>   <CURRENT> - <REFERENCE>
+Section total:                                      0            0
+
+.tcm.text                                   <CURRENT>  <REFERENCE>   <CURRENT> - <REFERENCE>
+Section total:                                      0            0

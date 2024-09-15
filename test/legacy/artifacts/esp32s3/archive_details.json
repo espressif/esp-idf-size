@@ -1,0 +1,21 @@
+{
+    ".dram0.bss": {},
+    ".dram0.data": {},
+    ".flash.appdesc": {},
+    ".flash.rodata": {
+        "app_main.str1.4": 0
+    },
+    ".flash.rodata_noload": {},
+    ".flash.text": {
+        "app_main": 300
+    },
+    ".iram0.bss": {},
+    ".iram0.data": {},
+    ".iram0.text": {},
+    ".iram0.vectors": {},
+    ".noinit": {},
+    ".rtc.bss": {},
+    ".rtc.data": {},
+    ".rtc.text": {},
+    ".rtc_noinit": {}
+}

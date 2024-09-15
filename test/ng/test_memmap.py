@@ -11,7 +11,9 @@ from subprocess import run
 from tempfile import TemporaryDirectory
 
 import pytest
-import utils
+
+sys.path.append(str(Path(__file__).resolve().parent.parent))
+import utils  # noqa: E402
 
 
 @pytest.mark.parametrize('target', utils.targets())

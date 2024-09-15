@@ -1,0 +1,53 @@
+Total sizes:,,,
+Used static IRAM,16383 bytes (1 remain 100.0% used),,,
+.text size,15356 bytes,,,
+.vectors size,1027 bytes,,,
+Used stat D/IRAM,54087 bytes (287673 remain 15.8% used),,,
+.data size,10888 bytes,,,
+.bss  size,2224 bytes,,,
+.text size,40975 bytes,,,
+Used Flash size ,137830 bytes,,,
+.text,95218 bytes,,,
+.rodata,42356 bytes,,,
+Total image size,206076 bytes (.bin may be padded larger),,,
+Per-archive contributions to ELF file:
+Archive File,DRAM .data,& 0.bss,IRAM0 .text,& 0.vectors,ram_st_total,Flash .text,& .rodata,& .appdesc
+libc.a,264,320,0,0,584,41791,3391,0
+libesp_app_format.a,0,10,0,0,10,435,28775,256
+libesp_hw_support.a,415,87,6436,0,6938,16287,1040,0
+libfreertos.a,3100,757,13320,0,17177,420,979,0
+libesp_system.a,480,301,4335,0,5116,8999,671,0
+libspi_flash.a,1932,32,9288,0,11252,1188,406,0
+libhal.a,2839,4,7651,0,10494,1880,54,0
+libheap.a,4,8,6987,0,6999,3090,898,0
+libesp_driver_uart.a,196,32,0,0,228,6505,552,0
+libvfs.a,192,44,0,0,236,3499,187,0
+libxtensa.a,1060,0,2057,424,3541,117,48,0
+libesp_mm.a,28,44,627,0,699,2374,166,0
+libnewlib.a,172,200,1630,0,2002,1232,111,0
+libesp_driver_gpio.a,36,0,0,0,36,1846,277,0
+libsoc.a,0,0,0,0,0,0,2020,0
+libesp_common.a,0,0,0,0,0,51,1750,0
+libesp_driver_usb_serial,48,5,118,0,171,1091,208,0
+libesp_ringbuf.a,0,0,994,0,994,0,97,0
+libbootloader_support.a,0,0,1003,0,1003,34,40,0
+libesp_partition.a,0,8,0,0,8,993,37,0
+liblog.a,8,272,273,0,553,673,24,0
+libesp_vfs_console.a,0,16,0,0,16,442,172,0
+libesp_rom.a,4,0,462,0,466,70,0,0
+libxt_hal.a,0,0,405,0,405,0,32,0
+libesp_timer.a,0,20,57,0,77,357,16,0
+libefuse.a,0,0,0,0,0,295,56,0
+libmain.a,0,0,0,0,0,300,0,0
+libapp_update.a,0,4,0,0,4,152,30,0
+libpthread.a,8,4,0,0,12,110,0,0
+libstdc++.a,0,5,0,0,5,77,4,0
+libcxx.a,0,0,0,0,0,34,0,0
+libesp_security.a,0,0,0,0,0,12,8,0
+libesp_phy.a,0,0,0,0,0,5,0,0
+libnvs_sec_provider.a,0,0,0,0,0,5,0,0
+(exe),0,0,0,3,3,0,0,0
+libesp_driver_spi.a,0,0,0,0,0,0,0,0
+libgcc.a,0,0,0,0,0,0,0,0
+libmbedcrypto.a,0,0,0,0,0,0,0,0
+libnvs_flash.a,0,0,0,0,0,0,0,0
