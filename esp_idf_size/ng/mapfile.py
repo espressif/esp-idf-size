@@ -425,7 +425,7 @@ class MapFile:
             if not line.startswith((' ', '\t')):
                 splitted = line.split(maxsplit=1)
                 if len(splitted) != 2:
-                    log.err(f'unexpected format of cross reference table entry "${line}"')
+                    log.err(f'unexpected format of cross reference table entry "{line}"')
 
                 symbol = splitted[0]
                 definition = splitted[1]
@@ -433,8 +433,7 @@ class MapFile:
             else:
                 line = line.strip()
                 if symbol is None:
-                    log.err(f'no symbol for "${line}" reference in the cross reference table')
-                    return None
+                    log.debug(f'no symbol for "{line}" reference in the cross reference table')
                 else:
                     crt[symbol].append(self._get_archive_object_file(line.strip()))
 
