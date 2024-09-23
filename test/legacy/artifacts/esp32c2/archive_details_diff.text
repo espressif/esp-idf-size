@@ -1,0 +1,70 @@
+<CURRENT> MAP file: mapfile.map
+<REFERENCE> MAP file: mapfile_ref.map
+Difference is counted as <CURRENT> - <REFERENCE>,           i.e. a positive number means that <CURRENT> is larger.
+Total sizes of <CURRENT>:                                       <REFERENCE>     Difference
+Used stat D/IRAM:   48664 bytes ( 142680 remain, 25.4% used)          48632            +32 (    -32 remain,      +0 total)
+      .data size:    4968 bytes                                        4992            -24
+      .bss  size:    3816 bytes                                        3816
+      .text size:   39880 bytes                                       39824            +56
+Used Flash size :   78340 bytes                                       81452          -3112
+           .text:   47956 bytes                                       50612          -2656
+         .rodata:   30128 bytes                                       30584           -456
+Total image size:  123188 bytes (.bin may be padded larger)          126268          -3080
+
+Symbols within the archive: libmain.a (Not all symbols may be reported)
+
+.dram0.bss                                  <CURRENT>  <REFERENCE>   <CURRENT> - <REFERENCE>
+    .s_led_state                                    0            1                        -1
+Section total:                                      0            1                        -1
+
+.dram0.bt.bss                               <CURRENT>  <REFERENCE>   <CURRENT> - <REFERENCE>
+Section total:                                      0            0
+
+.dram0.bt.data                              <CURRENT>  <REFERENCE>   <CURRENT> - <REFERENCE>
+Section total:                                      0            0
+
+.dram0.data                                 <CURRENT>  <REFERENCE>   <CURRENT> - <REFERENCE>
+Section total:                                      0            0
+
+.eh_frame                                   <CURRENT>  <REFERENCE>   <CURRENT> - <REFERENCE>
+Section total:                                      0            0
+
+.eh_frame_hdr                               <CURRENT>  <REFERENCE>   <CURRENT> - <REFERENCE>
+Section total:                                      0            0
+
+.flash.appdesc                              <CURRENT>  <REFERENCE>   <CURRENT> - <REFERENCE>
+Section total:                                      0            0
+
+.flash.rodata                               <CURRENT>  <REFERENCE>   <CURRENT> - <REFERENCE>
+    app_main.str1.4                                 0            0
+    configure_led.str1.4                            0            0Section total:                                      0            0
+
+.flash.rodata_noload                        <CURRENT>  <REFERENCE>   <CURRENT> - <REFERENCE>
+Section total:                                      0            0
+
+.flash.tbss                                 <CURRENT>  <REFERENCE>   <CURRENT> - <REFERENCE>
+Section total:                                      0            0
+
+.flash.tdata                                <CURRENT>  <REFERENCE>   <CURRENT> - <REFERENCE>
+Section total:                                      0            0
+
+.flash.text                                 <CURRENT>  <REFERENCE>   <CURRENT> - <REFERENCE>
+    app_main                                      388          110                      +278
+    blink_led                                       0           24                       -24
+    configure_led                                   0           64                       -64
+Section total:                                    388          198                      +190
+
+.iram0.bss                                  <CURRENT>  <REFERENCE>   <CURRENT> - <REFERENCE>
+Section total:                                      0            0
+
+.iram0.bt.text                              <CURRENT>  <REFERENCE>   <CURRENT> - <REFERENCE>
+Section total:                                      0            0
+
+.iram0.data                                 <CURRENT>  <REFERENCE>   <CURRENT> - <REFERENCE>
+Section total:                                      0            0
+
+.iram0.text                                 <CURRENT>  <REFERENCE>   <CURRENT> - <REFERENCE>
+Section total:                                      0            0
+
+.noinit                                     <CURRENT>  <REFERENCE>   <CURRENT> - <REFERENCE>
+Section total:                                      0            0

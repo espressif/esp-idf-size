@@ -1,0 +1,88 @@
+{
+    "current": {
+        ".dram0.bss": {},
+        ".dram0.data": {},
+        ".eh_frame": {},
+        ".eh_frame_hdr": {},
+        ".flash.appdesc": {},
+        ".flash.rodata": {
+            "app_main.str1.4": 0
+        },
+        ".flash.rodata_noload": {},
+        ".flash.tbss": {},
+        ".flash.tdata": {},
+        ".flash.text": {
+            "app_main": 352
+        },
+        ".iram0.bss": {},
+        ".iram0.data": {},
+        ".iram0.text": {},
+        ".noinit": {},
+        ".rtc.bss": {},
+        ".rtc.data": {},
+        ".rtc.text": {},
+        ".rtc_noinit": {}
+    },
+    "reference": {
+        ".dram0.bss": {
+            ".led_strip": 4,
+            ".s_led_state": 1
+        },
+        ".dram0.data": {},
+        ".eh_frame": {},
+        ".eh_frame_hdr": {},
+        ".flash.appdesc": {},
+        ".flash.rodata": {
+            "__func__.0": 14,
+            "app_main.str1.4": 0,
+            "configure_led.str1.4": 0
+        },
+        ".flash.rodata_noload": {},
+        ".flash.tbss": {},
+        ".flash.tdata": {},
+        ".flash.text": {
+            "configure_led": 148,
+            "app_main": 114,
+            "blink_led": 60
+        },
+        ".iram0.bss": {},
+        ".iram0.data": {},
+        ".iram0.text": {},
+        ".noinit": {},
+        ".rtc.bss": {},
+        ".rtc.data": {},
+        ".rtc.text": {},
+        ".rtc_noinit": {}
+    },
+    "diff": {
+        ".dram0.bss": {
+            ".led_strip": -4,
+            ".s_led_state": -1
+        },
+        ".dram0.data": {},
+        ".eh_frame": {},
+        ".eh_frame_hdr": {},
+        ".flash.appdesc": {},
+        ".flash.rodata": {
+            "__func__.0": -14,
+            "app_main.str1.4": 0,
+            "configure_led.str1.4": 0
+        },
+        ".flash.rodata_noload": {},
+        ".flash.tbss": {},
+        ".flash.tdata": {},
+        ".flash.text": {
+            "app_main": 238,
+            "blink_led": -60,
+            "configure_led": -148
+        },
+        ".iram0.bss": {},
+        ".iram0.data": {},
+        ".iram0.text": {},
+        ".noinit": {},
+        ".rtc.bss": {},
+        ".rtc.data": {},
+        ".rtc.text": {},
+        ".rtc_noinit": {}
+    }
+}

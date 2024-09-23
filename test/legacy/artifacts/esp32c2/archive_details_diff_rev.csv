@@ -1,0 +1,68 @@
+,<CURRENT>:,<REFERENCE>,Difference
+File,mapfile_ref.map,mapfile.map,<CURRENT> - <REFERENCE>
+Used stat D/IRAM,48632 bytes (142712 remain 25.4% used),48664,-32,32 remain,0 total
+.data size,4992 bytes,4968,+24,
+.bss  size,3816 bytes,3816,,
+.text size,39824 bytes,39880,-56,
+Used Flash size ,81452 bytes,78340,+3112,
+.text,50612 bytes,47956,+2656,
+.rodata,30584 bytes,30128,+456,
+Total image size,126268 bytes (.bin may be padded larger),123188,+3080,
+
+Symbols within the archive: libmain.a (Not all symbols may be reported)
+
+.dram0.bss,<CURRENT>,<REFERENCE>,<CURRENT> - <REFERENCE>
+.s_led_state,1,0,+1
+Section total:,1,0,+1
+
+.dram0.bt.bss,<CURRENT>,<REFERENCE>,<CURRENT> - <REFERENCE>
+Section total:,0,0,
+
+.dram0.bt.data,<CURRENT>,<REFERENCE>,<CURRENT> - <REFERENCE>
+Section total:,0,0,
+
+.dram0.data,<CURRENT>,<REFERENCE>,<CURRENT> - <REFERENCE>
+Section total:,0,0,
+
+.eh_frame,<CURRENT>,<REFERENCE>,<CURRENT> - <REFERENCE>
+Section total:,0,0,
+
+.eh_frame_hdr,<CURRENT>,<REFERENCE>,<CURRENT> - <REFERENCE>
+Section total:,0,0,
+
+.flash.appdesc,<CURRENT>,<REFERENCE>,<CURRENT> - <REFERENCE>
+Section total:,0,0,
+
+.flash.rodata,<CURRENT>,<REFERENCE>,<CURRENT> - <REFERENCE>
+app_main.str1.4,0,0,
+configure_led.str1.4,0,0,Section total:,0,0,
+
+.flash.rodata_noload,<CURRENT>,<REFERENCE>,<CURRENT> - <REFERENCE>
+Section total:,0,0,
+
+.flash.tbss,<CURRENT>,<REFERENCE>,<CURRENT> - <REFERENCE>
+Section total:,0,0,
+
+.flash.tdata,<CURRENT>,<REFERENCE>,<CURRENT> - <REFERENCE>
+Section total:,0,0,
+
+.flash.text,<CURRENT>,<REFERENCE>,<CURRENT> - <REFERENCE>
+app_main,110,388,-278
+blink_led,24,0,+24
+configure_led,64,0,+64
+Section total:,198,388,-190
+
+.iram0.bss,<CURRENT>,<REFERENCE>,<CURRENT> - <REFERENCE>
+Section total:,0,0,
+
+.iram0.bt.text,<CURRENT>,<REFERENCE>,<CURRENT> - <REFERENCE>
+Section total:,0,0,
+
+.iram0.data,<CURRENT>,<REFERENCE>,<CURRENT> - <REFERENCE>
+Section total:,0,0,
+
+.iram0.text,<CURRENT>,<REFERENCE>,<CURRENT> - <REFERENCE>
+Section total:,0,0,
+
+.noinit,<CURRENT>,<REFERENCE>,<CURRENT> - <REFERENCE>
+Section total:,0,0,

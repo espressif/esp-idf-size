@@ -16,6 +16,7 @@ repos:
           (?x)^(
             .+\.(md|rst|map|bin)|
             .+test.*\/.*expected.*|
+            test\/legacy\/artifacts\/.*
           )$
       - id: end-of-file-fixer
         exclude: *whitespace_excludes

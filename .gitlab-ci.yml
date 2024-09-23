@@ -1,6 +1,5 @@
 stages:
   - codecheck
-  - mem_test
   - test
 
 # WORKFLOW RULES
@@ -16,23 +15,13 @@ workflow:
 
 # TEMPLATES
 # ------------------------------------------------------------------------------------------------------
-.mem_test_template:
+.base_template:
   image: "espressif/idf:latest"
   tags:
     - build
     - internet
   before_script:
     - pip install -e .[dev] --prefer-binary
-
-.base_template:
-  image: python:3.7-bullseye
-  tags:
-    - build
-    - internet
-  before_script:
-    - pip install -e .[dev] --prefer-binary
-
-# --------------------------------------------------------------------------------------------------
 
 
 # JOBS
@@ -58,41 +47,18 @@ pre-commit_hooks_MR:
 # ------------------------------------------------------------------------------------------------------
 
 # TESTS
-mem_test:
-  extends: .mem_test_template
-  stage: mem_test
-  artifacts:
-    when: always
-    paths:
-      - test/output
-      - test/.coverage
-    expire_in: 1 week
-  script:
-    - cd test
-    - ./mem_test.sh
-
-test:
+esp_idf_size:
   extends: .base_template
   stage: test
-  needs:
-    - mem_test
-  artifacts:
-    when: on_failure
-    paths:
-      - test/output
-      - test/.coverage
-    expire_in: 1 week
   script:
-    - cd test
-    - ./test.sh
-
-test_ng:
-  stage: test
-  extends: .base_template
+    - pytest test
   rules:
-    - changes:
-        - esp_idf_size/ng/**/*
-        - esp_idf_size/chip_info/**/*
-        - test/ng/**/*
+    - if: '$CI_MERGE_REQUEST_LABELS !~ /.*coverage.*/'
+
+esp_idf_size_with_coverage:
+  extends: .base_template
+  stage: test
   script:
-    - pytest test/ng/
+    - pytest --cov=esp_idf_size test
+  rules:
+    - if: '$CI_MERGE_REQUEST_LABELS =~ /.*coverage.*/'

@@ -1,0 +1,75 @@
+,<CURRENT>:,<REFERENCE>,Difference
+File,mapfile_ref.map,mapfile.map,<CURRENT> - <REFERENCE>
+Used stat D/IRAM,59092 bytes (393020 remain 13.1% used),54250,+4842,-4842 remain,0 total
+.data size,6861 bytes,6081,+780,
+.bss  size,3928 bytes,3888,+40,
+.text size,48300 bytes,44278,+4022,
+other,3 bytes,3,,
+Used Flash size ,125470 bytes,105650,+19820,
+.text,83298 bytes,69406,+13892,
+.rodata,41916 bytes,35988,+5928,
+Total image size,180631 bytes (.bin may be padded larger),156009,+24622,
+
+Symbols within the archive: libmain.a (Not all symbols may be reported)
+
+.dram0.bss,<CURRENT>,<REFERENCE>,<CURRENT> - <REFERENCE>
+.led_strip,4,0,+4
+.s_led_state,1,0,+1
+Section total:,5,0,+5
+
+.dram0.data,<CURRENT>,<REFERENCE>,<CURRENT> - <REFERENCE>
+Section total:,0,0,
+
+.eh_frame,<CURRENT>,<REFERENCE>,<CURRENT> - <REFERENCE>
+Section total:,0,0,
+
+.eh_frame_hdr,<CURRENT>,<REFERENCE>,<CURRENT> - <REFERENCE>
+Section total:,0,0,
+
+.flash.appdesc,<CURRENT>,<REFERENCE>,<CURRENT> - <REFERENCE>
+Section total:,0,0,
+
+.flash.rodata,<CURRENT>,<REFERENCE>,<CURRENT> - <REFERENCE>
+__func__.0,14,0,+14
+app_main.str1.4,0,0,
+configure_led.str1.4,0,0,
+Section total:,14,0,+14
+
+.flash.rodata_noload,<CURRENT>,<REFERENCE>,<CURRENT> - <REFERENCE>
+Section total:,0,0,
+
+.flash.tbss,<CURRENT>,<REFERENCE>,<CURRENT> - <REFERENCE>
+Section total:,0,0,
+
+.flash.tdata,<CURRENT>,<REFERENCE>,<CURRENT> - <REFERENCE>
+Section total:,0,0,
+
+.flash.text,<CURRENT>,<REFERENCE>,<CURRENT> - <REFERENCE>
+app_main,114,380,-266
+blink_led,60,0,+60
+configure_led,148,0,+148
+Section total:,322,380,-58
+
+.iram0.bss,<CURRENT>,<REFERENCE>,<CURRENT> - <REFERENCE>
+Section total:,0,0,
+
+.iram0.data,<CURRENT>,<REFERENCE>,<CURRENT> - <REFERENCE>
+Section total:,0,0,
+
+.iram0.text,<CURRENT>,<REFERENCE>,<CURRENT> - <REFERENCE>
+Section total:,0,0,
+
+.noinit,<CURRENT>,<REFERENCE>,<CURRENT> - <REFERENCE>
+Section total:,0,0,
+
+.rtc.bss,<CURRENT>,<REFERENCE>,<CURRENT> - <REFERENCE>
+Section total:,0,0,
+
+.rtc.data,<CURRENT>,<REFERENCE>,<CURRENT> - <REFERENCE>
+Section total:,0,0,
+
+.rtc.text,<CURRENT>,<REFERENCE>,<CURRENT> - <REFERENCE>
+Section total:,0,0,
+
+.rtc_noinit,<CURRENT>,<REFERENCE>,<CURRENT> - <REFERENCE>
+Section total:,0,0,

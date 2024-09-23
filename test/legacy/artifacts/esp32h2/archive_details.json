@@ -1,0 +1,24 @@
+{
+    ".dram0.bss": {},
+    ".dram0.data": {},
+    ".eh_frame": {},
+    ".eh_frame_hdr": {},
+    ".flash.appdesc": {},
+    ".flash.rodata": {
+        "app_main.str1.4": 0
+    },
+    ".flash.rodata_noload": {},
+    ".flash.tbss": {},
+    ".flash.tdata": {},
+    ".flash.text": {
+        "app_main": 356
+    },
+    ".iram0.bss": {},
+    ".iram0.data": {},
+    ".iram0.text": {},
+    ".noinit": {},
+    ".rtc.bss": {},
+    ".rtc.data": {},
+    ".rtc.text": {},
+    ".rtc_noinit": {}
+}

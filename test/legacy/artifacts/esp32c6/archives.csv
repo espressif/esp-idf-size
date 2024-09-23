@@ -1,0 +1,47 @@
+Total sizes:,,,
+Used stat D/IRAM,54250 bytes (397862 remain 12.0% used),,,
+.data size,6081 bytes,,,
+.bss  size,3888 bytes,,,
+.text size,44278 bytes,,,
+other,3 bytes,,,
+Used Flash size ,105650 bytes,,,
+.text,69406 bytes,,,
+.rodata,35988 bytes,,,
+Total image size,156009 bytes (.bin may be padded larger),,,
+Per-archive contributions to ELF file:
+Archive File,DRAM .data,& 0.bss,IRAM0 .text,ram_st_total,Flash .text,& .rodata,& .appdesc
+libesp_hw_support.a,3515,91,7286,10892,19370,2354,0
+libesp_app_format.a,0,10,0,10,530,26231,256
+libesp_system.a,92,138,2380,2610,10304,570,0
+libfreertos.a,88,2240,11030,13358,330,867,0
+libhal.a,344,12,7734,8090,3222,347,0
+libesp_driver_uart.a,128,28,0,156,7866,544,0
+libspi_flash.a,733,14,5826,6573,1180,318,0
+libc.a,260,320,0,580,4784,0,0
+libvfs.a,192,44,0,236,4230,187,0
+libheap.a,12,8,1304,1324,2114,437,0
+libnewlib.a,156,200,1854,2210,1568,111,0
+libesp_mm.a,28,44,582,654,2880,166,0
+libesp_timer.a,16,36,1326,1378,1786,90,0
+libesp_driver_gpio.a,0,0,0,0,1868,277,0
+libcoexist.a,312,1,12,325,1768,40,0
+libesp_common.a,0,0,0,0,58,1750,0
+libesp_driver_usb_serial,48,5,102,155,1304,208,0
+libesp_rom.a,0,84,1510,1594,2,49,0
+libesp_ringbuf.a,0,0,1126,1126,0,97,0
+libesp_partition.a,0,8,0,8,1170,37,0
+liblog.a,8,272,322,602,776,24,0
+libriscv.a,0,256,844,1100,130,50,0
+libbootloader_support.a,0,0,930,930,52,40,0
+libesp_vfs_console.a,0,16,0,16,530,172,0
+libsoc.a,0,0,0,0,0,556,0
+libesp_coex.a,76,0,98,174,316,0,0
+libefuse.a,0,0,0,0,346,56,0
+libmain.a,0,0,0,0,380,0,0
+libapp_update.a,0,4,0,4,198,30,0
+libesp_security.a,0,0,0,0,106,33,0
+libpthread.a,0,4,0,4,112,0,0
+libstdc++.a,0,5,0,5,90,4,0
+libcxx.a,0,0,0,0,16,0,0
+libesp_phy.a,0,0,0,0,2,0,0
+libnvs_sec_provider.a,0,0,0,0,2,0,0

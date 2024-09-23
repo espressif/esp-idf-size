@@ -1,0 +1,67 @@
+Total sizes:
+Used stat D/IRAM:   55060 bytes ( 266236 remain, 17.1% used)
+      .data size:    4912 bytes
+      .bss  size:    3744 bytes
+      .text size:   46404 bytes
+Used Flash size :  126864 bytes
+           .text:   90360 bytes
+         .rodata:   36248 bytes
+Total image size:  178180 bytes (.bin may be padded larger)
+
+Symbols within the archive: libmain.a (Not all symbols may be reported)
+
+Symbols from section: .dram0.bss
+Section total: 0
+
+Symbols from section: .dram0.data
+Section total: 0
+
+Symbols from section: .eh_frame
+Section total: 0
+
+Symbols from section: .eh_frame_hdr
+Section total: 0
+
+Symbols from section: .flash.appdesc
+Section total: 0
+
+Symbols from section: .flash.rodata
+    app_main.str1.4 :   0
+Section total: 0
+
+Symbols from section: .flash.rodata_noload
+Section total: 0
+
+Symbols from section: .flash.tbss
+Section total: 0
+
+Symbols from section: .flash.tdata
+Section total: 0
+
+Symbols from section: .flash.text
+    app_main        : 352
+Section total: 352
+
+Symbols from section: .iram0.bss
+Section total: 0
+
+Symbols from section: .iram0.data
+Section total: 0
+
+Symbols from section: .iram0.text
+Section total: 0
+
+Symbols from section: .noinit
+Section total: 0
+
+Symbols from section: .rtc.bss
+Section total: 0
+
+Symbols from section: .rtc.data
+Section total: 0
+
+Symbols from section: .rtc.text
+Section total: 0
+
+Symbols from section: .rtc_noinit
+Section total: 0

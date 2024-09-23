@@ -1,0 +1,81 @@
+{
+    "current": {
+        ".dram0.bss": {
+            "s_led_state": 1
+        },
+        ".dram0.data": {},
+        ".ext_ram.bss": {},
+        ".ext_ram_noinit": {},
+        ".flash.appdesc": {},
+        ".flash.rodata": {
+            "app_main.str1.4": 0,
+            "configure_led.str1.4": 0
+        },
+        ".flash.rodata_noload": {},
+        ".flash.text": {
+            "app_main": 85,
+            "configure_led": 44,
+            "blink_led": 20
+        },
+        ".iram0.bss": {},
+        ".iram0.data": {},
+        ".iram0.text": {},
+        ".iram0.vectors": {},
+        ".noinit": {},
+        ".rtc.bss": {},
+        ".rtc.data": {},
+        ".rtc.text": {},
+        ".rtc_noinit": {}
+    },
+    "reference": {
+        ".dram0.bss": {},
+        ".dram0.data": {},
+        ".ext_ram.bss": {},
+        ".ext_ram_noinit": {},
+        ".flash.appdesc": {},
+        ".flash.rodata": {
+            "app_main.str1.4": 0
+        },
+        ".flash.rodata_noload": {},
+        ".flash.text": {
+            "app_main": 292
+        },
+        ".iram0.bss": {},
+        ".iram0.data": {},
+        ".iram0.text": {},
+        ".iram0.vectors": {},
+        ".noinit": {},
+        ".rtc.bss": {},
+        ".rtc.data": {},
+        ".rtc.text": {},
+        ".rtc_noinit": {}
+    },
+    "diff": {
+        ".dram0.bss": {
+            "s_led_state": 1
+        },
+        ".dram0.data": {},
+        ".ext_ram.bss": {},
+        ".ext_ram_noinit": {},
+        ".flash.appdesc": {},
+        ".flash.rodata": {
+            "app_main.str1.4": 0,
+            "configure_led.str1.4": 0
+        },
+        ".flash.rodata_noload": {},
+        ".flash.text": {
+            "app_main": -207,
+            "blink_led": 20,
+            "configure_led": 44
+        },
+        ".iram0.bss": {},
+        ".iram0.data": {},
+        ".iram0.text": {},
+        ".iram0.vectors": {},
+        ".noinit": {},
+        ".rtc.bss": {},
+        ".rtc.data": {},
+        ".rtc.text": {},
+        ".rtc_noinit": {}
+    }
+}
