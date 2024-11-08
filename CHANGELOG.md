@@ -1,3 +1,15 @@
+## v1.6.1 (2024-11-08)
+
+### Bug Fixes
+
+- add support for external RAM memory type for esp32p4
+- cross reference table with empty symbol name
+- input section address not within output section range
+
+### Code Refactoring
+
+- **ci**: update esp-idf-size legacy tests to pytest
+
 ## v1.6.0 (2024-09-10)
 
 ### New Features
