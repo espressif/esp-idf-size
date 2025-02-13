@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: 2023-2024 Espressif Systems (Shanghai) CO LTD
+# SPDX-FileCopyrightText: 2023-2025 Espressif Systems (Shanghai) CO LTD
 # SPDX-License-Identifier: Apache-2.0
 
 import json
@@ -13,6 +13,7 @@ from typing import List, Optional
 
 import jsonschema
 import pytest
+from esptool.bin_image import LoadFirmwareImage
 from generate_artifacts import ARTIFACTS as AF
 
 sys.path.append(str(Path(__file__).resolve().parent.parent))
@@ -115,7 +116,6 @@ def test_total_size(target: str) -> None:
     tmpdir_path = Path(tmpdir.name) / 'project'
     hello_world_path = idf_path / 'examples' / 'get-started' / 'hello_world'
     size_json_path = tmpdir_path / 'size.json'
-    esptool_image_info_path = tmpdir_path / 'image_info.txt'
     mapfile_path = tmpdir_path / 'build' / 'hello_world.map'
     binfile_path = tmpdir_path / 'build' / 'hello_world.bin'
 
@@ -127,20 +127,18 @@ def test_total_size(target: str) -> None:
     cmd = [sys.executable, '-m', 'esp_idf_size', '--format', 'json', '-o', str(size_json_path), str(mapfile_path)]
     run(cmd, cwd=tmpdir_path, check=True)
 
-    cmd = [sys.executable, '-m', 'esptool', 'image_info', str(binfile_path)]
-    with open(esptool_image_info_path, 'w') as f:
-        run(cmd, cwd=tmpdir_path, check=True, stdout=f)
-
     with open(size_json_path, 'r') as f:
         data = json.load(f)
         size_total = data['total_size']
 
     esptool_total = 0
-    with open(esptool_image_info_path, 'r') as f:
-        for line in f:
-            if not line.startswith('Segment'):
-                continue
-            esptool_total += int(line.split()[3], 16)
+    img = LoadFirmwareImage(target, str(binfile_path))
+    for seg in img.segments:
+        seg_types = seg.get_memory_type(img)
+        if 'PADDING' in seg_types:
+            continue
+        esptool_total += len(seg.data)
+
     logging.info((f'esp-idf-size total size: {size_total}, '
                   f'esptool total size: {esptool_total}, '
                   f'diff: {size_total - esptool_total}'))
