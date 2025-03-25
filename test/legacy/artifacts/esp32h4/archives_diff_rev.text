@@ -1,0 +1,50 @@
+<CURRENT> MAP file: mapfile_ref.map
+<REFERENCE> MAP file: mapfile.map
+Difference is counted as <CURRENT> - <REFERENCE>,           i.e. a positive number means that <CURRENT> is larger.
+Total sizes of <CURRENT>:                                       <REFERENCE>     Difference
+Used stat D/IRAM:   36338 bytes ( 222558 remain, 14.0% used)          37902          -1564 (  +1564 remain,      +0 total)
+      .data size:    2941 bytes                                        3209           -268
+      .bss  size:    3896 bytes                                        3976            -80
+      .text size:   29498 bytes                                       30714          -1216
+           other:       3 bytes                                           3
+Used Flash size :   79704 bytes                                      102152         -22448
+           .text:   58360 bytes                                       72048         -13688
+         .rodata:   21088 bytes                                       29848          -8760
+Total image size:  112143 bytes (.bin may be padded larger)          136075         -23932
+Per-archive contributions to ELF file:
+            Archive File              DRAM .data                 & 0.bss             IRAM0 .text            ram_st_total             Flash .text               & .rodata              & .appdesc             flash_total
+                        |    <C>|    <R>|<C>-<R>|    <C>|    <R>|<C>-<R>|    <C>|    <R>|<C>-<R>|    <C>|    <R>|<C>-<R>|    <C>|    <R>|<C>-<R>|    <C>|    <R>|<C>-<R>|    <C>|    <R>|<C>-<R>|    <C>|    <R>|<C>-<R>
+                         -----------------------                         -----------------------                         -----------------------                         -----------------------                        
+                  libc.a|    264|    264|       |    320|    320|       |       |       |       |    584|    584|       |  34538|  36560|  -2022|   3209|   3209|       |       |       |       |  38011|  40033|  -2022
+          libesp_timer.a|       |       |       |     20|     20|       |     72|     76|     -4|     92|     96|     -4|    374|    384|    -10|  14138|      8| +14130|       |       |       |  14584|    468| +14116
+           libfreertos.a|     94|     94|       |   2244|   2244|       |  10970|  11046|    -76|  13308|  13384|    -76|    338|    338|       |    803|    803|       |       |       |       |  12205|  12281|    -76
+         libesp_system.a|     41|     41|       |    134|    134|       |   1740|   1740|       |   1915|   1915|       |   6316|   6350|    -34|    487|    487|       |       |       |       |   8584|   8618|    -34
+          libspi_flash.a|    659|    659|       |     14|     14|       |   5336|   5392|    -56|   6009|   6065|    -56|    984|    988|     -4|    282|    282|       |       |       |       |   7261|   7321|    -60
+                libhal.a|   1581|   1581|       |      8|      8|       |   4764|   4764|       |   6353|   6353|       |    704|   1054|   -350|       |       |       |       |       |       |   7049|   7399|   -350
+     libesp_hw_support.a|      8|      8|       |     64|     64|       |   1310|   1310|       |   1382|   1382|       |   2476|   2856|   -380|    153|    182|    -29|       |       |       |   3947|   4356|   -409
+             libnewlib.a|    156|    156|       |    200|    200|       |   1704|   1612|    +92|   2060|   1968|    +92|   1906|   1728|   +178|    109|    109|       |       |       |       |   3875|   3605|   +270
+             libesp_mm.a|     28|     28|       |     44|     44|       |    566|    566|       |    638|    638|       |   2880|   2886|     -6|    166|    166|       |       |       |       |   3640|   3646|     -6
+               libheap.a|     12|     12|       |      8|      8|       |   1176|   1176|       |   1196|   1196|       |   2086|   2150|    -64|    301|    301|       |       |       |       |   3575|   3639|    -64
+      libesp_partition.a|       |       |       |      8|      8|       |       |       |       |      8|      8|       |   1202|   1214|    -12|     37|     37|       |       |       |       |   1239|   1251|    -12
+                liblog.a|      8|      8|       |    276|    276|       |    394|    394|       |    678|    678|       |    724|    724|       |     24|     24|       |       |       |       |   1150|   1150|       
+              libriscv.a|       |       |       |    512|    512|       |    834|    834|       |   1346|   1346|       |     88|     88|       |     50|     50|       |       |       |       |    972|    972|       
+ libbootloader_support.a|       |       |       |       |       |       |    632|    632|       |    632|    632|       |    276|    276|       |     40|     40|       |       |       |       |    948|    948|       
+     libesp_app_format.a|       |       |       |     10|     10|       |       |       |       |     10|     10|       |    514|    514|       |      8|  20742| -20734|    256|    256|       |    778|  21512| -20734
+         libesp_common.a|       |       |       |       |       |       |       |       |       |       |       |       |     58|     58|       |    446|   1782|  -1336|       |       |       |    504|   1840|  -1336
+              libefuse.a|       |       |       |       |       |       |       |       |       |       |       |       |    346|    346|       |     56|     56|       |       |       |       |    402|    402|       
+                libsoc.a|       |       |       |       |       |       |       |       |       |       |       |       |       |       |       |    360|    360|       |       |       |       |    360|    360|       
+         libapp_update.a|       |       |       |      4|      4|       |       |       |       |      4|      4|       |    194|    198|     -4|     30|     30|       |       |       |       |    224|    228|     -4
+               libmain.a|       |       |       |      1|       |     +1|       |       |       |      1|       |     +1|    194|    356|   -162|       |       |       |       |       |       |    194|    356|   -162
+       libesp_security.a|       |       |       |       |       |       |       |       |       |       |       |       |     22|     22|       |      8|      8|       |       |       |       |     30|     30|       
+            libpthread.a|       |       |       |       |       |       |       |       |       |       |       |       |     10|     10|       |       |       |       |       |       |       |     10|     10|       
+                libcxx.a|       |       |       |       |       |       |       |       |       |       |       |       |      4|      4|       |       |       |       |       |       |       |      4|      4|       
+The following entries are present in <CURRENT> only:
+            Archive File DRAM .data & 0.bss IRAM0 .text ram_st_total Flash .text & .rodata & .appdesc flash_total
+    libesp_driver_gpio.a         36       0           0           36        2110       207          0        2353
+The following entries are present in <REFERENCE> only:
+            Archive File DRAM .data & 0.bss IRAM0 .text ram_st_total Flash .text & .rodata & .appdesc flash_total
+    libesp_driver_uart.a        120      24           0          144        7792       552          0        8464
+                libvfs.a        192      44           0          236        4632       143          0        4967
+        libesp_ringbuf.a          0       0        1172         1172           0        97          0        1269
+    libesp_vfs_console.a          0      16           0           16         502       180          0         682
+   libnvs_sec_provider.a          0       0           0            0           2         0          0           2

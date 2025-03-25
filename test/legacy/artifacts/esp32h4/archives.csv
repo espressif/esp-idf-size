@@ -1,0 +1,40 @@
+Total sizes:,,,
+Used stat D/IRAM,37902 bytes (220994 remain 14.6% used),,,
+.data size,3209 bytes,,,
+.bss  size,3976 bytes,,,
+.text size,30714 bytes,,,
+other,3 bytes,,,
+Used Flash size ,102152 bytes,,,
+.text,72048 bytes,,,
+.rodata,29848 bytes,,,
+Total image size,136075 bytes (.bin may be padded larger),,,
+Per-archive contributions to ELF file:
+Archive File,DRAM .data,& 0.bss,IRAM0 .text,ram_st_total,Flash .text,& .rodata,& .appdesc
+libc.a,264,320,0,584,36560,3209,0
+libesp_app_format.a,0,10,0,10,514,20742,256
+libfreertos.a,94,2244,11046,13384,338,803,0
+libesp_system.a,41,134,1740,1915,6350,487,0
+libesp_driver_uart.a,120,24,0,144,7792,552,0
+libhal.a,1581,8,4764,6353,1054,0,0
+libspi_flash.a,659,14,5392,6065,988,282,0
+libvfs.a,192,44,0,236,4632,143,0
+libesp_hw_support.a,8,64,1310,1382,2856,182,0
+libesp_mm.a,28,44,566,638,2886,166,0
+libheap.a,12,8,1176,1196,2150,301,0
+libnewlib.a,156,200,1612,1968,1728,109,0
+libesp_common.a,0,0,0,0,58,1782,0
+libesp_ringbuf.a,0,0,1172,1172,0,97,0
+libesp_partition.a,0,8,0,8,1214,37,0
+liblog.a,8,276,394,678,724,24,0
+libriscv.a,0,512,834,1346,88,50,0
+libbootloader_support.a,0,0,632,632,276,40,0
+libesp_vfs_console.a,0,16,0,16,502,180,0
+libesp_timer.a,0,20,76,96,384,8,0
+libefuse.a,0,0,0,0,346,56,0
+libsoc.a,0,0,0,0,0,360,0
+libmain.a,0,0,0,0,356,0,0
+libapp_update.a,0,4,0,4,198,30,0
+libesp_security.a,0,0,0,0,22,8,0
+libpthread.a,0,0,0,0,10,0,0
+libcxx.a,0,0,0,0,4,0,0
+libnvs_sec_provider.a,0,0,0,0,2,0,0
