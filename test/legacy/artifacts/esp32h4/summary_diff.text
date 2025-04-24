@@ -1,0 +1,13 @@
+<CURRENT> MAP file: mapfile.map
+<REFERENCE> MAP file: mapfile_ref.map
+Difference is counted as <CURRENT> - <REFERENCE>,           i.e. a positive number means that <CURRENT> is larger.
+Total sizes of <CURRENT>:                                       <REFERENCE>     Difference
+Used stat D/IRAM:   37902 bytes ( 220994 remain, 14.6% used)          36338          +1564 (  -1564 remain,      +0 total)
+      .data size:    3209 bytes                                        2941           +268
+      .bss  size:    3976 bytes                                        3896            +80
+      .text size:   30714 bytes                                       29498          +1216
+           other:       3 bytes                                           3
+Used Flash size :  102152 bytes                                       79704         +22448
+           .text:   72048 bytes                                       58360         +13688
+         .rodata:   29848 bytes                                       21088          +8760
+Total image size:  136075 bytes (.bin may be padded larger)          112143         +23932
