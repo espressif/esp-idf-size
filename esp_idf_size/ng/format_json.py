@@ -22,7 +22,7 @@ def show_summary(memmap: Dict[str, Any], args: Namespace) -> None:
             'name': mem_type_name,
             'total': mem_type_info['size'],
             'used': mem_type_info['used'],
-            'free': mem_type_info['size'] - mem_type_info['used'],
+            'free': mem_type_info['size'] - mem_type_info['used'] if mem_type_info['size'] else 0,
             'parts': {},
         }
         summary['layout'].append(mem_type)
