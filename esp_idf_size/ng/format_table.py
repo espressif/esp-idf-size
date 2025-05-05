@@ -357,6 +357,10 @@ def show_summary(memmap: Dict[str, Any], args: Namespace) -> None:
     table = get_summary_table(memmap, args)
     log.print(table)
     show_image_info(memmap, args)
+    log.eprint((':memo: [yellow]Note: The reported total sizes show what is available during '
+                'linking as per the linker script. Flash total size does not account other flash '
+                'usage and application partition size. Available total size may be '
+                'reduced due to reserved memory and application configuration.'))
 
 
 def show_archives(memmap: Dict[str, Any], args: Namespace) -> None:
