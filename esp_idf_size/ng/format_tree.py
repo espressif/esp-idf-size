@@ -18,10 +18,14 @@ def show_memmap(memmap: Dict[str, Any], args: Namespace) -> None:
 
     tree = Tree('Memory Types')
     for mem_type_name, mem_type_info in memmap['memory_types'].items():
-        size = color_size(mem_type_info['size'], mem_type_info['size_diff'], args.diff)
         used = color_diff(mem_type_info['used'], mem_type_info['used_diff'], args.diff)
-        mem_type_tree = tree.add(f'{mem_type_name} {used} / {size}',
-                                 style='dark_orange', guide_style='dark_orange')
+        if mem_type_info['size']:
+            size = color_size(mem_type_info['size'], mem_type_info['size_diff'], args.diff)
+            mem_type_tree = tree.add(f'{mem_type_name} {used} / {size}',
+                                     style='dark_orange', guide_style='dark_orange')
+        else:
+            mem_type_tree = tree.add(f'{mem_type_name} {used}',
+                                     style='dark_orange', guide_style='dark_orange')
 
         for section_name, section_info in mem_type_info['sections'].items():
             name = section_info['abbrev_name'] if args.abbrev else section_name

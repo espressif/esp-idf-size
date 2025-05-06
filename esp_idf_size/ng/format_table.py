@@ -66,8 +66,10 @@ def get_summary_table(memmap: Dict[str, Any], args: Namespace) -> Table:
     for mem_type_name, mem_type_info in memmap['memory_types'].items():
         if mem_type_info['size']:
             mem_type_info['pct'] = mem_type_info['used'] / mem_type_info['size'] * 100
+            mem_type_info['remain'] = mem_type_info['size'] - mem_type_info['used']
         else:
             mem_type_info['pct'] = 0
+            mem_type_info['remain'] = 0
 
         if mem_type_info['size'] - mem_type_info['size_diff']:
             mem_type_info['pct_diff'] = (mem_type_info['pct'] -
@@ -76,7 +78,6 @@ def get_summary_table(memmap: Dict[str, Any], args: Namespace) -> Table:
         else:
             mem_type_info['pct_diff'] = mem_type_info['pct'] - 0
 
-        mem_type_info['remain'] = mem_type_info['size'] - mem_type_info['used']
         mem_type_info['remain_diff'] = mem_type_info['size_diff'] - mem_type_info['used_diff']
         mem_type_info['total'] = mem_type_info['size']
         mem_type_info['total_diff'] = mem_type_info['size_diff']
@@ -131,24 +132,40 @@ def get_summary_table(memmap: Dict[str, Any], args: Namespace) -> Table:
     mem_types_sorted = memorymap.sort_dict_by_key(memmap['memory_types'], sort_key, args.sort_reverse)
 
     for mem_type_name, mem_type_info in mem_types_sorted.items():
-        table.add_row(mem_type_name,
-                      color_diff(mem_type_info['used'], mem_type_info['used_diff'], args.diff),
-                      color_diff(round(mem_type_info['pct'], 2), round(mem_type_info['pct_diff'], 2), args.diff),
-                      color_size(mem_type_info['remain'], mem_type_info['remain_diff'], args.diff),
-                      color_size(mem_type_info['total'], mem_type_info['total_diff'], args.diff),
-                      style='dark_orange')
+        if mem_type_info['size']:
+            table.add_row(mem_type_name,
+                          color_diff(mem_type_info['used'], mem_type_info['used_diff'], args.diff),
+                          color_diff(round(mem_type_info['pct'], 2), round(mem_type_info['pct_diff'], 2), args.diff),
+                          color_size(mem_type_info['remain'], mem_type_info['remain_diff'], args.diff),
+                          color_size(mem_type_info['total'], mem_type_info['total_diff'], args.diff),
+                          style='dark_orange')
+        else:
+            table.add_row(mem_type_name,
+                          color_diff(mem_type_info['used'], mem_type_info['used_diff'], args.diff),
+                          '',
+                          '',
+                          '',
+                          style='dark_orange')
 
         sections_sorted = memorymap.sort_dict_by_key(mem_type_info['sections'], sort_key, args.sort_reverse)
 
         for section_name, section_info in sections_sorted.items():
             name = section_info['abbrev_name'] if args.abbrev else section_name
 
-            table.add_row(f'   {name}',
-                          color_diff(section_info['used'], section_info['used_diff'], args.diff),
-                          color_diff(round(section_info['pct'], 2), round(section_info['pct_diff'], 2), args.diff),
-                          '',
-                          '',
-                          style='bright_blue')
+            if mem_type_info['size']:
+                table.add_row(f'   {name}',
+                              color_diff(section_info['used'], section_info['used_diff'], args.diff),
+                              color_diff(round(section_info['pct'], 2), round(section_info['pct_diff'], 2), args.diff),
+                              '',
+                              '',
+                              style='bright_blue')
+            else:
+                table.add_row(f'   {name}',
+                              color_diff(section_info['used'], section_info['used_diff'], args.diff),
+                              '',
+                              '',
+                              '',
+                              style='bright_blue')
 
     return table
 
@@ -340,6 +357,10 @@ def show_summary(memmap: Dict[str, Any], args: Namespace) -> None:
     table = get_summary_table(memmap, args)
     log.print(table)
     show_image_info(memmap, args)
+    log.eprint((':memo: [yellow]Note: The reported total sizes show what is available during '
+                'linking as per the linker script. Flash total size does not account other flash '
+                'usage and application partition size. Available total size may be '
+                'reduced due to reserved memory and application configuration.'))
 
 
 def show_archives(memmap: Dict[str, Any], args: Namespace) -> None:

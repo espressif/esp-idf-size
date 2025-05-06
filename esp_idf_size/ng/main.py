@@ -107,6 +107,15 @@ def main() -> None:
                         action='store_true',
                         help='Show unchanged items for --diff operation.')
 
+    parser.add_argument('--no-flash-size',
+                        action='store_true',
+                        help=('Do not use the total flash size specified in the link map file and set it to zero. '
+                              'This will show only the flash usage without indicating the total available and '
+                              'remaining size, replicating the behavior of the legacy esp-idf-size implementation. '
+                              'The actual flash size available for the application depends on factors such as the '
+                              'partition size for the application and other flash usage, so the total flash size '
+                              'in the link map file might not accurately represent the true available size.'))
+
     parser.add_argument('--lto', '--no-lto',
                         dest='use_dwarf',
                         action=ToggleAction,
@@ -210,10 +219,14 @@ def main() -> None:
         memmap = memorymap.get(args.input_file, load_symbols, args.use_dwarf, map_file, elf)
         if not args.show_unused:
             memorymap.remove_unused(memmap)
+        if args.no_flash_size:
+            memorymap.ignore_flash_size(memmap)
         if args.diff:
             memmap_ref = memorymap.get(args.diff, load_symbols, args.use_dwarf)
             if not args.show_unused:
                 memorymap.remove_unused(memmap_ref)
+            if args.no_flash_size:
+                memorymap.ignore_flash_size(memmap)
             memmap = memorymap.diff(memmap, memmap_ref)
             if memmap['target'] != memmap['target_diff']:
                 log.warn((f'The target of the reference and other project is '

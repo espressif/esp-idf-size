@@ -519,6 +519,25 @@ def remove_unused(memory_map: Dict[str, Any]) -> None:
     for mem_type_name, mem_type_info in memory_map['memory_types'].items():
         mem_type_info['sections'] = {k: v for k, v in mem_type_info['sections'].items() if v['archives']}
 
+    # Update memory type usage in case some unused sections have been removed.
+    for mem_type_name, mem_type_info in memory_map['memory_types'].items():
+        mem_type_info['used'] = 0
+        for section_name, section_info in mem_type_info['sections'].items():
+            mem_type_info['used'] += section_info['size']
+
+
+def ignore_flash_size(memory_map: Dict[str, Any]) -> None:
+    # Set the total size of each Flash memory type to zero. The total flash
+    # size specified in the link map file in Memory Configuration might not
+    # accurately represent the actual flash size available for the application.
+    # The flash could also include a bootloader, partition table, and other
+    # data. Additionally, the application's size is restricted by its partition
+    # size as defined in the partition table. This replicates the previous
+    # behavior of esp-idf-size.
+    for mem_type_name, mem_type_info in memory_map['memory_types'].items():
+        if 'flash' in mem_type_name.lower():
+            mem_type_info['size'] = 0
+
 
 def trim(memory_map: Dict[str, Any], args: Namespace) -> None:
     """Trim the memory map tree based on command line arguments. This trims the
