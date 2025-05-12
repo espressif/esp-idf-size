@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: 2023-2024 Espressif Systems (Shanghai) CO LTD
+# SPDX-FileCopyrightText: 2023-2025 Espressif Systems (Shanghai) CO LTD
 # SPDX-License-Identifier: Apache-2.0
 
 from argparse import Namespace
@@ -357,10 +357,11 @@ def show_summary(memmap: Dict[str, Any], args: Namespace) -> None:
     table = get_summary_table(memmap, args)
     log.print(table)
     show_image_info(memmap, args)
-    log.eprint((':memo: [yellow]Note: The reported total sizes show what is available during '
-                'linking as per the linker script. Flash total size does not account other flash '
-                'usage and application partition size. Available total size may be '
-                'reduced due to reserved memory and application configuration.'))
+    log.eprint(('[yellow]Note: The reported total sizes may be smaller than those '
+                'in the technical reference manual due to reserved memory and application '
+                'configuration. The total flash size available for the application is not '
+                'included by default, as it cannot be reliably determined due to the presence '
+                'of other data like the bootloader, partition table, and application partition size.'))
 
 
 def show_archives(memmap: Dict[str, Any], args: Namespace) -> None:
