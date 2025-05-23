@@ -486,7 +486,7 @@ def main() -> None:
 
     parser.add_argument(
         'map_file', help='MAP file produced by linker',
-        type=argparse.FileType('r'))
+        type=argparse.FileType('r', encoding='utf-8'))
 
     format_group = parser.add_mutually_exclusive_group()
 
@@ -534,7 +534,7 @@ def main() -> None:
     check_target(detected_target, args.map_file)
 
     if args.another_map_file:
-        with open(args.another_map_file, 'r') as f:
+        with open(args.another_map_file, 'r', encoding='utf-8') as f:
             detected_target_diff, segments_diff, sections_diff = load_map_data(f)
             check_target(detected_target_diff, f)
             if detected_target_diff != detected_target:
