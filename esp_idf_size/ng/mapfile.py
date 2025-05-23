@@ -26,7 +26,7 @@ class MapFile:
 
     def _get_mapfile_lines(self, fn: str) -> List[str]:
         try:
-            with open(fn, 'r') as f:
+            with open(fn, 'r', encoding='utf-8') as f:
                 lines = f.read().splitlines()
         except (OSError, ValueError) as e:
             raise MapFileException(f'cannot read linker map file: {e}')
