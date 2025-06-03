@@ -1,3 +1,9 @@
+## v1.7.1 (2025-06-03)
+
+### Bug Fixes
+
+- bump python to 3.13 in release_pypi.yml
+
 ## v1.7.0 (2025-06-03)
 
 ### New Features
