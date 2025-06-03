@@ -1,3 +1,18 @@
+## v1.7.0 (2025-06-03)
+
+### New Features
+
+- add option to ignore total flash size from linker script
+- adjust esp32h4 chip info description
+- initial esp32h21 support
+
+### Bug Fixes
+
+- **ng**: exclude the total flash size from the report by default
+- open the map file using UTF-8 encoding
+- add a note about total memory type sizes reported in summary
+- adjust memory type used size when removing unused sections
+
 ## v1.6.1 (2024-11-08)
 
 ### Bug Fixes
