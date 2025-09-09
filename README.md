@@ -19,22 +19,19 @@ ESP-IDF, please refer to
 [Minimizing Binary Size](https://docs.espressif.com/projects/esp-idf/en/stable/api-guides/performance/size.html).
 
 
-The `esp-idf-size` package comes in two versions: legacy and refactored. The
-refactored version, which is the default version used in ESP_IDF v5.3 and
-later, retains backward compatibility with the options, making it easy to
-switch between the two by setting the `ESP_IDF_SIZE_NG` environment variable,
-available from ESP-IDF v5.0 onwards. However, the size report output
-formats are different in the refactored version. You can also use the
-refactored version by specifying the `--ng` option or by directly using the
-`esp_idf_size.ng` subpackage. Here are some examples of how to use the
-refactored version:
+Starting from version 2.0.0, `esp-idf-size` uses the new generation (NG) 
+implementation by default, providing improved performance and additional features
+compared to the legacy version.
 
-```sh
-python -m esp_idf_size --ng --help
-python -m esp_idf_size.ng --help
-export ESP_IDF_SIZE_NG=1
-python -m esp_idf_size --help
-```
+**Breaking Changes in v2.0.0:**
+- The new generation functionality is now the default behavior
+- Legacy `--ng` flag and `ESP_IDF_SIZE_NG` environment variable are no longer needed
+- Output formats may differ from the legacy version (`json` vs `json2`)
 
-For more detailed information about the refactored version, please refer to the
-documentation available [here](esp_idf_size/ng/docs/readme.md).
+**Migration Guide:**
+- Remove `--ng` flags from your commands - the new functionality is now default
+- Update any imports from `esp_idf_size.ng` to `esp_idf_size`
+- Review and update any scripts that parse the output format
+
+For more detailed information about the available features and options, please refer to the
+documentation available [here](esp_idf_size/docs/readme.md).
