@@ -5,7 +5,7 @@
 
 __version__ = '1.7.1'
 
-from .ng import log, memorymap
+from . import log, memorymap
 
 __all__ = [
     'memorymap',
