@@ -1,3 +1,14 @@
+## v2.0.0 (2025-09-19)
+
+### BREAKING CHANGE
+
+- NG is now default. Remove --ng flags and ESP_IDF_SIZE_NG env var.
+Update imports from esp_idf_size.ng to esp_idf_size. Output formats may differ.
+
+### New Features
+
+- Dropped --legacy mode and made .ng implementation default behaviour
+
 ## v1.7.1 (2025-06-03)
 
 ### Bug Fixes

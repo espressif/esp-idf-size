@@ -3,7 +3,7 @@
 
 """Package responsible for analyzing the binary size of firmware in ESP-IDF projects."""
 
-__version__ = '1.7.1'
+__version__ = '2.0.0'
 
 from . import log, memorymap
 
