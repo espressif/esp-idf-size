@@ -11,7 +11,8 @@ from .elf import Elf
 
 def show_summary(memmap: Dict[str, Any], args: Namespace) -> None:
     summary: Dict[str, Any] = {
-        'version': '1.1',
+        'version': '1.2',
+        'total_size': memmap['image_size'],
         'layout': [],
     }
 
