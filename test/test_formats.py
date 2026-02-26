@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: 2024 Espressif Systems (Shanghai) CO LTD
+# SPDX-FileCopyrightText: 2024-2026 Espressif Systems (Shanghai) CO LTD
 # SPDX-License-Identifier: Apache-2.0
 
 import filecmp
@@ -30,22 +30,45 @@ def test_formats(target: str, artifacts: Path) -> None:
 
     map_fn = os.path.join(artifacts_dir, proj_desc['project_name'] + '.map')
 
-    logging.info(f'Testing: summary')
-    run([sys.executable, '-m', 'esp_idf_size', '--format', 'table', '-o', 'summary.table', map_fn],
-        cwd=tmp_dir_path, check=True)
+    logging.info('Testing: summary')
+    run(
+        [sys.executable, '-m', 'esp_idf_size', '--format', 'table', '-o', 'summary.table', map_fn],
+        cwd=tmp_dir_path,
+        check=True,
+    )
     assert filecmp.cmp(artifacts_dir / 'summary.table', tmp_dir_path / 'summary.table', shallow=False)
 
-    logging.info(f'Testing: archives')
-    run([sys.executable, '-m', 'esp_idf_size', '--format', 'table', '--archives', '-o', 'archives.table', map_fn],
-        cwd=tmp_dir_path, check=True)
+    logging.info('Testing: archives')
+    run(
+        [sys.executable, '-m', 'esp_idf_size', '--format', 'table', '--archives', '-o', 'archives.table', map_fn],
+        cwd=tmp_dir_path,
+        check=True,
+    )
     assert filecmp.cmp(artifacts_dir / 'archives.table', tmp_dir_path / 'archives.table', shallow=False)
 
-    logging.info(f'Testing: files')
-    run([sys.executable, '-m', 'esp_idf_size', '--format', 'table', '--files', '-o', 'files.table', map_fn],
-        cwd=tmp_dir_path, check=True)
+    logging.info('Testing: files')
+    run(
+        [sys.executable, '-m', 'esp_idf_size', '--format', 'table', '--files', '-o', 'files.table', map_fn],
+        cwd=tmp_dir_path,
+        check=True,
+    )
     assert filecmp.cmp(artifacts_dir / 'files.table', tmp_dir_path / 'files.table', shallow=False)
 
-    logging.info(f'Testing: archive details')
-    run([sys.executable, '-m', 'esp_idf_size', '--format', 'table', '--archive-details',
-         'libesp_system.a', '-o', 'archive_details.table', map_fn], cwd=tmp_dir_path, check=True)
+    logging.info('Testing: archive details')
+    run(
+        [
+            sys.executable,
+            '-m',
+            'esp_idf_size',
+            '--format',
+            'table',
+            '--archive-details',
+            'libesp_system.a',
+            '-o',
+            'archive_details.table',
+            map_fn,
+        ],
+        cwd=tmp_dir_path,
+        check=True,
+    )
     assert filecmp.cmp(artifacts_dir / 'archive_details.table', tmp_dir_path / 'archive_details.table', shallow=False)

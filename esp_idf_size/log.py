@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: 2023-2024 Espressif Systems (Shanghai) CO LTD
+# SPDX-FileCopyrightText: 2023-2026 Espressif Systems (Shanghai) CO LTD
 # SPDX-License-Identifier: Apache-2.0
 
 """Basic logging functions utilizing the rich.console module."""
@@ -51,12 +51,14 @@ def print(*args: Any) -> None:
     _print_stdout(*args)  # type: ignore
 
 
-def set_console(file_stdout: Optional[IO[str]]=None,
-                file_stderr: Optional[IO[str]]=None,
-                quiet: bool=False,
-                no_color: bool=False,
-                force_terminal: Optional[bool]=None,
-                debug: bool=False) -> None:
+def set_console(
+    file_stdout: Optional[IO[str]] = None,
+    file_stderr: Optional[IO[str]] = None,
+    quiet: bool = False,
+    no_color: bool = False,
+    force_terminal: Optional[bool] = None,
+    debug: bool = False,
+) -> None:
     """Configure rich console properties used by esp_idf_size
 
     Args:
@@ -83,8 +85,11 @@ def set_console(file_stdout: Optional[IO[str]]=None,
     # terminal width, so set it here to large enough size, that could be considered
     # as unlimited.
     width = 10000
-    console_stderr = Console(file=file_stderr, stderr=True, width=width, quiet=quiet, no_color=no_color,
-                             force_terminal=force_terminal)
-    console_stdout = Console(file=file_stdout, width=width, quiet=quiet, no_color=no_color, force_terminal=force_terminal)
+    console_stderr = Console(
+        file=file_stderr, stderr=True, width=width, quiet=quiet, no_color=no_color, force_terminal=force_terminal
+    )
+    console_stdout = Console(
+        file=file_stdout, width=width, quiet=quiet, no_color=no_color, force_terminal=force_terminal
+    )
 
     debug_on = debug

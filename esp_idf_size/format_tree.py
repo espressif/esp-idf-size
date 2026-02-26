@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: 2023-2024 Espressif Systems (Shanghai) CO LTD
+# SPDX-FileCopyrightText: 2023-2026 Espressif Systems (Shanghai) CO LTD
 # SPDX-License-Identifier: Apache-2.0
 
 from argparse import Namespace
@@ -21,11 +21,9 @@ def show_memmap(memmap: Dict[str, Any], args: Namespace) -> None:
         used = color_diff(mem_type_info['used'], mem_type_info['used_diff'], args.diff)
         if mem_type_info['size']:
             size = color_size(mem_type_info['size'], mem_type_info['size_diff'], args.diff)
-            mem_type_tree = tree.add(f'{mem_type_name} {used} / {size}',
-                                     style='dark_orange', guide_style='dark_orange')
+            mem_type_tree = tree.add(f'{mem_type_name} {used} / {size}', style='dark_orange', guide_style='dark_orange')
         else:
-            mem_type_tree = tree.add(f'{mem_type_name} {used}',
-                                     style='dark_orange', guide_style='dark_orange')
+            mem_type_tree = tree.add(f'{mem_type_name} {used}', style='dark_orange', guide_style='dark_orange')
 
         for section_name, section_info in mem_type_info['sections'].items():
             name = section_info['abbrev_name'] if args.abbrev else section_name
@@ -50,7 +48,9 @@ def show_memmap(memmap: Dict[str, Any], args: Namespace) -> None:
     log.print(tree)
 
 
-def show_archives_dependencies(memmap: Dict[str, Any], map_file: mapfile.MapFile, elf: Optional[Elf], args: Namespace) -> None:
+def show_archives_dependencies(
+    memmap: Dict[str, Any], map_file: mapfile.MapFile, elf: Optional[Elf], args: Namespace
+) -> None:
     arch_deps = deps.get_archives_dependencies(map_file, memmap, elf, args)
     if args.dep_reverse:
         tree_name = 'Archive reverse dependencies'
@@ -67,7 +67,9 @@ def show_archives_dependencies(memmap: Dict[str, Any], map_file: mapfile.MapFile
         for arch_dep_name, arch_dep_info in arch_info['archives'].items():
             arch_dep_name_abbrev = arch_dep_info['abbrev_name'] if args.abbrev else arch_dep_name
             arch_dep_size = arch_dep_info['size']
-            dep_tree = arch_tree.add(f'{arch_dep_name_abbrev} {arch_dep_size}', style='bright_blue', guide_style='bright_blue')
+            dep_tree = arch_tree.add(
+                f'{arch_dep_name_abbrev} {arch_dep_size}', style='bright_blue', guide_style='bright_blue'
+            )
 
             if args.dep_symbols:
                 for sym in arch_dep_info['symbols']:

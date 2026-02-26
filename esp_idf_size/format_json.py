@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: 2023-2024 Espressif Systems (Shanghai) CO LTD
+# SPDX-FileCopyrightText: 2023-2026 Espressif Systems (Shanghai) CO LTD
 # SPDX-License-Identifier: Apache-2.0
 
 import json
@@ -54,8 +54,9 @@ def show_symbols(memmap: Dict[str, Any], args: Namespace) -> None:
     log.print(json.dumps(summary, indent=4))
 
 
-def show_archives_dependencies(memmap: Dict[str, Any], map_file: mapfile.MapFile,
-                               elf: Optional[Elf], args: Namespace) -> None:
+def show_archives_dependencies(
+    memmap: Dict[str, Any], map_file: mapfile.MapFile, elf: Optional[Elf], args: Namespace
+) -> None:
     arch_deps = deps.get_archives_dependencies(map_file, memmap, elf, args)
     log.print(json.dumps(arch_deps, indent=4))
 

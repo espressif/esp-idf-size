@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: 2024 Espressif Systems (Shanghai) CO LTD
+# SPDX-FileCopyrightText: 2024-2026 Espressif Systems (Shanghai) CO LTD
 # SPDX-License-Identifier: Apache-2.0
 
 from argparse import Namespace
@@ -8,8 +8,9 @@ from . import deps, log, mapfile, memorymap
 from .elf import Elf
 
 
-def show_archives_dependencies(map_file: mapfile.MapFile, memmap: Dict[str, Any],
-                               elf: Optional[Elf], args: Namespace) -> None:
+def show_archives_dependencies(
+    map_file: mapfile.MapFile, memmap: Dict[str, Any], elf: Optional[Elf], args: Namespace
+) -> None:
 
     arch_deps = deps.get_archives_dependencies(map_file, memmap, elf, args)
     arch_deps = memorymap.get_summary_filtered(arch_deps, args)

@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: 2023-2024 Espressif Systems (Shanghai) CO LTD
+# SPDX-FileCopyrightText: 2023-2026 Espressif Systems (Shanghai) CO LTD
 # SPDX-License-Identifier: Apache-2.0
 
 import re
@@ -15,7 +15,7 @@ class MapFile:
     # Explicit bytes of data in output section
     EXPLICIT_BYTES = ['BYTE', 'SHORT', 'LONG', 'QUAD', 'SQUAD']
 
-    def __init__(self, fn:str) -> None:
+    def __init__(self, fn: str) -> None:
         self.fn = fn
         self.lines = self._get_mapfile_lines(fn)
         self.line_idx = 0
@@ -26,7 +26,7 @@ class MapFile:
 
     def _get_mapfile_lines(self, fn: str) -> List[str]:
         try:
-            with open(fn, 'r', encoding='utf-8') as f:
+            with open(fn, encoding='utf-8') as f:
                 lines = f.read().splitlines()
         except (OSError, ValueError) as e:
             raise MapFileException(f'cannot read linker map file: {e}')
@@ -37,7 +37,7 @@ class MapFile:
         regions: List[Dict[str, Any]] = []
         found = False
         header = False
-        for ln, line in enumerate(self.lines[self.line_idx:], start=self.line_idx):
+        for ln, line in enumerate(self.lines[self.line_idx :], start=self.line_idx):
             if line.startswith('Linker script and memory map'):
                 break
 
@@ -51,25 +51,22 @@ class MapFile:
                     header = True
                 continue
 
-            splitted = line.split()
-            if not splitted:
+            split = line.split()
+            if not split:
                 # Empty line after memory regions
                 continue
-            if len(splitted) == 4:
-                name, origin, length, attrs = splitted
-            elif len(splitted) == 3:
-                name, origin, length = splitted
+            if len(split) == 4:
+                name, origin, length, attrs = split
+            elif len(split) == 3:
+                name, origin, length = split
                 attrs = ''
             else:
-                raise MapFileException((f'unexpected format of memory region "{line}" at line {ln + 1} in '
-                                        f'"Memory Configuration" section in "{self.fn}" map file'))
+                raise MapFileException(
+                    f'unexpected format of memory region "{line}" at line {ln + 1} '
+                    f'in "Memory Configuration" section in "{self.fn}" map file'
+                )
 
-            regions.append({
-                'name': name,
-                'origin': int(origin, 0),
-                'length': int(length, 0),
-                'attrs': attrs
-            })
+            regions.append({'name': name, 'origin': int(origin, 0), 'length': int(length, 0), 'attrs': attrs})
 
         if not found or not header:
             raise MapFileException(f'cannot parse "Memory Configuration" section in "{self.fn}" map file')
@@ -91,10 +88,10 @@ class MapFile:
 
         target = ''
         found = False
-        for ln, line in enumerate(self.lines[self.line_idx:], start=self.line_idx):
+        for ln, line in enumerate(self.lines[self.line_idx :], start=self.line_idx):
             if line.startswith('Cross Reference Table'):
                 # We have reached end of the "Linker script and memory map" section.
-                log.warn(f'cannot find target in linker map file')
+                log.warn('cannot find target in linker map file')
                 break
 
             elif not found:
@@ -122,19 +119,19 @@ class MapFile:
         # self.line_idx += ln
         return target
 
-    def _get_archive_object_file(self, s: str) -> Tuple[str,str]:
+    def _get_archive_object_file(self, s: str) -> Tuple[str, str]:
         idx = s.find('(')
         if idx == -1:
             # Object file linked directly without archive. As in the original parser,
             # assign a default archive for such object file.
             return ('(exe)', s)
         archive = s[:idx]
-        object_file = s[idx + 1:-1]
+        object_file = s[idx + 1 : -1]
         return (archive, object_file)
 
     def _get_sections(self) -> List[Dict[str, Any]]:
         def add_input_section(output_section: Dict[str, Any], input_section: Dict[str, Any]) -> None:
-            '''
+            """
             The linker map may contain input sections with different sizes at the same address. This
             seems to be related to the -Og and separated function/data sections. The logic behind this
             still eludes me and it would be nice to fully understand what's going on in these situations and
@@ -183,13 +180,15 @@ class MapFile:
                                                       0xc (size before relaxing)
              .rodata.str1.1
                             0x0000000000402013       0x12 test2.o
-            '''
+            """
             if not output_section['input_sections']:
                 output_section['input_sections'].append(input_section)
                 return
 
-            if (input_section['address'] < output_section['address'] or
-                    input_section['address'] >= output_section['address'] + output_section['size']):
+            if (
+                input_section['address'] < output_section['address']
+                or input_section['address'] >= output_section['address'] + output_section['size']
+            ):
                 # The linker map might include an output section featuring an input section with an address
                 # beyond the range of the output section. Disregard such sections by setting their size to
                 # zero. Note that padding is still considered in the calculation.
@@ -220,7 +219,7 @@ class MapFile:
         in_output_section = False
         in_input_section = False
         found = False
-        for ln, line in enumerate(self.lines[self.line_idx:], start=self.line_idx):
+        for ln, line in enumerate(self.lines[self.line_idx :], start=self.line_idx):
             if line.startswith('Cross Reference Table'):
                 # We have reached end of the "Linker script and memory map" section.
                 break
@@ -255,11 +254,11 @@ class MapFile:
                     output_section['address'] = 0
                     output_section['size'] = 0
 
-                    splitted = line.split()
-                    if len(splitted) == 2:
+                    split = line.split()
+                    if len(split) == 2:
                         try:
-                            address = int(splitted[0], 0)
-                            size = int(splitted[1], 0)
+                            address = int(split[0], 0)
+                            size = int(split[1], 0)
                             # Output section has address and length on the second line.
                             output_section['address'] = address
                             output_section['size'] = size
@@ -280,38 +279,44 @@ class MapFile:
                         'fill': 0,
                     }
                     # The archive path in the input section might contain spaces.
-                    splitted = line.split(maxsplit=3)
-                    if len(splitted) == 1:
+                    split = line.split(maxsplit=3)
+                    if len(split) == 1:
                         # Same as for output section. We have just the name and the rest is on the next line.
-                        input_section['name'] = splitted[0]
-                    elif len(splitted) == 4:
-                        input_section['name'] = splitted[0]
-                        input_section['address'] = int(splitted[1], 0)
-                        input_section['size'] = int(splitted[2], 0)
-                        input_section['archive'], input_section['object_file'] = self._get_archive_object_file(splitted[3])
+                        input_section['name'] = split[0]
+                    elif len(split) == 4:
+                        input_section['name'] = split[0]
+                        input_section['address'] = int(split[1], 0)
+                        input_section['size'] = int(split[2], 0)
+                        input_section['archive'], input_section['object_file'] = self._get_archive_object_file(split[3])
                     else:
-                        raise MapFileException((f'unexpected format of input section "{line}" at line {ln + 1} in '
-                                                f'"Linker script and memory map" section in "{self.fn}" map file'))
+                        raise MapFileException(
+                            f'unexpected format of input section "{line}" at line {ln + 1} '
+                            f'in "Linker script and memory map" section in "{self.fn}" map file'
+                        )
 
                 elif in_input_section:
                     if input_section['address'] is None:
                         # Handle input section address, size and archive(object_file) on a separate line.
                         # The archive path in the input section might contain spaces.
-                        splitted = line.split(maxsplit=2)
-                        if len(splitted) != 3:
-                            raise MapFileException((f'unexpected input section continuous line "{line}" at line {ln + 1} in '
-                                                    f'"Linker script and memory map" section in "{self.fn}" map file'))
-                        input_section['address'] = int(splitted[0], 0)
-                        input_section['size'] = int(splitted[1], 0)
-                        input_section['archive'], input_section['object_file'] = self._get_archive_object_file(splitted[2])
+                        split = line.split(maxsplit=2)
+                        if len(split) != 3:
+                            raise MapFileException(
+                                f'unexpected input section continuous line "{line}" at line {ln + 1} in '
+                                f'"Linker script and memory map" section in "{self.fn}" map file'
+                            )
+                        input_section['address'] = int(split[0], 0)
+                        input_section['size'] = int(split[1], 0)
+                        input_section['archive'], input_section['object_file'] = self._get_archive_object_file(split[2])
 
                     elif line.startswith('*fill*'):
-                        splitted = line.split()
-                        if len(splitted) != 3:
-                            raise MapFileException((f'unexpected "*fill*" line "{line}" at line {ln + 1} in '
-                                                    f'"Linker script and memory map" section in "{self.fn}" map file'))
-                        address = int(splitted[1], 0)
-                        size = int(splitted[2], 0)
+                        split = line.split()
+                        if len(split) != 3:
+                            raise MapFileException(
+                                f'unexpected "*fill*" line "{line}" at line {ln + 1} '
+                                f'in "Linker script and memory map" section in "{self.fn}" map file'
+                            )
+                        address = int(split[1], 0)
+                        size = int(split[2], 0)
                         if input_section['address'] == address:
                             # Input section address is the same as *fill* address. Set input
                             # section size to zero, but keep the *fill* size. It will be accounted
@@ -325,9 +330,9 @@ class MapFile:
                         # https://sourceware.org/binutils/docs/ld/Output-Section-Data.html
                         # We account them the same as for *fill* into the previous input
                         # section.
-                        splitted = line.split()
-                        if len(splitted) == 4 and splitted[2] in self.EXPLICIT_BYTES:
-                            input_section['fill'] += int(splitted[1], 0)
+                        split = line.split()
+                        if len(split) == 4 and split[2] in self.EXPLICIT_BYTES:
+                            input_section['fill'] += int(split[1], 0)
 
             elif line.startswith('.'):
                 # Detected new output section. There are two cases
@@ -352,16 +357,18 @@ class MapFile:
                     'input_sections': [],
                 }
 
-                splitted = line.split()
-                if len(splitted) == 1:
-                    output_section['name'] = splitted[0]
-                elif len(splitted) == 3:
-                    output_section['name'] = splitted[0]
-                    output_section['address'] = int(splitted[1], 0)
-                    output_section['size'] = int(splitted[2], 0)
+                split = line.split()
+                if len(split) == 1:
+                    output_section['name'] = split[0]
+                elif len(split) == 3:
+                    output_section['name'] = split[0]
+                    output_section['address'] = int(split[1], 0)
+                    output_section['size'] = int(split[2], 0)
                 else:
-                    raise MapFileException((f'unexpected format of output section "{line}" at line {ln + 1} in '
-                                            f'"Linker script and memory map" section in "{self.fn}" map file'))
+                    raise MapFileException(
+                        f'unexpected format of output section "{line}" at line {ln + 1} '
+                        f'in "Linker script and memory map" section in "{self.fn}" map file'
+                    )
 
         if not found:
             raise MapFileException('cannot parse "Linker script and memory map" section in "{self.fn}" map file')
@@ -386,10 +393,12 @@ class MapFile:
                 if not input_section['size']:
                     continue
                 if start_addr + offset != input_section['address']:
-                    msg = (f'Input section {input_section["name"]} at {hex(input_section["address"])} '
-                           f'is not at expected address {hex(start_addr + offset)}. '
-                           f'This signals error in the linker map parser. Please consider filing a '
-                           f'bug report with the linker map file attached.')
+                    msg = (
+                        f'Input section {input_section["name"]} at {hex(input_section["address"])} '
+                        f'is not at expected address {hex(start_addr + offset)}. '
+                        f'This signals error in the linker map parser. Please consider filing a '
+                        f'bug report with the linker map file attached.'
+                    )
                     raise MapFileException(msg)
                 offset += input_section['size'] + input_section['fill']
 
@@ -406,7 +415,7 @@ class MapFile:
         header = False
         symbol = None
 
-        for ln, line in enumerate(self.lines[self.line_idx:], start=self.line_idx):
+        for ln, line in enumerate(self.lines[self.line_idx :], start=self.line_idx):
             if not found:
                 if line.startswith('Cross Reference Table'):
                     found = True
@@ -423,12 +432,12 @@ class MapFile:
                 break
 
             if not line.startswith((' ', '\t')):
-                splitted = line.split(maxsplit=1)
-                if len(splitted) != 2:
+                split = line.split(maxsplit=1)
+                if len(split) != 2:
                     log.err(f'unexpected format of cross reference table entry "{line}"')
 
-                symbol = splitted[0]
-                definition = splitted[1]
+                symbol = split[0]
+                definition = split[1]
                 crt[symbol] = [self._get_archive_object_file(definition)]
             else:
                 line = line.strip()

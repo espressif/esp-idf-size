@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: 2024 Espressif Systems (Shanghai) CO LTD
+# SPDX-FileCopyrightText: 2024-2026 Espressif Systems (Shanghai) CO LTD
 # SPDX-License-Identifier: Apache-2.0
 
 import os
@@ -37,14 +37,14 @@ def get_archives_deps(crt: Dict[str, Any], archives_sizes: Dict[str, Any]) -> Di
                 archives[ref_archive] = {
                     'abbrev_name': os.path.basename(ref_archive),
                     'size': archives_sizes[ref_archive]['size'],
-                    'archives': {}
+                    'archives': {},
                 }
 
             if def_archive not in archives[ref_archive]['archives']:
                 archives[ref_archive]['archives'][def_archive] = {
                     'abbrev_name': os.path.basename(def_archive),
                     'size': archives_sizes[def_archive]['size'],
-                    'symbols': []
+                    'symbols': [],
                 }
 
             archives[ref_archive]['archives'][def_archive]['symbols'].append(sym)
@@ -79,7 +79,7 @@ def get_archives_revdeps(crt: Dict[str, Any], archives_sizes: Dict[str, Any]) ->
             archives[def_archive] = {
                 'abbrev_name': os.path.basename(def_archive),
                 'size': archives_sizes[def_archive]['size'],
-                'archives': {}
+                'archives': {},
             }
 
         for ref_archive in ref_archives:
@@ -87,7 +87,7 @@ def get_archives_revdeps(crt: Dict[str, Any], archives_sizes: Dict[str, Any]) ->
                 archives[def_archive]['archives'][ref_archive] = {
                     'abbrev_name': os.path.basename(ref_archive),
                     'size': archives_sizes[ref_archive]['size'],
-                    'symbols': []
+                    'symbols': [],
                 }
 
             archives[def_archive]['archives'][ref_archive]['symbols'].append(sym)
@@ -101,7 +101,7 @@ def _filter_crt(crt: Dict[str, Any], archives: Dict[str, Any], elf: Optional[Elf
         sym_names = [sym.name for sym in elf.symbols if sym.type in (STT_FUNC, STT_OBJECT) and sym.st_shndx != SHN_ABS]
         crt = {sym: refs for sym, refs in crt.items() if sym in sym_names}
     else:
-        log.die('Displaying archives\' dependencies requires an ELF file to work properly.')
+        log.die('Displaying archives dependencies requires an ELF file to work properly.')
 
     # Remove archives that were not included in the ELF file based on the Linker script and memory map.
     # Additionally, eliminate the reference archive if it is identical to the definition archive.
@@ -120,8 +120,9 @@ def _filter_crt(crt: Dict[str, Any], archives: Dict[str, Any], elf: Optional[Elf
     return crt_filtered
 
 
-def get_archives_dependencies(map_file: mapfile.MapFile, memmap: Dict[str, Any],
-                              elf: Optional[Elf], args: Namespace) -> Dict[str, Any]:
+def get_archives_dependencies(
+    map_file: mapfile.MapFile, memmap: Dict[str, Any], elf: Optional[Elf], args: Namespace
+) -> Dict[str, Any]:
     crt = map_file.cross_reference_table
     if crt is None:
         log.die('The cross-reference table is not available.')

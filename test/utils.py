@@ -7,7 +7,7 @@ from pathlib import Path
 from typing import Dict, Set
 
 
-def targets(ctx: Dict[str,Set]={'targets': set()}) -> Set[str]:
+def targets(ctx: Dict[str, Set] = {'targets': set()}) -> Set[str]:
     # Return set of targets found in the chip_info directory
     if ctx['targets']:
         return ctx['targets']

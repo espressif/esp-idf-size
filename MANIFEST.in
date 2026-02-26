@@ -1,2 +1,0 @@
-include esp_idf_size/chip_info/*
-include esp_idf_size/docs/readme.md

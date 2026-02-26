@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: 2023-2025 Espressif Systems (Shanghai) CO LTD
+# SPDX-FileCopyrightText: 2023-2026 Espressif Systems (Shanghai) CO LTD
 # SPDX-License-Identifier: Apache-2.0
 
 import json
@@ -32,8 +32,11 @@ def test_memmap(target: str, artifacts: Path) -> None:
     map_fn = os.path.join(proj_desc['build_dir'], proj_desc['project_name'] + '.map')
 
     # Generate memory map and compare it with the reference one
-    run([sys.executable, '-m', 'esp_idf_size', '--format', 'raw', '-o', 'memmap.json', map_fn],
-        cwd=tmp_dir_path, check=True)
+    run(
+        [sys.executable, '-m', 'esp_idf_size', '--format', 'raw', '-o', 'memmap.json', map_fn],
+        cwd=tmp_dir_path,
+        check=True,
+    )
 
     with open(artifacts / 'test_memmap' / target / 'memmap.json') as f:
         memmap_ref = json.load(f)
@@ -53,26 +56,36 @@ if __name__ == '__main__':
 
     parser = argparse.ArgumentParser(
         prog='test_memmap',
-        description=('Generate project\'s reference artifacts for specified targets. '
-                     'These artifacts are used for the memory map testing.'))
+        description=(
+            "Generate project's reference artifacts for specified targets. "
+            'These artifacts are used for the memory map testing.'
+        ),
+    )
 
-    parser.add_argument('-p', '--project',
-                        metavar='PROJECT_PATH',
-                        default=os.path.join(os.environ.get('IDF_PATH', ''),
-                                             'examples', 'get-started', 'hello_world'),
-                        help=('Path to the reference project, which artifacts will be generated. '
-                              'Default is hello_world.'))
-    parser.add_argument('-o', '--output-directory',
-                        metavar='OUTPUT_DIRECTORY',
-                        default='artifacts',
-                        help=('Output directory where the generated artifacts will be stored. '
-                              'It will contains subdirectory for each target. Default is artifacts.'))
-    parser.add_argument('targets',
-                        metavar='TARGET',
-                        nargs='*',
-                        default=utils.targets(),
-                        help=('Targets for which artifacts will be generated. '
-                              'Default is all targets.'))
+    parser.add_argument(
+        '-p',
+        '--project',
+        metavar='PROJECT_PATH',
+        default=os.path.join(os.environ.get('IDF_PATH', ''), 'examples', 'get-started', 'hello_world'),
+        help=('Path to the reference project, which artifacts will be generated. Default is hello_world.'),
+    )
+    parser.add_argument(
+        '-o',
+        '--output-directory',
+        metavar='OUTPUT_DIRECTORY',
+        default='artifacts',
+        help=(
+            'Output directory where the generated artifacts will be stored. '
+            'It will contain subdirectory for each target. Default is artifacts.'
+        ),
+    )
+    parser.add_argument(
+        'targets',
+        metavar='TARGET',
+        nargs='*',
+        default=utils.targets(),
+        help=('Targets for which artifacts will be generated. Default is all targets.'),
+    )
 
     args = parser.parse_args()
 
@@ -81,7 +94,7 @@ if __name__ == '__main__':
 
     unknown_targets = ', '.join(set(args.targets) - set(utils.targets()))
     if unknown_targets:
-        sys.exit(f'error: uknown targets: {unknown_targets}')
+        sys.exit(f'error: unknown targets: {unknown_targets}')
 
     IDF_PY_PATH = Path(os.environ['IDF_PATH']) / 'tools' / 'idf.py'
     tmpdir = TemporaryDirectory()
@@ -101,30 +114,68 @@ if __name__ == '__main__':
 
         map_file = str(project_path / 'build' / (proj_desc['project_name'] + '.map'))
 
-        run([sys.executable, '-m', 'esp_idf_size', '--format', 'raw', '-o', str(outdir / 'memmap.json'),
-             map_file],
-            cwd=project_path, check=True)
+        run(
+            [sys.executable, '-m', 'esp_idf_size', '--format', 'raw', '-o', str(outdir / 'memmap.json'), map_file],
+            cwd=project_path,
+            check=True,
+        )
 
         shutil.copy(project_path / 'build' / proj_desc['app_elf'], outdir)
         shutil.copy(project_path / 'build' / map_file, outdir)
         shutil.copy(project_path / 'build' / 'project_description.json', outdir)
 
         # Generate output format artifacts
-        run([sys.executable, '-m', 'esp_idf_size', '--format', 'table', '-o', str(outdir / 'summary.table'),
-             map_file],
-            cwd=project_path, check=True)
+        run(
+            [sys.executable, '-m', 'esp_idf_size', '--format', 'table', '-o', str(outdir / 'summary.table'), map_file],
+            cwd=project_path,
+            check=True,
+        )
 
-        run([sys.executable, '-m', 'esp_idf_size', '--format', 'table',
-             '--archives', '-o', str(outdir / 'archives.table'),
-             map_file],
-            cwd=project_path, check=True)
+        run(
+            [
+                sys.executable,
+                '-m',
+                'esp_idf_size',
+                '--format',
+                'table',
+                '--archives',
+                '-o',
+                str(outdir / 'archives.table'),
+                map_file,
+            ],
+            cwd=project_path,
+            check=True,
+        )
 
-        run([sys.executable, '-m', 'esp_idf_size', '--format', 'table',
-             '--files', '-o', str(outdir / 'files.table'),
-             map_file],
-            cwd=project_path, check=True)
+        run(
+            [
+                sys.executable,
+                '-m',
+                'esp_idf_size',
+                '--format',
+                'table',
+                '--files',
+                '-o',
+                str(outdir / 'files.table'),
+                map_file,
+            ],
+            cwd=project_path,
+            check=True,
+        )
 
-        run([sys.executable, '-m', 'esp_idf_size', '--format', 'table',
-             '--archive-details', 'libesp_system.a', '-o', str(outdir / 'archive_details.table'),
-             map_file],
-            cwd=project_path, check=True)
+        run(
+            [
+                sys.executable,
+                '-m',
+                'esp_idf_size',
+                '--format',
+                'table',
+                '--archive-details',
+                'libesp_system.a',
+                '-o',
+                str(outdir / 'archive_details.table'),
+                map_file,
+            ],
+            cwd=project_path,
+            check=True,
+        )
