@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: 2023-2024 Espressif Systems (Shanghai) CO LTD
+# SPDX-FileCopyrightText: 2023-2026 Espressif Systems (Shanghai) CO LTD
 # SPDX-License-Identifier: Apache-2.0
 
 """Creates a generic memory map representation and provides operations on top of it.
@@ -1506,6 +1506,20 @@ def get_proj_desc(map_fn: str) -> Optional[Dict[str, Any]]:
     dirname = os.path.dirname(map_fn)
     proj_desc_fn = os.path.join(dirname, 'project_description.json')
     proj_desc = _load_json_file(proj_desc_fn)
+    if proj_desc is None:
+        return None
+
+    # Validate that the project description matches the map file being analyzed.
+    # In multi-executable projects, project_description.json may reference a
+    # different executable than the map file passed to esp-idf-size.
+    app_elf = proj_desc.get('app_elf', '')
+    map_stem = os.path.splitext(os.path.basename(map_fn))[0]
+    elf_stem = os.path.splitext(os.path.basename(app_elf))[0]
+    if map_stem != elf_stem:
+        log.debug(f'project_description.json references {app_elf}, which does not '
+                  f'match map file {map_fn}')
+        return None
+
     return proj_desc
 
 
