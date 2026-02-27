@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: 2024 Espressif Systems (Shanghai) CO LTD
+# SPDX-FileCopyrightText: 2024-2026 Espressif Systems (Shanghai) CO LTD
 # SPDX-License-Identifier: Apache-2.0
 import json
 from pathlib import Path
@@ -10,14 +10,16 @@ import utils
 
 
 def pytest_addoption(parser: pytest.Parser) -> None:
-    parser.addoption('--url',
-                     default='https://github.com/espressif/esp-idf-size-test.git',
-                     metavar='URL',
-                     help='git URL from which the build artifacts should be fetched')
+    parser.addoption(
+        '--url',
+        default='https://github.com/espressif/esp-idf-size-test.git',
+        metavar='URL',
+        help='git URL from which the build artifacts should be fetched',
+    )
 
 
 @pytest.fixture
-def artifacts(pytestconfig: pytest.Config, ctx: dict={'tmpdir': None}) -> Path:
+def artifacts(pytestconfig: pytest.Config, ctx: dict = {'tmpdir': None}) -> Path:
     # Download artifacts for testing into temporary directory and return
     # the directory path.
     if ctx['tmpdir']:

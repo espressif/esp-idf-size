@@ -62,20 +62,24 @@ from typing import Any, Dict, Generator, List, Optional
 import yaml
 
 from . import log, mapfile
-from .elf import (SHF_ALLOC, SHT_PROGBITS, STT_FUNC, STT_OBJECT, Elf,
-                  Elf_Exception, Elf_Shdr, Elf_Sym)
+from .elf import SHF_ALLOC, SHT_PROGBITS, STT_FUNC, STT_OBJECT, Elf, Elf_Exception, Elf_Shdr, Elf_Sym
 
 VERSION = '1.0'
 
 
 class MemMapException(Exception):
     """Raised for errors originating from memorymap module."""
+
     pass
 
 
-def get(input_fn: str, load_symbols: bool=True, use_dwarf: Optional[bool]=None,
-        map_file: Optional[mapfile.MapFile]=None,
-        elf: Optional[Elf]=None) -> Dict[str, Any]:
+def get(
+    input_fn: str,
+    load_symbols: bool = True,
+    use_dwarf: Optional[bool] = None,
+    map_file: Optional[mapfile.MapFile] = None,
+    elf: Optional[Elf] = None,
+) -> Dict[str, Any]:
     """Generate memory map representing the static allocations in ESP-IDF project.
 
     Creates a dictionary that outlines the complete memory map for a specified project
@@ -201,19 +205,19 @@ def get(input_fn: str, load_symbols: bool=True, use_dwarf: Optional[bool]=None,
     # cross reference table
     try:
         map_file = map_file or mapfile.MapFile(map_fn)
-    except (mapfile.MapFileException) as e:
+    except mapfile.MapFileException as e:
         raise MemMapException(e)
 
     # Validate the parsed map file. If validation fails, it is not a critical
     # error, but the parsing might need correction or adjustment, so print a warning.
     try:
         map_file.validate()
-    except (mapfile.MapFileException) as e:
+    except mapfile.MapFileException as e:
         log.warn(str(e))
 
     elf = elf or get_elf(map_fn, proj_desc)
     if elf is None:
-        log.debug(f'elf file is not available')
+        log.debug('elf file is not available')
 
     if use_dwarf:
         # Try to expand input sections without archive based on DWARF info.
@@ -224,7 +228,7 @@ def get(input_fn: str, load_symbols: bool=True, use_dwarf: Optional[bool]=None,
         target = map_file.target
 
     if not target:
-        raise MemMapException(f'cannot determine chip target')
+        raise MemMapException('cannot determine chip target')
 
     memory_map['target'] = target
 
@@ -257,7 +261,7 @@ def get(input_fn: str, load_symbols: bool=True, use_dwarf: Optional[bool]=None,
             for isec in osec['input_sections']:
                 isec['symbols'] = []
 
-    # Split output sections according to splitted memory regions
+    # Split output sections according to split memory regions
     map_sections_splitted = _split_map_sections(map_sections_filtered, memory_regions_splitted)
 
     # Add archives info into sections. Archives contain objects and objects contain symbols.
@@ -266,7 +270,7 @@ def get(input_fn: str, load_symbols: bool=True, use_dwarf: Optional[bool]=None,
     # Generate the overall memory map representation
     memory_map['memory_types'] = _get_mem_type_map(memory_types, memory_regions_splitted, map_sections_splitted)
 
-    log.debug(f'memory map', memory_map)
+    log.debug('memory map', memory_map)
 
     return memory_map
 
@@ -399,7 +403,7 @@ def diff(memory_map_cur: Dict[str, Any], memory_map_ref: Dict[str, Any]) -> Dict
                             symbol_info_diff['size'] = 0
                             symbol_info_diff['size_diff'] = 0 - symbol_info_ref['size']
 
-    log.debug(f'memory map diff', memory_map_diff)
+    log.debug('memory map diff', memory_map_diff)
     return memory_map_diff
 
 
@@ -468,46 +472,59 @@ def unify(memory_map: Dict[str, Any]) -> None:
     memory_map['memory_types'] = memory_types_unified
 
 
-def walk(memory_map: Dict[str, Any], depth: str='all') -> Generator:
+def walk(memory_map: Dict[str, Any], depth: str = 'all') -> Generator:
     """Generator which yields tuple for memory type tree entries."""
     for mem_type_name, mem_type_info in memory_map['memory_types'].items():
         if depth == 'types':
-            yield (mem_type_name, mem_type_info,
-                   None, None,
-                   None, None,
-                   None, None,
-                   None, None)
+            yield (mem_type_name, mem_type_info, None, None, None, None, None, None, None, None)
             continue
         for section_name, section_info in mem_type_info['sections'].items():
             if depth == 'sections':
-                yield (mem_type_name, mem_type_info,
-                       section_name, section_info,
-                       None, None,
-                       None, None,
-                       None, None)
+                yield (mem_type_name, mem_type_info, section_name, section_info, None, None, None, None, None, None)
                 continue
             for archive_name, archive_info in section_info['archives'].items():
                 if depth == 'archives':
-                    yield (mem_type_name, mem_type_info,
-                           section_name, section_info,
-                           archive_name, archive_info,
-                           None, None,
-                           None, None)
+                    yield (
+                        mem_type_name,
+                        mem_type_info,
+                        section_name,
+                        section_info,
+                        archive_name,
+                        archive_info,
+                        None,
+                        None,
+                        None,
+                        None,
+                    )
                     continue
                 for object_file_name, object_file_info in archive_info['object_files'].items():
                     if depth == 'objects':
-                        yield (mem_type_name, mem_type_info,
-                               section_name, section_info,
-                               archive_name, archive_info,
-                               object_file_name, object_file_info,
-                               None, None)
+                        yield (
+                            mem_type_name,
+                            mem_type_info,
+                            section_name,
+                            section_info,
+                            archive_name,
+                            archive_info,
+                            object_file_name,
+                            object_file_info,
+                            None,
+                            None,
+                        )
                         continue
                     for symbol_name, symbol_info in object_file_info['symbols'].items():
-                        yield (mem_type_name, mem_type_info,
-                               section_name, section_info,
-                               archive_name, archive_info,
-                               object_file_name, object_file_info,
-                               symbol_name, symbol_info)
+                        yield (
+                            mem_type_name,
+                            mem_type_info,
+                            section_name,
+                            section_info,
+                            archive_name,
+                            archive_info,
+                            object_file_name,
+                            object_file_info,
+                            symbol_name,
+                            symbol_info,
+                        )
 
 
 def remove_unused(memory_map: Dict[str, Any]) -> None:
@@ -560,35 +577,38 @@ def trim(memory_map: Dict[str, Any], args: Namespace) -> None:
     else:
         depth = ALL
 
-    memory_map['memory_types'] = {k: v for k, v in memory_map['memory_types'].items()
-                                  if changed(v['used_diff'])}
+    memory_map['memory_types'] = {k: v for k, v in memory_map['memory_types'].items() if changed(v['used_diff'])}
 
     for mem_type_name, mem_type_info in memory_map['memory_types'].items():
-        mem_type_info['sections'] = {k: v for k, v in mem_type_info['sections'].items()
-                                     if changed(v['size_diff'])}
+        mem_type_info['sections'] = {k: v for k, v in mem_type_info['sections'].items() if changed(v['size_diff'])}
 
         for section_name, section_info in mem_type_info['sections'].items():
             if depth == ARCHIVE_DETAILS:
-                section_info['archives'] = {k: v for k, v in section_info['archives'].items()
-                                            if v['abbrev_name'] == args.archive_details and
-                                            changed(v['size_diff'])}
+                section_info['archives'] = {
+                    k: v
+                    for k, v in section_info['archives'].items()
+                    if v['abbrev_name'] == args.archive_details and changed(v['size_diff'])
+                }
             else:
-                section_info['archives'] = {k: v for k, v in section_info['archives'].items()
-                                            if changed(v['size_diff'])}
+                section_info['archives'] = {
+                    k: v for k, v in section_info['archives'].items() if changed(v['size_diff'])
+                }
 
             for archive_name, archive_info in section_info['archives'].items():
                 if depth == ARCHIVES:
                     archive_info['object_files'] = {}
                     continue
-                archive_info['object_files'] = {k: v for k, v in archive_info['object_files'].items()
-                                                if changed(v['size_diff'])}
+                archive_info['object_files'] = {
+                    k: v for k, v in archive_info['object_files'].items() if changed(v['size_diff'])
+                }
 
                 for object_name, object_info in archive_info['object_files'].items():
                     if depth == OBJECTS:
                         object_info['symbols'] = {}
                         continue
-                    object_info['symbols'] = {k: v for k, v in object_info['symbols'].items()
-                                              if changed(v['size_diff'])}
+                    object_info['symbols'] = {
+                        k: v for k, v in object_info['symbols'].items() if changed(v['size_diff'])
+                    }
 
 
 def sort(memory_map: Dict[str, Any], args: Namespace) -> None:
@@ -632,18 +652,14 @@ def _get_summary_memory_types(memory_map: Dict[str, Any]) -> Dict[str, Any]:
 
 
 def sort_dict_by_key(dictionary: Dict[str, Any], key: str, reverse: bool) -> Dict[str, Any]:
-        return {k: v for k, v in sorted(dictionary.items(),
-                                        key=lambda item: int(item[1][key]),
-                                        reverse=reverse)}
+    return {k: v for k, v in sorted(dictionary.items(), key=lambda item: int(item[1][key]), reverse=reverse)}
 
 
 def get_summary_sorted(entries: Dict[str, Any], args: Namespace) -> Dict[str, Any]:
     sort_key = 'size_diff' if args.sort_diff else 'size'
     reverse = args.sort_reverse
 
-    entries = {k: v for k, v in sorted(entries.items(),
-                                       key=lambda item: int(item[1][sort_key]),
-                                       reverse=reverse)}
+    entries = {k: v for k, v in sorted(entries.items(), key=lambda item: int(item[1][sort_key]), reverse=reverse)}
 
     for entry_name, entry_info in entries.items():
         entry_info['memory_types'] = sort_dict_by_key(entry_info['memory_types'], sort_key, reverse)
@@ -690,12 +706,18 @@ def get_symbols_summary(memory_map: Dict[str, Any], args: Namespace) -> Dict[str
     mem_types = _get_summary_memory_types(memory_map)
     found = False
 
-    for (mem_type_name, mem_type_info,
-         section_name, section_info,
-         archive_name, archive_info,
-         object_file_name, object_file_info,
-         symbol_name, symbol_info) in walk(memory_map):
-
+    for (
+        mem_type_name,
+        mem_type_info,
+        section_name,
+        section_info,
+        archive_name,
+        archive_info,
+        object_file_name,
+        object_file_info,
+        symbol_name,
+        symbol_info,
+    ) in walk(memory_map):
         if archive_info['abbrev_name'] != args.archive_details:
             continue
 
@@ -737,12 +759,18 @@ def get_object_files_summary(memory_map: Dict[str, Any], args: Namespace) -> Dic
 
     mem_types = _get_summary_memory_types(memory_map)
 
-    for (mem_type_name, mem_type_info,
-         section_name, section_info,
-         archive_name, archive_info,
-         object_file_name, object_file_info,
-         _, _) in walk(memory_map, depth='objects'):
-
+    for (
+        mem_type_name,
+        mem_type_info,
+        section_name,
+        section_info,
+        archive_name,
+        archive_info,
+        object_file_name,
+        object_file_info,
+        _,
+        _,
+    ) in walk(memory_map, depth='objects'):
         object_file_name_full = ':'.join([archive_name, object_file_name])
         if args.unify:
             object_file_name_full = object_file_info['abbrev_name']
@@ -776,12 +804,9 @@ def get_archives_summary(memory_map: Dict[str, Any], args: Namespace) -> Dict[st
 
     mem_types = _get_summary_memory_types(memory_map)
 
-    for (mem_type_name, mem_type_info,
-         section_name, section_info,
-         archive_name, archive_info,
-         _, _,
-         _, _) in walk(memory_map, depth='archives'):
-
+    for mem_type_name, mem_type_info, section_name, section_info, archive_name, archive_info, _, _, _, _ in walk(
+        memory_map, depth='archives'
+    ):
         if archive_name not in archives:
             archive: Dict[str, Any] = {
                 'abbrev_name': archive_info['abbrev_name'],
@@ -816,7 +841,7 @@ def _filter_memory_regions(memory_regions: List[Dict[str, Any]]) -> List[Dict[st
             continue
         memory_regions_filtered.append(mem_reg)
 
-    log.debug(f'memory regions filtered', memory_regions_filtered)
+    log.debug('memory regions filtered', memory_regions_filtered)
     return memory_regions_filtered
 
 
@@ -843,13 +868,15 @@ def _split_memory_regions(memory_regions: List[Dict[str, Any]], memory_types: Di
                     continue
 
                 used_length = min(mem_reg_length, mem_type_length - (mem_reg_origin - mem_type_addr))
-                memory_regions_splitted.append({
-                    'name': mem_reg['name'],
-                    'origin': mem_reg_origin,
-                    'length': used_length,
-                    'attrs': mem_reg['attrs'],
-                    'type': mem_type_info,
-                })
+                memory_regions_splitted.append(
+                    {
+                        'name': mem_reg['name'],
+                        'origin': mem_reg_origin,
+                        'length': used_length,
+                        'attrs': mem_reg['attrs'],
+                        'type': mem_type_info,
+                    }
+                )
                 mem_reg_origin += used_length
                 mem_reg_length -= used_length
                 break
@@ -861,13 +888,15 @@ def _split_memory_regions(memory_regions: List[Dict[str, Any]], memory_types: Di
                 # such memory regions, but let's sanity check this situation.
                 for mem_reg_splitted in memory_regions_splitted.copy():
                     if mem_reg_origin + mem_reg_length == mem_reg_splitted['origin'] + mem_reg_splitted['length']:
-                        memory_regions_splitted.append({
-                            'name': mem_reg['name'],
-                            'origin': mem_reg_origin,
-                            'length': mem_reg_length,
-                            'attrs': mem_reg['attrs'],
-                            'type': mem_reg_splitted['type'],
-                        })
+                        memory_regions_splitted.append(
+                            {
+                                'name': mem_reg['name'],
+                                'origin': mem_reg_origin,
+                                'length': mem_reg_length,
+                                'attrs': mem_reg['attrs'],
+                                'type': mem_reg_splitted['type'],
+                            }
+                        )
                         break
                 else:
                     # No memory type found, this region will be skipped.
@@ -877,11 +906,13 @@ def _split_memory_regions(memory_regions: List[Dict[str, Any]], memory_types: Di
             if not mem_reg_length:
                 break
 
-    log.debug(f'memory regions splitted', memory_regions_splitted)
+    log.debug('memory regions splitted', memory_regions_splitted)
     return memory_regions_splitted
 
 
-def _filter_map_sections(sections: List[Dict[str, Any]], elf_sections: Optional[Dict[str, Elf_Shdr]]) -> List[Dict[str, Any]]:
+def _filter_map_sections(
+    sections: List[Dict[str, Any]], elf_sections: Optional[Dict[str, Elf_Shdr]]
+) -> List[Dict[str, Any]]:
     sections_filtered: List[Dict[str, Any]] = []
     for section in sections:
         if not section['size']:
@@ -913,16 +944,18 @@ def _filter_map_sections(sections: List[Dict[str, Any]], elf_sections: Optional[
                 continue
         else:
             # ELF sections are not available. Filter based on output section names.
-            if (not section['name'].endswith(('.text', '.data', '.bss', '.rodata', 'noinit', '.vectors')) and
-                    '.flash' not in section['name'] and
-                    '.eh_frame' not in section['name']):
+            if (
+                not section['name'].endswith(('.text', '.data', '.bss', '.rodata', 'noinit', '.vectors'))
+                and '.flash' not in section['name']
+                and '.eh_frame' not in section['name']
+            ):
                 continue
 
         # Remove input sections, which have zero size
         section['input_sections'] = [s for s in section['input_sections'] if s['size']]
         sections_filtered.append(section)
 
-    log.debug(f'linker map output sections filtered', sections_filtered)
+    log.debug('linker map output sections filtered', sections_filtered)
     return sections_filtered
 
 
@@ -1000,31 +1033,39 @@ def _split_map_sections(sections: List[Dict[str, Any]], regions: List[Dict[str, 
 
                     section1['input_sections'].append(input_section1)
                     section2['input_sections'].append(input_section2)
-                    log.debug(f'linker map input section {input_section["name"]} splitted at address {split_addr}',
-                              input_section, input_section1, input_section2)
+                    log.debug(
+                        f'linker map input section {input_section["name"]} split at address {split_addr}',
+                        input_section,
+                        input_section1,
+                        input_section2,
+                    )
 
             sections_splitted.append(section1)
             sections.append(section2)
-            log.debug(f'linker map output section {section["name"]} splitted at address {split_addr}',
-                      section, section1, section2)
+            log.debug(
+                f'linker map output section {section["name"]} split at address {split_addr}',
+                section,
+                section1,
+                section2,
+            )
             break
         else:
             # Output section or its part does not fit into any memory region. Just add it as it is.
             sections_splitted.append(section)
 
-    log.debug(f'linker map output sections splitted', sections_splitted)
+    log.debug('linker map output sections splitted', sections_splitted)
     return sections_splitted
 
 
 def _abbrev(section_name: str) -> str:
-    splitted = section_name.split('.')
-    return f'.{splitted[-1]}'
+    split = section_name.split('.')
+    return f'.{split[-1]}'
 
 
 def _load_json_file(fn: str) -> Optional[Dict[str, Any]]:
     data = None
     try:
-        with open(fn, 'r') as f:
+        with open(fn) as f:
             data = json.load(f)
     except (OSError, ValueError) as e:
         log.debug(f'{fn} is not available: {e}')
@@ -1050,17 +1091,20 @@ def _add_symbols_to_sections(elf: Optional[Elf], osections: List[Dict[str, Any]]
         # ELF is not available. Use input section names as symbols.
         for osec in osections:
             for isec in osec['input_sections']:
-                isec['symbols'] = [{
-                    'name': isec['name'],
-                    'address': isec['address'],
-                    'size': isec['size'],
-                }]
+                isec['symbols'] = [
+                    {
+                        'name': isec['name'],
+                        'address': isec['address'],
+                        'size': isec['size'],
+                    }
+                ]
         return
 
     # Get dictionary of symbols from ELF for STT_FUNC and STT_OBJECT and sort it based
     # on symbol address.
-    symbols: List[Elf_Sym] = [s for s in sorted(elf.symbols, key=lambda s: s.st_value or 0)
-                              if s.type in (STT_FUNC, STT_OBJECT) and s.st_size]  # or 0 help mypy
+    symbols: List[Elf_Sym] = [
+        s for s in sorted(elf.symbols, key=lambda s: s.st_value or 0) if s.type in (STT_FUNC, STT_OBJECT) and s.st_size
+    ]  # or 0 help mypy
 
     # Get list of input sections, sorted by address, and add symbols list to each
     # input section.
@@ -1095,20 +1139,24 @@ def _add_symbols_to_sections(elf: Optional[Elf], osections: List[Dict[str, Any]]
                 # ├── zeroes.0 16
                 # ├── .rodata.str1.4 53
                 # └── .srodata.cst8 32
-                isec['symbols'].append({
-                    'name': isec['name'],
-                    'address': isec['address'],
-                    'size': isec['size'],
-                })
+                isec['symbols'].append(
+                    {
+                        'name': isec['name'],
+                        'address': isec['address'],
+                        'size': isec['size'],
+                    }
+                )
 
             # Jump to next input section
             isec = isections.pop(0)
 
         if sym_addr + sym_size > isec['address'] + isec['size']:
             # Sanity check that symbol fits into input section
-            raise MemMapException((f'symbol name: {sym_name}, addr: {sym_addr}, size: {sym_size} '
-                                   f'does not fit into input section name: {isec["name"]}, '
-                                   f'addr: {isec["address"]}, size: {isec["size"]}'))
+            raise MemMapException(
+                f'symbol name: {sym_name}, addr: {sym_addr}, size: {sym_size} '
+                f'does not fit into input section name: {isec["name"]}, '
+                f'addr: {isec["address"]}, size: {isec["size"]}'
+            )
 
         if sym_addr < isec['address']:
             # Symbol is not part of the current input section. It must be
@@ -1119,13 +1167,15 @@ def _add_symbols_to_sections(elf: Optional[Elf], osections: List[Dict[str, Any]]
         if symbol.type == STT_FUNC:
             sym_name += '()'
 
-        isec['symbols'].append({
-            'name': sym_name,
-            'address': sym_addr,
-            'size': sym_size,
-        })
+        isec['symbols'].append(
+            {
+                'name': sym_name,
+                'address': sym_addr,
+                'size': sym_size,
+            }
+        )
 
-    log.debug(f'linker map output sections filtered with symbols', osections)
+    log.debug('linker map output sections filtered with symbols', osections)
 
 
 def _get_elf_sections_headers(elf: Optional[Elf]) -> Optional[Dict[str, Elf_Shdr]]:
@@ -1359,7 +1409,7 @@ def _expand_input_sections(map_file: mapfile.MapFile, proj_desc: Optional[Dict[s
         # Finally assign expanded input sections into the output section
         osec['input_sections'] = isecs_new
 
-    log.debug(f'linker map output sections expanded', map_file.sections)
+    log.debug('linker map output sections expanded', map_file.sections)
 
 
 def _get_memory_types(target: str) -> Dict[str, Any]:
@@ -1368,7 +1418,7 @@ def _get_memory_types(target: str) -> Dict[str, Any]:
     try:
         directory = os.path.dirname(__file__)
         fn = os.path.join(directory, 'chip_info', target + '.yaml')
-        with open(fn, 'r') as f:
+        with open(fn) as f:
             memory_types = yaml.safe_load(f)
     except (OSError, ValueError) as e:
         raise MemMapException(f'cannot read memory types file: {e}')
@@ -1389,9 +1439,9 @@ def _get_memory_types(target: str) -> Dict[str, Any]:
     return memory_types
 
 
-def _get_mem_type_map(memory_types: Dict[str, Any],
-                      memory_regions: List[Dict[str, Any]],
-                      map_sections: List[Dict[str, Any]]) -> Dict[str, Any]:
+def _get_mem_type_map(
+    memory_types: Dict[str, Any], memory_regions: List[Dict[str, Any]], map_sections: List[Dict[str, Any]]
+) -> Dict[str, Any]:
     memory_map: Dict[str, Any] = {}
     # Dictionary of memory types, where key is memory type alias and value is a list of memory regions, which
     # were already assigned to this memory type.
@@ -1433,7 +1483,7 @@ def _get_mem_type_map(memory_types: Dict[str, Any],
                     # memory type. Skip it, so we don't account the size of the memory region twice into the total
                     # memory type size.
                     memory_types_regions[mem_type_alias].append(mem_reg)
-                    log.debug(f'found memory region alias', mem_reg, mem_type_reg)
+                    log.debug('found memory region alias', mem_reg, mem_type_reg)
                     break
             else:
                 # Another memory region, which needs to be added to the memory type. We have not found
@@ -1452,9 +1502,11 @@ def _get_mem_type_map(memory_types: Dict[str, Any],
             if address <= map_section['address'] < address + mem_reg['length']:
                 if map_section['address'] + map_section['size'] > address + mem_reg['length']:
                     # Sanity check that output sections fits into memory region. This should probably never happen.
-                    log.warn((f'output section {map_section["name"]}(addr: {map_section["address"]}, '
-                              f'size: {map_section["size"]}) exceeds memory region "{mem_reg["name"]}" '
-                              f'(addr: {address}, size: {mem_reg["length"]})'))
+                    log.warn(
+                        f'output section {map_section["name"]}(addr: {map_section["address"]}, '
+                        f'size: {map_section["size"]}) exceeds memory region "{mem_reg["name"]}" '
+                        f'(addr: {address}, size: {mem_reg["length"]})'
+                    )
 
                 memory_map[mem_type_alias]['used'] += map_section['size']
                 memory_map[mem_type_alias]['sections'][map_section['name']] = {
@@ -1470,10 +1522,12 @@ def _get_mem_type_map(memory_types: Dict[str, Any],
                 # Output section does not map into any memory region. This may happen e.g. when memory region
                 # is not big enough and the linker fails. In this case try to map the output section into the
                 # first memory region/type preceding the output section.
-                log.warn((f'[red]{mem_type_alias} overflow detected![/red]: '
-                          f'output section or its part {map_section["name"]}(addr: {map_section["address"]}, '
-                          f'size: {map_section["size"]}) does not fit into any memory region and '
-                          f'will be assigned to the preceding {prev_mem_reg["name"]} memory region'))
+                log.warn(
+                    f'[red]{mem_type_alias} overflow detected![/red]: '
+                    f'output section or its part {map_section["name"]}(addr: {map_section["address"]}, '
+                    f'size: {map_section["size"]}) does not fit into any memory region and '
+                    f'will be assigned to the preceding {prev_mem_reg["name"]} memory region'
+                )
 
                 # During overflow the output section could be split according to memory region, which
                 # is smaller than the output section. Meaning there will be to output section with the
@@ -1496,8 +1550,10 @@ def _get_mem_type_map(memory_types: Dict[str, Any],
             prev_mem_reg = mem_reg
 
         else:
-            log.warn((f'cannot assign output section {map_section["name"]}(addr: {map_section["address"]}, '
-                      f'size: {map_section["size"]}) to any memory type'))
+            log.warn(
+                f'cannot assign output section {map_section["name"]}'
+                f'(addr: {map_section["address"]}, size: {map_section["size"]}) to any memory type'
+            )
 
     return memory_map
 
@@ -1523,7 +1579,7 @@ def get_proj_desc(map_fn: str) -> Optional[Dict[str, Any]]:
     return proj_desc
 
 
-def get_elf(map_fn: str, proj_desc: Optional[Dict[str, Any]]=None) -> Optional[Elf]:
+def get_elf(map_fn: str, proj_desc: Optional[Dict[str, Any]] = None) -> Optional[Elf]:
     proj_desc = proj_desc or get_proj_desc(map_fn)
     if proj_desc is None:
         return None

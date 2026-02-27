@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: 2024 Espressif Systems (Shanghai) CO LTD
+# SPDX-FileCopyrightText: 2024-2026 Espressif Systems (Shanghai) CO LTD
 # SPDX-License-Identifier: Apache-2.0
 import struct
 from dataclasses import dataclass
@@ -14,10 +14,10 @@ DW_TAG_entry_point = 0x03
 DW_TAG_enumeration_type = 0x04
 DW_TAG_formal_parameter = 0x05
 DW_TAG_imported_declaration = 0x08
-DW_TAG_label = 0x0a
-DW_TAG_lexical_block = 0x0b
-DW_TAG_member = 0x0d
-DW_TAG_pointer_type = 0x0f
+DW_TAG_label = 0x0A
+DW_TAG_lexical_block = 0x0B
+DW_TAG_member = 0x0D
+DW_TAG_pointer_type = 0x0F
 DW_TAG_reference_type = 0x10
 DW_TAG_compile_unit = 0x11
 DW_TAG_string_type = 0x12
@@ -27,12 +27,12 @@ DW_TAG_typedef = 0x16
 DW_TAG_union_type = 0x17
 DW_TAG_unspecified_parameters = 0x18
 DW_TAG_variant = 0x19
-DW_TAG_common_block = 0x1a
-DW_TAG_common_inclusion = 0x1b
-DW_TAG_inheritance = 0x1c
-DW_TAG_inlined_subroutine = 0x1d
-DW_TAG_module = 0x1e
-DW_TAG_ptr_to_member_type = 0x1f
+DW_TAG_common_block = 0x1A
+DW_TAG_common_inclusion = 0x1B
+DW_TAG_inheritance = 0x1C
+DW_TAG_inlined_subroutine = 0x1D
+DW_TAG_module = 0x1E
+DW_TAG_ptr_to_member_type = 0x1F
 DW_TAG_set_type = 0x20
 DW_TAG_subrange_type = 0x21
 DW_TAG_with_stmt = 0x22
@@ -43,12 +43,12 @@ DW_TAG_const_type = 0x26
 DW_TAG_constant = 0x27
 DW_TAG_enumerator = 0x28
 DW_TAG_file_type = 0x29
-DW_TAG_friend = 0x2a
-DW_TAG_namelist = 0x2b
-DW_TAG_namelist_item = 0x2c
-DW_TAG_packed_type = 0x2d
-DW_TAG_subprogram = 0x2e
-DW_TAG_template_type_param = 0x2f
+DW_TAG_friend = 0x2A
+DW_TAG_namelist = 0x2B
+DW_TAG_namelist_item = 0x2C
+DW_TAG_packed_type = 0x2D
+DW_TAG_subprogram = 0x2E
+DW_TAG_template_type_param = 0x2F
 DW_TAG_template_value_param = 0x30
 DW_TAG_thrown_type = 0x31
 DW_TAG_try_block = 0x32
@@ -59,11 +59,11 @@ DW_TAG_dwarf_procedure = 0x36
 DW_TAG_restrict_type = 0x37
 DW_TAG_interface_type = 0x38
 DW_TAG_namespace = 0x39
-DW_TAG_imported_module = 0x3a
-DW_TAG_unspecified_type = 0x3b
-DW_TAG_partial_unit = 0x3c
-DW_TAG_imported_unit = 0x3d
-DW_TAG_condition = 0x3f
+DW_TAG_imported_module = 0x3A
+DW_TAG_unspecified_type = 0x3B
+DW_TAG_partial_unit = 0x3C
+DW_TAG_imported_unit = 0x3D
+DW_TAG_condition = 0x3F
 DW_TAG_shared_type = 0x40
 DW_TAG_type_unit = 0x41
 DW_TAG_rvalue_reference_type = 0x42
@@ -74,10 +74,10 @@ DW_TAG_dynamic_type = 0x46
 DW_TAG_atomic_type = 0x47
 DW_TAG_call_site = 0x48
 DW_TAG_call_site_parameter = 0x49
-DW_TAG_skeleton_unit = 0x4a
-DW_TAG_immutable_type = 0x4b
+DW_TAG_skeleton_unit = 0x4A
+DW_TAG_immutable_type = 0x4B
 DW_TAG_lo_user = 0x4080
-DW_TAG_hi_user = 0xffff
+DW_TAG_hi_user = 0xFFFF
 DW_TAG_MIPS_loop = 0x4081
 DW_TAG_HP_array_descriptor = 0x4090
 DW_TAG_HP_Bliss_field = 0x4091
@@ -91,7 +91,7 @@ DW_TAG_GNU_template_template_param = 0x4106
 DW_TAG_GNU_template_parameter_pack = 0x4107
 DW_TAG_GNU_formal_parameter_pack = 0x4108
 DW_TAG_GNU_call_site = 0x4109
-DW_TAG_GNU_call_site_parameter = 0x410a
+DW_TAG_GNU_call_site_parameter = 0x410A
 DW_TAG_upc_shared_type = 0x8765
 DW_TAG_upc_strict_type = 0x8766
 DW_TAG_upc_relaxed_type = 0x8767
@@ -106,10 +106,10 @@ DW_TAG_NAME_MAP: Dict[int, str] = {
     0x04: 'DW_TAG_enumeration_type',
     0x05: 'DW_TAG_formal_parameter',
     0x08: 'DW_TAG_imported_declaration',
-    0x0a: 'DW_TAG_label',
-    0x0b: 'DW_TAG_lexical_block',
-    0x0d: 'DW_TAG_member',
-    0x0f: 'DW_TAG_pointer_type',
+    0x0A: 'DW_TAG_label',
+    0x0B: 'DW_TAG_lexical_block',
+    0x0D: 'DW_TAG_member',
+    0x0F: 'DW_TAG_pointer_type',
     0x10: 'DW_TAG_reference_type',
     0x11: 'DW_TAG_compile_unit',
     0x12: 'DW_TAG_string_type',
@@ -119,12 +119,12 @@ DW_TAG_NAME_MAP: Dict[int, str] = {
     0x17: 'DW_TAG_union_type',
     0x18: 'DW_TAG_unspecified_parameters',
     0x19: 'DW_TAG_variant',
-    0x1a: 'DW_TAG_common_block',
-    0x1b: 'DW_TAG_common_inclusion',
-    0x1c: 'DW_TAG_inheritance',
-    0x1d: 'DW_TAG_inlined_subroutine',
-    0x1e: 'DW_TAG_module',
-    0x1f: 'DW_TAG_ptr_to_member_type',
+    0x1A: 'DW_TAG_common_block',
+    0x1B: 'DW_TAG_common_inclusion',
+    0x1C: 'DW_TAG_inheritance',
+    0x1D: 'DW_TAG_inlined_subroutine',
+    0x1E: 'DW_TAG_module',
+    0x1F: 'DW_TAG_ptr_to_member_type',
     0x20: 'DW_TAG_set_type',
     0x21: 'DW_TAG_subrange_type',
     0x22: 'DW_TAG_with_stmt',
@@ -135,12 +135,12 @@ DW_TAG_NAME_MAP: Dict[int, str] = {
     0x27: 'DW_TAG_constant',
     0x28: 'DW_TAG_enumerator',
     0x29: 'DW_TAG_file_type',
-    0x2a: 'DW_TAG_friend',
-    0x2b: 'DW_TAG_namelist',
-    0x2c: 'DW_TAG_namelist_item',
-    0x2d: 'DW_TAG_packed_type',
-    0x2e: 'DW_TAG_subprogram',
-    0x2f: 'DW_TAG_template_type_param',
+    0x2A: 'DW_TAG_friend',
+    0x2B: 'DW_TAG_namelist',
+    0x2C: 'DW_TAG_namelist_item',
+    0x2D: 'DW_TAG_packed_type',
+    0x2E: 'DW_TAG_subprogram',
+    0x2F: 'DW_TAG_template_type_param',
     0x30: 'DW_TAG_template_value_param',
     0x31: 'DW_TAG_thrown_type',
     0x32: 'DW_TAG_try_block',
@@ -151,11 +151,11 @@ DW_TAG_NAME_MAP: Dict[int, str] = {
     0x37: 'DW_TAG_restrict_type',
     0x38: 'DW_TAG_interface_type',
     0x39: 'DW_TAG_namespace',
-    0x3a: 'DW_TAG_imported_module',
-    0x3b: 'DW_TAG_unspecified_type',
-    0x3c: 'DW_TAG_partial_unit',
-    0x3d: 'DW_TAG_imported_unit',
-    0x3f: 'DW_TAG_condition',
+    0x3A: 'DW_TAG_imported_module',
+    0x3B: 'DW_TAG_unspecified_type',
+    0x3C: 'DW_TAG_partial_unit',
+    0x3D: 'DW_TAG_imported_unit',
+    0x3F: 'DW_TAG_condition',
     0x40: 'DW_TAG_shared_type',
     0x41: 'DW_TAG_type_unit',
     0x42: 'DW_TAG_rvalue_reference_type',
@@ -166,10 +166,10 @@ DW_TAG_NAME_MAP: Dict[int, str] = {
     0x47: 'DW_TAG_atomic_type',
     0x48: 'DW_TAG_call_site',
     0x49: 'DW_TAG_call_site_parameter',
-    0x4a: 'DW_TAG_skeleton_unit',
-    0x4b: 'DW_TAG_immutable_type',
+    0x4A: 'DW_TAG_skeleton_unit',
+    0x4B: 'DW_TAG_immutable_type',
     0x4080: 'DW_TAG_lo_user',
-    0xffff: 'DW_TAG_hi_user',
+    0xFFFF: 'DW_TAG_hi_user',
     0x4081: 'DW_TAG_MIPS_loop',
     0x4090: 'DW_TAG_HP_array_descriptor',
     0x4091: 'DW_TAG_HP_Bliss_field',
@@ -183,7 +183,7 @@ DW_TAG_NAME_MAP: Dict[int, str] = {
     0x4107: 'DW_TAG_GNU_template_parameter_pack',
     0x4108: 'DW_TAG_GNU_formal_parameter_pack',
     0x4109: 'DW_TAG_GNU_call_site',
-    0x410a: 'DW_TAG_GNU_call_site_parameter',
+    0x410A: 'DW_TAG_GNU_call_site_parameter',
     0x8765: 'DW_TAG_upc_shared_type',
     0x8766: 'DW_TAG_upc_strict_type',
     0x8767: 'DW_TAG_upc_relaxed_type',
@@ -201,11 +201,11 @@ DW_AT_sibling = 0x01
 DW_AT_location = 0x02
 DW_AT_name = 0x03
 DW_AT_ordering = 0x09
-DW_AT_subscr_data = 0x0a
-DW_AT_byte_size = 0x0b
-DW_AT_bit_offset = 0x0c
-DW_AT_bit_size = 0x0d
-DW_AT_element_list = 0x0f
+DW_AT_subscr_data = 0x0A
+DW_AT_byte_size = 0x0B
+DW_AT_bit_offset = 0x0C
+DW_AT_bit_size = 0x0D
+DW_AT_element_list = 0x0F
 DW_AT_stmt_list = 0x10
 DW_AT_low_pc = 0x11
 DW_AT_high_pc = 0x12
@@ -216,20 +216,20 @@ DW_AT_discr_value = 0x16
 DW_AT_visibility = 0x17
 DW_AT_import = 0x18
 DW_AT_string_length = 0x19
-DW_AT_common_reference = 0x1a
-DW_AT_comp_dir = 0x1b
-DW_AT_const_value = 0x1c
-DW_AT_containing_type = 0x1d
-DW_AT_default_value = 0x1e
+DW_AT_common_reference = 0x1A
+DW_AT_comp_dir = 0x1B
+DW_AT_const_value = 0x1C
+DW_AT_containing_type = 0x1D
+DW_AT_default_value = 0x1E
 DW_AT_inline = 0x20
 DW_AT_is_optional = 0x21
 DW_AT_lower_bound = 0x22
 DW_AT_producer = 0x25
 DW_AT_prototyped = 0x27
-DW_AT_return_addr = 0x2a
-DW_AT_start_scope = 0x2c
-DW_AT_bit_stride = 0x2e
-DW_AT_upper_bound = 0x2f
+DW_AT_return_addr = 0x2A
+DW_AT_start_scope = 0x2C
+DW_AT_bit_stride = 0x2E
+DW_AT_upper_bound = 0x2F
 DW_AT_abstract_origin = 0x31
 DW_AT_accessibility = 0x32
 DW_AT_address_class = 0x33
@@ -239,12 +239,12 @@ DW_AT_calling_convention = 0x36
 DW_AT_count = 0x37
 DW_AT_data_member_location = 0x38
 DW_AT_decl_column = 0x39
-DW_AT_decl_file = 0x3a
-DW_AT_decl_line = 0x3b
-DW_AT_declaration = 0x3c
-DW_AT_discr_list = 0x3d
-DW_AT_encoding = 0x3e
-DW_AT_external = 0x3f
+DW_AT_decl_file = 0x3A
+DW_AT_decl_line = 0x3B
+DW_AT_declaration = 0x3C
+DW_AT_discr_list = 0x3D
+DW_AT_encoding = 0x3E
+DW_AT_external = 0x3F
 DW_AT_frame_base = 0x40
 DW_AT_friend = 0x41
 DW_AT_identifier_case = 0x42
@@ -255,12 +255,12 @@ DW_AT_segment = 0x46
 DW_AT_specification = 0x47
 DW_AT_static_link = 0x48
 DW_AT_type = 0x49
-DW_AT_use_location = 0x4a
-DW_AT_variable_parameter = 0x4b
-DW_AT_virtuality = 0x4c
-DW_AT_vtable_elem_location = 0x4d
-DW_AT_allocated = 0x4e
-DW_AT_associated = 0x4f
+DW_AT_use_location = 0x4A
+DW_AT_variable_parameter = 0x4B
+DW_AT_virtuality = 0x4C
+DW_AT_vtable_elem_location = 0x4D
+DW_AT_allocated = 0x4E
+DW_AT_associated = 0x4F
 DW_AT_data_location = 0x50
 DW_AT_byte_stride = 0x51
 DW_AT_entry_pc = 0x52
@@ -271,12 +271,12 @@ DW_AT_trampoline = 0x56
 DW_AT_call_column = 0x57
 DW_AT_call_file = 0x58
 DW_AT_call_line = 0x59
-DW_AT_description = 0x5a
-DW_AT_binary_scale = 0x5b
-DW_AT_decimal_scale = 0x5c
-DW_AT_small = 0x5d
-DW_AT_decimal_sign = 0x5e
-DW_AT_digit_count = 0x5f
+DW_AT_description = 0x5A
+DW_AT_binary_scale = 0x5B
+DW_AT_decimal_scale = 0x5C
+DW_AT_small = 0x5D
+DW_AT_decimal_sign = 0x5E
+DW_AT_digit_count = 0x5F
 DW_AT_picture_string = 0x60
 DW_AT_mutable = 0x61
 DW_AT_threads_scaled = 0x62
@@ -287,12 +287,12 @@ DW_AT_elemental = 0x66
 DW_AT_pure = 0x67
 DW_AT_recursive = 0x68
 DW_AT_signature = 0x69
-DW_AT_main_subprogram = 0x6a
-DW_AT_data_bit_offset = 0x6b
-DW_AT_const_expr = 0x6c
-DW_AT_enum_class = 0x6d
-DW_AT_linkage_name = 0x6e
-DW_AT_string_length_bit_size = 0x6f
+DW_AT_main_subprogram = 0x6A
+DW_AT_data_bit_offset = 0x6B
+DW_AT_const_expr = 0x6C
+DW_AT_enum_class = 0x6D
+DW_AT_linkage_name = 0x6E
+DW_AT_string_length_bit_size = 0x6F
 DW_AT_string_length_byte_size = 0x70
 DW_AT_rank = 0x71
 DW_AT_str_offsets_base = 0x72
@@ -302,12 +302,12 @@ DW_AT_dwo_name = 0x76
 DW_AT_reference = 0x77
 DW_AT_rvalue_reference = 0x78
 DW_AT_macros = 0x79
-DW_AT_call_all_calls = 0x7a
-DW_AT_call_all_source_calls = 0x7b
-DW_AT_call_all_tail_calls = 0x7c
-DW_AT_call_return_pc = 0x7d
-DW_AT_call_value = 0x7e
-DW_AT_call_origin = 0x7f
+DW_AT_call_all_calls = 0x7A
+DW_AT_call_all_source_calls = 0x7B
+DW_AT_call_all_tail_calls = 0x7C
+DW_AT_call_return_pc = 0x7D
+DW_AT_call_value = 0x7E
+DW_AT_call_origin = 0x7F
 DW_AT_call_parameter = 0x80
 DW_AT_call_pc = 0x81
 DW_AT_call_tail_call = 0x82
@@ -318,11 +318,11 @@ DW_AT_call_data_value = 0x86
 DW_AT_noreturn = 0x87
 DW_AT_alignment = 0x88
 DW_AT_export_symbols = 0x89
-DW_AT_deleted = 0x8a
-DW_AT_defaulted = 0x8b
-DW_AT_loclists_base = 0x8c
+DW_AT_deleted = 0x8A
+DW_AT_defaulted = 0x8B
+DW_AT_loclists_base = 0x8C
 DW_AT_lo_user = 0x2000
-DW_AT_hi_user = 0x3fff
+DW_AT_hi_user = 0x3FFF
 DW_AT_MIPS_fde = 0x2001
 DW_AT_MIPS_loop_begin = 0x2002
 DW_AT_MIPS_tail_loop_begin = 0x2003
@@ -332,8 +332,8 @@ DW_AT_MIPS_software_pipeline_depth = 0x2006
 DW_AT_MIPS_linkage_name = 0x2007
 DW_AT_MIPS_stride = 0x2008
 DW_AT_MIPS_abstract_name = 0x2009
-DW_AT_MIPS_clone_origin = 0x200a
-DW_AT_MIPS_has_inlines = 0x200b
+DW_AT_MIPS_clone_origin = 0x200A
+DW_AT_MIPS_has_inlines = 0x200B
 DW_AT_HP_block_index = 0x2000
 DW_AT_HP_unmodifiable = 0x2001
 DW_AT_HP_prologue = 0x2005
@@ -348,9 +348,9 @@ DW_AT_HP_opt_flags = 0x2016
 DW_AT_HP_cold_region_low_pc = 0x2017
 DW_AT_HP_cold_region_high_pc = 0x2018
 DW_AT_HP_all_variables_modifiable = 0x2019
-DW_AT_HP_linkage_name = 0x201a
-DW_AT_HP_prof_flags = 0x201b
-DW_AT_HP_unit_name = 0x201f
+DW_AT_HP_linkage_name = 0x201A
+DW_AT_HP_prof_flags = 0x201B
+DW_AT_HP_unit_name = 0x201F
 DW_AT_HP_unit_size = 0x2020
 DW_AT_HP_widened_byte_size = 0x2021
 DW_AT_HP_definition_points = 0x2022
@@ -365,12 +365,12 @@ DW_AT_body_end = 0x2106
 DW_AT_GNU_vector = 0x2107
 DW_AT_GNU_guarded_by = 0x2108
 DW_AT_GNU_pt_guarded_by = 0x2109
-DW_AT_GNU_guarded = 0x210a
-DW_AT_GNU_pt_guarded = 0x210b
-DW_AT_GNU_locks_excluded = 0x210c
-DW_AT_GNU_exclusive_locks_required = 0x210d
-DW_AT_GNU_shared_locks_required = 0x210e
-DW_AT_GNU_odr_signature = 0x210f
+DW_AT_GNU_guarded = 0x210A
+DW_AT_GNU_pt_guarded = 0x210B
+DW_AT_GNU_locks_excluded = 0x210C
+DW_AT_GNU_exclusive_locks_required = 0x210D
+DW_AT_GNU_shared_locks_required = 0x210E
+DW_AT_GNU_odr_signature = 0x210F
 DW_AT_GNU_template_name = 0x2110
 DW_AT_GNU_call_site_value = 0x2111
 DW_AT_GNU_call_site_data_value = 0x2112
@@ -381,7 +381,7 @@ DW_AT_GNU_all_tail_call_sites = 0x2116
 DW_AT_GNU_all_call_sites = 0x2117
 DW_AT_GNU_all_source_call_sites = 0x2118
 DW_AT_GNU_macros = 0x2119
-DW_AT_GNU_deleted = 0x211a
+DW_AT_GNU_deleted = 0x211A
 DW_AT_GNU_dwo_name = 0x2130
 DW_AT_GNU_dwo_id = 0x2131
 DW_AT_GNU_ranges_base = 0x2132
@@ -395,22 +395,22 @@ DW_AT_VMS_rtnbeg_pd_address = 0x2201
 DW_AT_use_GNAT_descriptive_type = 0x2301
 DW_AT_GNAT_descriptive_type = 0x2302
 DW_AT_upc_threads_scaled = 0x3210
-DW_AT_PGI_lbase = 0x3a00
-DW_AT_PGI_soffset = 0x3a01
-DW_AT_PGI_lstride = 0x3a02
-DW_AT_APPLE_optimized = 0x3fe1
-DW_AT_APPLE_flags = 0x3fe2
-DW_AT_APPLE_isa = 0x3fe3
-DW_AT_APPLE_block = 0x3fe4
-DW_AT_APPLE_major_runtime_vers = 0x3fe5
-DW_AT_APPLE_runtime_class = 0x3fe6
-DW_AT_APPLE_omit_frame_ptr = 0x3fe7
-DW_AT_APPLE_property_name = 0x3fe8
-DW_AT_APPLE_property_getter = 0x3fe9
-DW_AT_APPLE_property_setter = 0x3fea
-DW_AT_APPLE_property_attribute = 0x3feb
-DW_AT_APPLE_objc_complete_type = 0x3fec
-DW_AT_APPLE_property = 0x3fed
+DW_AT_PGI_lbase = 0x3A00
+DW_AT_PGI_soffset = 0x3A01
+DW_AT_PGI_lstride = 0x3A02
+DW_AT_APPLE_optimized = 0x3FE1
+DW_AT_APPLE_flags = 0x3FE2
+DW_AT_APPLE_isa = 0x3FE3
+DW_AT_APPLE_block = 0x3FE4
+DW_AT_APPLE_major_runtime_vers = 0x3FE5
+DW_AT_APPLE_runtime_class = 0x3FE6
+DW_AT_APPLE_omit_frame_ptr = 0x3FE7
+DW_AT_APPLE_property_name = 0x3FE8
+DW_AT_APPLE_property_getter = 0x3FE9
+DW_AT_APPLE_property_setter = 0x3FEA
+DW_AT_APPLE_property_attribute = 0x3FEB
+DW_AT_APPLE_objc_complete_type = 0x3FEC
+DW_AT_APPLE_property = 0x3FED
 
 DW_AT_NAME_MAP: Dict[int, str] = {
     0x00: 'DW_AT_end',
@@ -418,11 +418,11 @@ DW_AT_NAME_MAP: Dict[int, str] = {
     0x02: 'DW_AT_location',
     0x03: 'DW_AT_name',
     0x09: 'DW_AT_ordering',
-    0x0a: 'DW_AT_subscr_data',
-    0x0b: 'DW_AT_byte_size',
-    0x0c: 'DW_AT_bit_offset',
-    0x0d: 'DW_AT_bit_size',
-    0x0f: 'DW_AT_element_list',
+    0x0A: 'DW_AT_subscr_data',
+    0x0B: 'DW_AT_byte_size',
+    0x0C: 'DW_AT_bit_offset',
+    0x0D: 'DW_AT_bit_size',
+    0x0F: 'DW_AT_element_list',
     0x10: 'DW_AT_stmt_list',
     0x11: 'DW_AT_low_pc',
     0x12: 'DW_AT_high_pc',
@@ -433,20 +433,20 @@ DW_AT_NAME_MAP: Dict[int, str] = {
     0x17: 'DW_AT_visibility',
     0x18: 'DW_AT_import',
     0x19: 'DW_AT_string_length',
-    0x1a: 'DW_AT_common_reference',
-    0x1b: 'DW_AT_comp_dir',
-    0x1c: 'DW_AT_const_value',
-    0x1d: 'DW_AT_containing_type',
-    0x1e: 'DW_AT_default_value',
+    0x1A: 'DW_AT_common_reference',
+    0x1B: 'DW_AT_comp_dir',
+    0x1C: 'DW_AT_const_value',
+    0x1D: 'DW_AT_containing_type',
+    0x1E: 'DW_AT_default_value',
     0x20: 'DW_AT_inline',
     0x21: 'DW_AT_is_optional',
     0x22: 'DW_AT_lower_bound',
     0x25: 'DW_AT_producer',
     0x27: 'DW_AT_prototyped',
-    0x2a: 'DW_AT_return_addr',
-    0x2c: 'DW_AT_start_scope',
-    0x2e: 'DW_AT_bit_stride',
-    0x2f: 'DW_AT_upper_bound',
+    0x2A: 'DW_AT_return_addr',
+    0x2C: 'DW_AT_start_scope',
+    0x2E: 'DW_AT_bit_stride',
+    0x2F: 'DW_AT_upper_bound',
     0x31: 'DW_AT_abstract_origin',
     0x32: 'DW_AT_accessibility',
     0x33: 'DW_AT_address_class',
@@ -456,12 +456,12 @@ DW_AT_NAME_MAP: Dict[int, str] = {
     0x37: 'DW_AT_count',
     0x38: 'DW_AT_data_member_location',
     0x39: 'DW_AT_decl_column',
-    0x3a: 'DW_AT_decl_file',
-    0x3b: 'DW_AT_decl_line',
-    0x3c: 'DW_AT_declaration',
-    0x3d: 'DW_AT_discr_list',
-    0x3e: 'DW_AT_encoding',
-    0x3f: 'DW_AT_external',
+    0x3A: 'DW_AT_decl_file',
+    0x3B: 'DW_AT_decl_line',
+    0x3C: 'DW_AT_declaration',
+    0x3D: 'DW_AT_discr_list',
+    0x3E: 'DW_AT_encoding',
+    0x3F: 'DW_AT_external',
     0x40: 'DW_AT_frame_base',
     0x41: 'DW_AT_friend',
     0x42: 'DW_AT_identifier_case',
@@ -472,12 +472,12 @@ DW_AT_NAME_MAP: Dict[int, str] = {
     0x47: 'DW_AT_specification',
     0x48: 'DW_AT_static_link',
     0x49: 'DW_AT_type',
-    0x4a: 'DW_AT_use_location',
-    0x4b: 'DW_AT_variable_parameter',
-    0x4c: 'DW_AT_virtuality',
-    0x4d: 'DW_AT_vtable_elem_location',
-    0x4e: 'DW_AT_allocated',
-    0x4f: 'DW_AT_associated',
+    0x4A: 'DW_AT_use_location',
+    0x4B: 'DW_AT_variable_parameter',
+    0x4C: 'DW_AT_virtuality',
+    0x4D: 'DW_AT_vtable_elem_location',
+    0x4E: 'DW_AT_allocated',
+    0x4F: 'DW_AT_associated',
     0x50: 'DW_AT_data_location',
     0x51: 'DW_AT_byte_stride',
     0x52: 'DW_AT_entry_pc',
@@ -488,12 +488,12 @@ DW_AT_NAME_MAP: Dict[int, str] = {
     0x57: 'DW_AT_call_column',
     0x58: 'DW_AT_call_file',
     0x59: 'DW_AT_call_line',
-    0x5a: 'DW_AT_description',
-    0x5b: 'DW_AT_binary_scale',
-    0x5c: 'DW_AT_decimal_scale',
-    0x5d: 'DW_AT_small',
-    0x5e: 'DW_AT_decimal_sign',
-    0x5f: 'DW_AT_digit_count',
+    0x5A: 'DW_AT_description',
+    0x5B: 'DW_AT_binary_scale',
+    0x5C: 'DW_AT_decimal_scale',
+    0x5D: 'DW_AT_small',
+    0x5E: 'DW_AT_decimal_sign',
+    0x5F: 'DW_AT_digit_count',
     0x60: 'DW_AT_picture_string',
     0x61: 'DW_AT_mutable',
     0x62: 'DW_AT_threads_scaled',
@@ -504,12 +504,12 @@ DW_AT_NAME_MAP: Dict[int, str] = {
     0x67: 'DW_AT_pure',
     0x68: 'DW_AT_recursive',
     0x69: 'DW_AT_signature',
-    0x6a: 'DW_AT_main_subprogram',
-    0x6b: 'DW_AT_data_bit_offset',
-    0x6c: 'DW_AT_const_expr',
-    0x6d: 'DW_AT_enum_class',
-    0x6e: 'DW_AT_linkage_name',
-    0x6f: 'DW_AT_string_length_bit_size',
+    0x6A: 'DW_AT_main_subprogram',
+    0x6B: 'DW_AT_data_bit_offset',
+    0x6C: 'DW_AT_const_expr',
+    0x6D: 'DW_AT_enum_class',
+    0x6E: 'DW_AT_linkage_name',
+    0x6F: 'DW_AT_string_length_bit_size',
     0x70: 'DW_AT_string_length_byte_size',
     0x71: 'DW_AT_rank',
     0x72: 'DW_AT_str_offsets_base',
@@ -519,12 +519,12 @@ DW_AT_NAME_MAP: Dict[int, str] = {
     0x77: 'DW_AT_reference',
     0x78: 'DW_AT_rvalue_reference',
     0x79: 'DW_AT_macros',
-    0x7a: 'DW_AT_call_all_calls',
-    0x7b: 'DW_AT_call_all_source_calls',
-    0x7c: 'DW_AT_call_all_tail_calls',
-    0x7d: 'DW_AT_call_return_pc',
-    0x7e: 'DW_AT_call_value',
-    0x7f: 'DW_AT_call_origin',
+    0x7A: 'DW_AT_call_all_calls',
+    0x7B: 'DW_AT_call_all_source_calls',
+    0x7C: 'DW_AT_call_all_tail_calls',
+    0x7D: 'DW_AT_call_return_pc',
+    0x7E: 'DW_AT_call_value',
+    0x7F: 'DW_AT_call_origin',
     0x80: 'DW_AT_call_parameter',
     0x81: 'DW_AT_call_pc',
     0x82: 'DW_AT_call_tail_call',
@@ -535,11 +535,11 @@ DW_AT_NAME_MAP: Dict[int, str] = {
     0x87: 'DW_AT_noreturn',
     0x88: 'DW_AT_alignment',
     0x89: 'DW_AT_export_symbols',
-    0x8a: 'DW_AT_deleted',
-    0x8b: 'DW_AT_defaulted',
-    0x8c: 'DW_AT_loclists_base',
+    0x8A: 'DW_AT_deleted',
+    0x8B: 'DW_AT_defaulted',
+    0x8C: 'DW_AT_loclists_base',
     0x2000: 'DW_AT_lo_user/DW_AT_HP_block_index',
-    0x3fff: 'DW_AT_hi_user',
+    0x3FFF: 'DW_AT_hi_user',
     0x2001: 'DW_AT_MIPS_fde/DW_AT_HP_unmodifiable',
     0x2002: 'DW_AT_MIPS_loop_begin',
     0x2003: 'DW_AT_MIPS_tail_loop_begin',
@@ -549,8 +549,8 @@ DW_AT_NAME_MAP: Dict[int, str] = {
     0x2007: 'DW_AT_MIPS_linkage_name',
     0x2008: 'DW_AT_MIPS_stride/DW_AT_HP_epilogue',
     0x2009: 'DW_AT_MIPS_abstract_name',
-    0x200a: 'DW_AT_MIPS_clone_origin',
-    0x200b: 'DW_AT_MIPS_has_inlines',
+    0x200A: 'DW_AT_MIPS_clone_origin',
+    0x200B: 'DW_AT_MIPS_has_inlines',
     0x2010: 'DW_AT_HP_actuals_stmt_list',
     0x2011: 'DW_AT_HP_proc_per_section',
     0x2012: 'DW_AT_HP_raw_data_ptr',
@@ -561,9 +561,9 @@ DW_AT_NAME_MAP: Dict[int, str] = {
     0x2017: 'DW_AT_HP_cold_region_low_pc',
     0x2018: 'DW_AT_HP_cold_region_high_pc',
     0x2019: 'DW_AT_HP_all_variables_modifiable',
-    0x201a: 'DW_AT_HP_linkage_name',
-    0x201b: 'DW_AT_HP_prof_flags',
-    0x201f: 'DW_AT_HP_unit_name',
+    0x201A: 'DW_AT_HP_linkage_name',
+    0x201B: 'DW_AT_HP_prof_flags',
+    0x201F: 'DW_AT_HP_unit_name',
     0x2020: 'DW_AT_HP_unit_size',
     0x2021: 'DW_AT_HP_widened_byte_size',
     0x2022: 'DW_AT_HP_definition_points',
@@ -578,12 +578,12 @@ DW_AT_NAME_MAP: Dict[int, str] = {
     0x2107: 'DW_AT_GNU_vector',
     0x2108: 'DW_AT_GNU_guarded_by',
     0x2109: 'DW_AT_GNU_pt_guarded_by',
-    0x210a: 'DW_AT_GNU_guarded',
-    0x210b: 'DW_AT_GNU_pt_guarded',
-    0x210c: 'DW_AT_GNU_locks_excluded',
-    0x210d: 'DW_AT_GNU_exclusive_locks_required',
-    0x210e: 'DW_AT_GNU_shared_locks_required',
-    0x210f: 'DW_AT_GNU_odr_signature',
+    0x210A: 'DW_AT_GNU_guarded',
+    0x210B: 'DW_AT_GNU_pt_guarded',
+    0x210C: 'DW_AT_GNU_locks_excluded',
+    0x210D: 'DW_AT_GNU_exclusive_locks_required',
+    0x210E: 'DW_AT_GNU_shared_locks_required',
+    0x210F: 'DW_AT_GNU_odr_signature',
     0x2110: 'DW_AT_GNU_template_name',
     0x2111: 'DW_AT_GNU_call_site_value',
     0x2112: 'DW_AT_GNU_call_site_data_value',
@@ -594,7 +594,7 @@ DW_AT_NAME_MAP: Dict[int, str] = {
     0x2117: 'DW_AT_GNU_all_call_sites',
     0x2118: 'DW_AT_GNU_all_source_call_sites',
     0x2119: 'DW_AT_GNU_macros',
-    0x211a: 'DW_AT_GNU_deleted',
+    0x211A: 'DW_AT_GNU_deleted',
     0x2130: 'DW_AT_GNU_dwo_name',
     0x2131: 'DW_AT_GNU_dwo_id',
     0x2132: 'DW_AT_GNU_ranges_base',
@@ -608,22 +608,22 @@ DW_AT_NAME_MAP: Dict[int, str] = {
     0x2301: 'DW_AT_use_GNAT_descriptive_type',
     0x2302: 'DW_AT_GNAT_descriptive_type',
     0x3210: 'DW_AT_upc_threads_scaled',
-    0x3a00: 'DW_AT_PGI_lbase',
-    0x3a01: 'DW_AT_PGI_soffset',
-    0x3a02: 'DW_AT_PGI_lstride',
-    0x3fe1: 'DW_AT_APPLE_optimized',
-    0x3fe2: 'DW_AT_APPLE_flags',
-    0x3fe3: 'DW_AT_APPLE_isa',
-    0x3fe4: 'DW_AT_APPLE_block',
-    0x3fe5: 'DW_AT_APPLE_major_runtime_vers',
-    0x3fe6: 'DW_AT_APPLE_runtime_class',
-    0x3fe7: 'DW_AT_APPLE_omit_frame_ptr',
-    0x3fe8: 'DW_AT_APPLE_property_name',
-    0x3fe9: 'DW_AT_APPLE_property_getter',
-    0x3fea: 'DW_AT_APPLE_property_setter',
-    0x3feb: 'DW_AT_APPLE_property_attribute',
-    0x3fec: 'DW_AT_APPLE_objc_complete_type',
-    0x3fed: 'DW_AT_APPLE_property',
+    0x3A00: 'DW_AT_PGI_lbase',
+    0x3A01: 'DW_AT_PGI_soffset',
+    0x3A02: 'DW_AT_PGI_lstride',
+    0x3FE1: 'DW_AT_APPLE_optimized',
+    0x3FE2: 'DW_AT_APPLE_flags',
+    0x3FE3: 'DW_AT_APPLE_isa',
+    0x3FE4: 'DW_AT_APPLE_block',
+    0x3FE5: 'DW_AT_APPLE_major_runtime_vers',
+    0x3FE6: 'DW_AT_APPLE_runtime_class',
+    0x3FE7: 'DW_AT_APPLE_omit_frame_ptr',
+    0x3FE8: 'DW_AT_APPLE_property_name',
+    0x3FE9: 'DW_AT_APPLE_property_getter',
+    0x3FEA: 'DW_AT_APPLE_property_setter',
+    0x3FEB: 'DW_AT_APPLE_property_attribute',
+    0x3FEC: 'DW_AT_APPLE_objc_complete_type',
+    0x3FED: 'DW_AT_APPLE_property',
 }
 
 
@@ -640,12 +640,12 @@ DW_FORM_data4 = 0x06
 DW_FORM_data8 = 0x07
 DW_FORM_string = 0x08
 DW_FORM_block = 0x09
-DW_FORM_block1 = 0x0a
-DW_FORM_data1 = 0x0b
-DW_FORM_flag = 0x0c
-DW_FORM_sdata = 0x0d
-DW_FORM_strp = 0x0e
-DW_FORM_udata = 0x0f
+DW_FORM_block1 = 0x0A
+DW_FORM_data1 = 0x0B
+DW_FORM_flag = 0x0C
+DW_FORM_sdata = 0x0D
+DW_FORM_strp = 0x0E
+DW_FORM_udata = 0x0F
 DW_FORM_ref_addr = 0x10
 DW_FORM_ref1 = 0x11
 DW_FORM_ref2 = 0x12
@@ -657,12 +657,12 @@ DW_FORM_sec_offset = 0x17
 DW_FORM_exprloc = 0x18
 DW_FORM_flag_present = 0x19
 DW_FORM_ref_sig8 = 0x20
-DW_FORM_strx = 0x1a
-DW_FORM_addrx = 0x1b
-DW_FORM_ref_sup4 = 0x1c
-DW_FORM_strp_sup = 0x1d
-DW_FORM_data16 = 0x1e
-DW_FORM_line_strp = 0x1f
+DW_FORM_strx = 0x1A
+DW_FORM_addrx = 0x1B
+DW_FORM_ref_sup4 = 0x1C
+DW_FORM_strp_sup = 0x1D
+DW_FORM_data16 = 0x1E
+DW_FORM_line_strp = 0x1F
 DW_FORM_implicit_const = 0x21
 DW_FORM_loclistx = 0x22
 DW_FORM_rnglistx = 0x23
@@ -672,13 +672,13 @@ DW_FORM_strx2 = 0x26
 DW_FORM_strx3 = 0x27
 DW_FORM_strx4 = 0x28
 DW_FORM_addrx1 = 0x29
-DW_FORM_addrx2 = 0x2a
-DW_FORM_addrx3 = 0x2b
-DW_FORM_addrx4 = 0x2c
-DW_FORM_GNU_addr_index = 0x1f01
-DW_FORM_GNU_str_index = 0x1f02
-DW_FORM_GNU_ref_alt = 0x1f20
-DW_FORM_GNU_strp_alt = 0x1f21
+DW_FORM_addrx2 = 0x2A
+DW_FORM_addrx3 = 0x2B
+DW_FORM_addrx4 = 0x2C
+DW_FORM_GNU_addr_index = 0x1F01
+DW_FORM_GNU_str_index = 0x1F02
+DW_FORM_GNU_ref_alt = 0x1F20
+DW_FORM_GNU_strp_alt = 0x1F21
 
 DW_FORM_NAME_MAP: Dict[int, str] = {
     0x00: 'DW_FORM_end',
@@ -690,12 +690,12 @@ DW_FORM_NAME_MAP: Dict[int, str] = {
     0x07: 'DW_FORM_data8',
     0x08: 'DW_FORM_string',
     0x09: 'DW_FORM_block',
-    0x0a: 'DW_FORM_block1',
-    0x0b: 'DW_FORM_data1',
-    0x0c: 'DW_FORM_flag',
-    0x0d: 'DW_FORM_sdata',
-    0x0e: 'DW_FORM_strp',
-    0x0f: 'DW_FORM_udata',
+    0x0A: 'DW_FORM_block1',
+    0x0B: 'DW_FORM_data1',
+    0x0C: 'DW_FORM_flag',
+    0x0D: 'DW_FORM_sdata',
+    0x0E: 'DW_FORM_strp',
+    0x0F: 'DW_FORM_udata',
     0x10: 'DW_FORM_ref_addr',
     0x11: 'DW_FORM_ref1',
     0x12: 'DW_FORM_ref2',
@@ -707,12 +707,12 @@ DW_FORM_NAME_MAP: Dict[int, str] = {
     0x18: 'DW_FORM_exprloc',
     0x19: 'DW_FORM_flag_present',
     0x20: 'DW_FORM_ref_sig8',
-    0x1a: 'DW_FORM_strx',
-    0x1b: 'DW_FORM_addrx',
-    0x1c: 'DW_FORM_ref_sup4',
-    0x1d: 'DW_FORM_strp_sup',
-    0x1e: 'DW_FORM_data16',
-    0x1f: 'DW_FORM_line_strp',
+    0x1A: 'DW_FORM_strx',
+    0x1B: 'DW_FORM_addrx',
+    0x1C: 'DW_FORM_ref_sup4',
+    0x1D: 'DW_FORM_strp_sup',
+    0x1E: 'DW_FORM_data16',
+    0x1F: 'DW_FORM_line_strp',
     0x21: 'DW_FORM_implicit_const',
     0x22: 'DW_FORM_loclistx',
     0x23: 'DW_FORM_rnglistx',
@@ -722,13 +722,13 @@ DW_FORM_NAME_MAP: Dict[int, str] = {
     0x27: 'DW_FORM_strx3',
     0x28: 'DW_FORM_strx4',
     0x29: 'DW_FORM_addrx1',
-    0x2a: 'DW_FORM_addrx2',
-    0x2b: 'DW_FORM_addrx3',
-    0x2c: 'DW_FORM_addrx4',
-    0x1f01: 'DW_FORM_GNU_addr_index',
-    0x1f02: 'DW_FORM_GNU_str_index',
-    0x1f20: 'DW_FORM_GNU_ref_alt',
-    0x1f21: 'DW_FORM_GNU_strp_alt',
+    0x2A: 'DW_FORM_addrx2',
+    0x2B: 'DW_FORM_addrx3',
+    0x2C: 'DW_FORM_addrx4',
+    0x1F01: 'DW_FORM_GNU_addr_index',
+    0x1F02: 'DW_FORM_GNU_str_index',
+    0x1F20: 'DW_FORM_GNU_ref_alt',
+    0x1F21: 'DW_FORM_GNU_strp_alt',
 }
 
 
@@ -741,12 +741,12 @@ DW_OP_deref = 0x06
 DW_OP_deref = 0x06
 DW_OP_const1u = 0x08
 DW_OP_const1s = 0x09
-DW_OP_const2u = 0x0a
-DW_OP_const2s = 0x0b
-DW_OP_const4u = 0x0c
-DW_OP_const4s = 0x0d
-DW_OP_const8u = 0x0e
-DW_OP_const8s = 0x0f
+DW_OP_const2u = 0x0A
+DW_OP_const2s = 0x0B
+DW_OP_const4u = 0x0C
+DW_OP_const4s = 0x0D
+DW_OP_const8u = 0x0E
+DW_OP_const8s = 0x0F
 DW_OP_constu = 0x10
 DW_OP_consts = 0x11
 DW_OP_dup = 0x12
@@ -757,12 +757,12 @@ DW_OP_swap = 0x16
 DW_OP_rot = 0x17
 DW_OP_xderef = 0x18
 DW_OP_abs = 0x19
-DW_OP_and = 0x1a
-DW_OP_div = 0x1b
-DW_OP_minus = 0x1c
-DW_OP_mod = 0x1d
-DW_OP_mul = 0x1e
-DW_OP_neg = 0x1f
+DW_OP_and = 0x1A
+DW_OP_div = 0x1B
+DW_OP_minus = 0x1C
+DW_OP_mod = 0x1D
+DW_OP_mul = 0x1E
+DW_OP_neg = 0x1F
 DW_OP_not = 0x20
 DW_OP_or = 0x21
 DW_OP_plus = 0x22
@@ -773,12 +773,12 @@ DW_OP_shra = 0x26
 DW_OP_xor = 0x27
 DW_OP_bra = 0x28
 DW_OP_eq = 0x29
-DW_OP_ge = 0x2a
-DW_OP_gt = 0x2b
-DW_OP_le = 0x2c
-DW_OP_lt = 0x2d
-DW_OP_ne = 0x2e
-DW_OP_skip = 0x2f
+DW_OP_ge = 0x2A
+DW_OP_gt = 0x2B
+DW_OP_le = 0x2C
+DW_OP_lt = 0x2D
+DW_OP_ne = 0x2E
+DW_OP_skip = 0x2F
 DW_OP_lit0 = 0x30
 DW_OP_lit1 = 0x31
 DW_OP_lit2 = 0x32
@@ -789,12 +789,12 @@ DW_OP_lit6 = 0x36
 DW_OP_lit7 = 0x37
 DW_OP_lit8 = 0x38
 DW_OP_lit9 = 0x39
-DW_OP_lit10 = 0x3a
-DW_OP_lit11 = 0x3b
-DW_OP_lit12 = 0x3c
-DW_OP_lit13 = 0x3d
-DW_OP_lit14 = 0x3e
-DW_OP_lit15 = 0x3f
+DW_OP_lit10 = 0x3A
+DW_OP_lit11 = 0x3B
+DW_OP_lit12 = 0x3C
+DW_OP_lit13 = 0x3D
+DW_OP_lit14 = 0x3E
+DW_OP_lit15 = 0x3F
 DW_OP_lit16 = 0x40
 DW_OP_lit17 = 0x41
 DW_OP_lit18 = 0x42
@@ -805,12 +805,12 @@ DW_OP_lit22 = 0x46
 DW_OP_lit23 = 0x47
 DW_OP_lit24 = 0x48
 DW_OP_lit25 = 0x49
-DW_OP_lit26 = 0x4a
-DW_OP_lit27 = 0x4b
-DW_OP_lit28 = 0x4c
-DW_OP_lit29 = 0x4d
-DW_OP_lit30 = 0x4e
-DW_OP_lit31 = 0x4f
+DW_OP_lit26 = 0x4A
+DW_OP_lit27 = 0x4B
+DW_OP_lit28 = 0x4C
+DW_OP_lit29 = 0x4D
+DW_OP_lit30 = 0x4E
+DW_OP_lit31 = 0x4F
 DW_OP_reg0 = 0x50
 DW_OP_reg1 = 0x51
 DW_OP_reg2 = 0x52
@@ -821,12 +821,12 @@ DW_OP_reg6 = 0x56
 DW_OP_reg7 = 0x57
 DW_OP_reg8 = 0x58
 DW_OP_reg9 = 0x59
-DW_OP_reg10 = 0x5a
-DW_OP_reg11 = 0x5b
-DW_OP_reg12 = 0x5c
-DW_OP_reg13 = 0x5d
-DW_OP_reg14 = 0x5e
-DW_OP_reg15 = 0x5f
+DW_OP_reg10 = 0x5A
+DW_OP_reg11 = 0x5B
+DW_OP_reg12 = 0x5C
+DW_OP_reg13 = 0x5D
+DW_OP_reg14 = 0x5E
+DW_OP_reg15 = 0x5F
 DW_OP_reg16 = 0x60
 DW_OP_reg17 = 0x61
 DW_OP_reg18 = 0x62
@@ -837,12 +837,12 @@ DW_OP_reg22 = 0x66
 DW_OP_reg23 = 0x67
 DW_OP_reg24 = 0x68
 DW_OP_reg25 = 0x69
-DW_OP_reg26 = 0x6a
-DW_OP_reg27 = 0x6b
-DW_OP_reg28 = 0x6c
-DW_OP_reg29 = 0x6d
-DW_OP_reg30 = 0x6e
-DW_OP_reg31 = 0x6f
+DW_OP_reg26 = 0x6A
+DW_OP_reg27 = 0x6B
+DW_OP_reg28 = 0x6C
+DW_OP_reg29 = 0x6D
+DW_OP_reg30 = 0x6E
+DW_OP_reg31 = 0x6F
 DW_OP_breg0 = 0x70
 DW_OP_breg1 = 0x71
 DW_OP_breg2 = 0x72
@@ -853,12 +853,12 @@ DW_OP_breg6 = 0x76
 DW_OP_breg7 = 0x77
 DW_OP_breg8 = 0x78
 DW_OP_breg9 = 0x79
-DW_OP_breg10 = 0x7a
-DW_OP_breg11 = 0x7b
-DW_OP_breg12 = 0x7c
-DW_OP_breg13 = 0x7d
-DW_OP_breg14 = 0x7e
-DW_OP_breg15 = 0x7f
+DW_OP_breg10 = 0x7A
+DW_OP_breg11 = 0x7B
+DW_OP_breg12 = 0x7C
+DW_OP_breg13 = 0x7D
+DW_OP_breg14 = 0x7E
+DW_OP_breg15 = 0x7F
 DW_OP_breg16 = 0x80
 DW_OP_breg17 = 0x81
 DW_OP_breg18 = 0x82
@@ -869,12 +869,12 @@ DW_OP_breg22 = 0x86
 DW_OP_breg23 = 0x87
 DW_OP_breg24 = 0x88
 DW_OP_breg25 = 0x89
-DW_OP_breg26 = 0x8a
-DW_OP_breg27 = 0x8b
-DW_OP_breg28 = 0x8c
-DW_OP_breg29 = 0x8d
-DW_OP_breg30 = 0x8e
-DW_OP_breg31 = 0x8f
+DW_OP_breg26 = 0x8A
+DW_OP_breg27 = 0x8B
+DW_OP_breg28 = 0x8C
+DW_OP_breg29 = 0x8D
+DW_OP_breg30 = 0x8E
+DW_OP_breg31 = 0x8F
 DW_OP_regx = 0x90
 DW_OP_fbreg = 0x91
 DW_OP_bregx = 0x92
@@ -885,59 +885,59 @@ DW_OP_nop = 0x96
 DW_OP_push_object_address = 0x97
 DW_OP_call2 = 0x98
 DW_OP_call4 = 0x99
-DW_OP_call_ref = 0x9a
-DW_OP_form_tls_address = 0x9b
-DW_OP_call_frame_cfa = 0x9c
-DW_OP_bit_piece = 0x9d
-DW_OP_implicit_value = 0x9e
-DW_OP_stack_value = 0x9f
-DW_OP_implicit_pointer = 0xa0
-DW_OP_addrx = 0xa1
-DW_OP_constx = 0xa2
-DW_OP_entry_value = 0xa3
-DW_OP_const_type = 0xa4
-DW_OP_regval_type = 0xa5
-DW_OP_deref_type = 0xa6
-DW_OP_xderef_type = 0xa7
-DW_OP_convert = 0xa8
-DW_OP_reinterpret = 0xa9
-DW_OP_lo_user = 0xe0
-DW_OP_hi_user = 0xff
-DW_OP_GNU_push_tls_address = 0xe0
-DW_OP_GNU_uninit = 0xf0
-DW_OP_GNU_encoded_addr = 0xf1
-DW_OP_GNU_implicit_pointer = 0xf2
-DW_OP_GNU_entry_value = 0xf3
-DW_OP_GNU_const_type = 0xf4
-DW_OP_GNU_regval_type = 0xf5
-DW_OP_GNU_deref_type = 0xf6
-DW_OP_GNU_convert = 0xf7
-DW_OP_GNU_reinterpret = 0xf9
-DW_OP_GNU_parameter_ref = 0xfa
-DW_OP_GNU_addr_index = 0xfb
-DW_OP_GNU_const_index = 0xfc
-DW_OP_GNU_variable_value = 0xfd
-DW_OP_HP_unknown = 0xe0
-DW_OP_HP_is_value = 0xe1
-DW_OP_HP_fltconst4 = 0xe2
-DW_OP_HP_fltconst8 = 0xe3
-DW_OP_HP_mod_range = 0xe4
-DW_OP_HP_unmod_range = 0xe5
-DW_OP_HP_tls = 0xe6
-DW_OP_PGI_omp_thread_num = 0xf8
-DW_OP_AARCH64_operation = 0xea
+DW_OP_call_ref = 0x9A
+DW_OP_form_tls_address = 0x9B
+DW_OP_call_frame_cfa = 0x9C
+DW_OP_bit_piece = 0x9D
+DW_OP_implicit_value = 0x9E
+DW_OP_stack_value = 0x9F
+DW_OP_implicit_pointer = 0xA0
+DW_OP_addrx = 0xA1
+DW_OP_constx = 0xA2
+DW_OP_entry_value = 0xA3
+DW_OP_const_type = 0xA4
+DW_OP_regval_type = 0xA5
+DW_OP_deref_type = 0xA6
+DW_OP_xderef_type = 0xA7
+DW_OP_convert = 0xA8
+DW_OP_reinterpret = 0xA9
+DW_OP_lo_user = 0xE0
+DW_OP_hi_user = 0xFF
+DW_OP_GNU_push_tls_address = 0xE0
+DW_OP_GNU_uninit = 0xF0
+DW_OP_GNU_encoded_addr = 0xF1
+DW_OP_GNU_implicit_pointer = 0xF2
+DW_OP_GNU_entry_value = 0xF3
+DW_OP_GNU_const_type = 0xF4
+DW_OP_GNU_regval_type = 0xF5
+DW_OP_GNU_deref_type = 0xF6
+DW_OP_GNU_convert = 0xF7
+DW_OP_GNU_reinterpret = 0xF9
+DW_OP_GNU_parameter_ref = 0xFA
+DW_OP_GNU_addr_index = 0xFB
+DW_OP_GNU_const_index = 0xFC
+DW_OP_GNU_variable_value = 0xFD
+DW_OP_HP_unknown = 0xE0
+DW_OP_HP_is_value = 0xE1
+DW_OP_HP_fltconst4 = 0xE2
+DW_OP_HP_fltconst8 = 0xE3
+DW_OP_HP_mod_range = 0xE4
+DW_OP_HP_unmod_range = 0xE5
+DW_OP_HP_tls = 0xE6
+DW_OP_PGI_omp_thread_num = 0xF8
+DW_OP_AARCH64_operation = 0xEA
 
 DW_OP_NAME_MAP: Dict[int, str] = {
     0x03: 'DW_OP_addr',
     0x06: 'DW_OP_deref',
     0x08: 'DW_OP_const1u',
     0x09: 'DW_OP_const1s',
-    0x0a: 'DW_OP_const2u',
-    0x0b: 'DW_OP_const2s',
-    0x0c: 'DW_OP_const4u',
-    0x0d: 'DW_OP_const4s',
-    0x0e: 'DW_OP_const8u',
-    0x0f: 'DW_OP_const8s',
+    0x0A: 'DW_OP_const2u',
+    0x0B: 'DW_OP_const2s',
+    0x0C: 'DW_OP_const4u',
+    0x0D: 'DW_OP_const4s',
+    0x0E: 'DW_OP_const8u',
+    0x0F: 'DW_OP_const8s',
     0x10: 'DW_OP_constu',
     0x11: 'DW_OP_consts',
     0x12: 'DW_OP_dup',
@@ -948,12 +948,12 @@ DW_OP_NAME_MAP: Dict[int, str] = {
     0x17: 'DW_OP_rot',
     0x18: 'DW_OP_xderef',
     0x19: 'DW_OP_abs',
-    0x1a: 'DW_OP_and',
-    0x1b: 'DW_OP_div',
-    0x1c: 'DW_OP_minus',
-    0x1d: 'DW_OP_mod',
-    0x1e: 'DW_OP_mul',
-    0x1f: 'DW_OP_neg',
+    0x1A: 'DW_OP_and',
+    0x1B: 'DW_OP_div',
+    0x1C: 'DW_OP_minus',
+    0x1D: 'DW_OP_mod',
+    0x1E: 'DW_OP_mul',
+    0x1F: 'DW_OP_neg',
     0x20: 'DW_OP_not',
     0x21: 'DW_OP_or',
     0x22: 'DW_OP_plus',
@@ -964,12 +964,12 @@ DW_OP_NAME_MAP: Dict[int, str] = {
     0x27: 'DW_OP_xor',
     0x28: 'DW_OP_bra',
     0x29: 'DW_OP_eq',
-    0x2a: 'DW_OP_ge',
-    0x2b: 'DW_OP_gt',
-    0x2c: 'DW_OP_le',
-    0x2d: 'DW_OP_lt',
-    0x2e: 'DW_OP_ne',
-    0x2f: 'DW_OP_skip',
+    0x2A: 'DW_OP_ge',
+    0x2B: 'DW_OP_gt',
+    0x2C: 'DW_OP_le',
+    0x2D: 'DW_OP_lt',
+    0x2E: 'DW_OP_ne',
+    0x2F: 'DW_OP_skip',
     0x30: 'DW_OP_lit0',
     0x31: 'DW_OP_lit1',
     0x32: 'DW_OP_lit2',
@@ -980,12 +980,12 @@ DW_OP_NAME_MAP: Dict[int, str] = {
     0x37: 'DW_OP_lit7',
     0x38: 'DW_OP_lit8',
     0x39: 'DW_OP_lit9',
-    0x3a: 'DW_OP_lit10',
-    0x3b: 'DW_OP_lit11',
-    0x3c: 'DW_OP_lit12',
-    0x3d: 'DW_OP_lit13',
-    0x3e: 'DW_OP_lit14',
-    0x3f: 'DW_OP_lit15',
+    0x3A: 'DW_OP_lit10',
+    0x3B: 'DW_OP_lit11',
+    0x3C: 'DW_OP_lit12',
+    0x3D: 'DW_OP_lit13',
+    0x3E: 'DW_OP_lit14',
+    0x3F: 'DW_OP_lit15',
     0x40: 'DW_OP_lit16',
     0x41: 'DW_OP_lit17',
     0x42: 'DW_OP_lit18',
@@ -996,12 +996,12 @@ DW_OP_NAME_MAP: Dict[int, str] = {
     0x47: 'DW_OP_lit23',
     0x48: 'DW_OP_lit24',
     0x49: 'DW_OP_lit25',
-    0x4a: 'DW_OP_lit26',
-    0x4b: 'DW_OP_lit27',
-    0x4c: 'DW_OP_lit28',
-    0x4d: 'DW_OP_lit29',
-    0x4e: 'DW_OP_lit30',
-    0x4f: 'DW_OP_lit31',
+    0x4A: 'DW_OP_lit26',
+    0x4B: 'DW_OP_lit27',
+    0x4C: 'DW_OP_lit28',
+    0x4D: 'DW_OP_lit29',
+    0x4E: 'DW_OP_lit30',
+    0x4F: 'DW_OP_lit31',
     0x50: 'DW_OP_reg0',
     0x51: 'DW_OP_reg1',
     0x52: 'DW_OP_reg2',
@@ -1012,12 +1012,12 @@ DW_OP_NAME_MAP: Dict[int, str] = {
     0x57: 'DW_OP_reg7',
     0x58: 'DW_OP_reg8',
     0x59: 'DW_OP_reg9',
-    0x5a: 'DW_OP_reg10',
-    0x5b: 'DW_OP_reg11',
-    0x5c: 'DW_OP_reg12',
-    0x5d: 'DW_OP_reg13',
-    0x5e: 'DW_OP_reg14',
-    0x5f: 'DW_OP_reg15',
+    0x5A: 'DW_OP_reg10',
+    0x5B: 'DW_OP_reg11',
+    0x5C: 'DW_OP_reg12',
+    0x5D: 'DW_OP_reg13',
+    0x5E: 'DW_OP_reg14',
+    0x5F: 'DW_OP_reg15',
     0x60: 'DW_OP_reg16',
     0x61: 'DW_OP_reg17',
     0x62: 'DW_OP_reg18',
@@ -1028,12 +1028,12 @@ DW_OP_NAME_MAP: Dict[int, str] = {
     0x67: 'DW_OP_reg23',
     0x68: 'DW_OP_reg24',
     0x69: 'DW_OP_reg25',
-    0x6a: 'DW_OP_reg26',
-    0x6b: 'DW_OP_reg27',
-    0x6c: 'DW_OP_reg28',
-    0x6d: 'DW_OP_reg29',
-    0x6e: 'DW_OP_reg30',
-    0x6f: 'DW_OP_reg31',
+    0x6A: 'DW_OP_reg26',
+    0x6B: 'DW_OP_reg27',
+    0x6C: 'DW_OP_reg28',
+    0x6D: 'DW_OP_reg29',
+    0x6E: 'DW_OP_reg30',
+    0x6F: 'DW_OP_reg31',
     0x70: 'DW_OP_breg0',
     0x71: 'DW_OP_breg1',
     0x72: 'DW_OP_breg2',
@@ -1044,12 +1044,12 @@ DW_OP_NAME_MAP: Dict[int, str] = {
     0x77: 'DW_OP_breg7',
     0x78: 'DW_OP_breg8',
     0x79: 'DW_OP_breg9',
-    0x7a: 'DW_OP_breg10',
-    0x7b: 'DW_OP_breg11',
-    0x7c: 'DW_OP_breg12',
-    0x7d: 'DW_OP_breg13',
-    0x7e: 'DW_OP_breg14',
-    0x7f: 'DW_OP_breg15',
+    0x7A: 'DW_OP_breg10',
+    0x7B: 'DW_OP_breg11',
+    0x7C: 'DW_OP_breg12',
+    0x7D: 'DW_OP_breg13',
+    0x7E: 'DW_OP_breg14',
+    0x7F: 'DW_OP_breg15',
     0x80: 'DW_OP_breg16',
     0x81: 'DW_OP_breg17',
     0x82: 'DW_OP_breg18',
@@ -1060,12 +1060,12 @@ DW_OP_NAME_MAP: Dict[int, str] = {
     0x87: 'DW_OP_breg23',
     0x88: 'DW_OP_breg24',
     0x89: 'DW_OP_breg25',
-    0x8a: 'DW_OP_breg26',
-    0x8b: 'DW_OP_breg27',
-    0x8c: 'DW_OP_breg28',
-    0x8d: 'DW_OP_breg29',
-    0x8e: 'DW_OP_breg30',
-    0x8f: 'DW_OP_breg31',
+    0x8A: 'DW_OP_breg26',
+    0x8B: 'DW_OP_breg27',
+    0x8C: 'DW_OP_breg28',
+    0x8D: 'DW_OP_breg29',
+    0x8E: 'DW_OP_breg30',
+    0x8F: 'DW_OP_breg31',
     0x90: 'DW_OP_regx',
     0x91: 'DW_OP_fbreg',
     0x92: 'DW_OP_bregx',
@@ -1076,45 +1076,45 @@ DW_OP_NAME_MAP: Dict[int, str] = {
     0x97: 'DW_OP_push_object_address',
     0x98: 'DW_OP_call2',
     0x99: 'DW_OP_call4',
-    0x9a: 'DW_OP_call_ref',
-    0x9b: 'DW_OP_form_tls_address',
-    0x9c: 'DW_OP_call_frame_cfa',
-    0x9d: 'DW_OP_bit_piece',
-    0x9e: 'DW_OP_implicit_value',
-    0x9f: 'DW_OP_stack_value',
-    0xa0: 'DW_OP_implicit_pointer',
-    0xa1: 'DW_OP_addrx',
-    0xa2: 'DW_OP_constx',
-    0xa3: 'DW_OP_entry_value',
-    0xa4: 'DW_OP_const_type',
-    0xa5: 'DW_OP_regval_type',
-    0xa6: 'DW_OP_deref_type',
-    0xa7: 'DW_OP_xderef_type',
-    0xa8: 'DW_OP_convert',
-    0xa9: 'DW_OP_reinterpret',
-    0xe0: 'DW_OP_lo_user/DW_OP_GNU_push_tls_address/DW_OP_HP_unknown',
-    0xff: 'DW_OP_hi_user',
-    0xf0: 'DW_OP_GNU_uninit',
-    0xf1: 'DW_OP_GNU_encoded_addr',
-    0xf2: 'DW_OP_GNU_implicit_pointer',
-    0xf3: 'DW_OP_GNU_entry_value',
-    0xf4: 'DW_OP_GNU_const_type',
-    0xf5: 'DW_OP_GNU_regval_type',
-    0xf6: 'DW_OP_GNU_deref_type',
-    0xf7: 'DW_OP_GNU_convert',
-    0xf9: 'DW_OP_GNU_reinterpret',
-    0xfa: 'DW_OP_GNU_parameter_ref',
-    0xfb: 'DW_OP_GNU_addr_index',
-    0xfc: 'DW_OP_GNU_const_index',
-    0xfd: 'DW_OP_GNU_variable_value',
-    0xe1: 'DW_OP_HP_is_value',
-    0xe2: 'DW_OP_HP_fltconst4',
-    0xe3: 'DW_OP_HP_fltconst8',
-    0xe4: 'DW_OP_HP_mod_range',
-    0xe5: 'DW_OP_HP_unmod_range',
-    0xe6: 'DW_OP_HP_tls',
-    0xf8: 'DW_OP_PGI_omp_thread_num',
-    0xea: 'DW_OP_AARCH64_operation',
+    0x9A: 'DW_OP_call_ref',
+    0x9B: 'DW_OP_form_tls_address',
+    0x9C: 'DW_OP_call_frame_cfa',
+    0x9D: 'DW_OP_bit_piece',
+    0x9E: 'DW_OP_implicit_value',
+    0x9F: 'DW_OP_stack_value',
+    0xA0: 'DW_OP_implicit_pointer',
+    0xA1: 'DW_OP_addrx',
+    0xA2: 'DW_OP_constx',
+    0xA3: 'DW_OP_entry_value',
+    0xA4: 'DW_OP_const_type',
+    0xA5: 'DW_OP_regval_type',
+    0xA6: 'DW_OP_deref_type',
+    0xA7: 'DW_OP_xderef_type',
+    0xA8: 'DW_OP_convert',
+    0xA9: 'DW_OP_reinterpret',
+    0xE0: 'DW_OP_lo_user/DW_OP_GNU_push_tls_address/DW_OP_HP_unknown',
+    0xFF: 'DW_OP_hi_user',
+    0xF0: 'DW_OP_GNU_uninit',
+    0xF1: 'DW_OP_GNU_encoded_addr',
+    0xF2: 'DW_OP_GNU_implicit_pointer',
+    0xF3: 'DW_OP_GNU_entry_value',
+    0xF4: 'DW_OP_GNU_const_type',
+    0xF5: 'DW_OP_GNU_regval_type',
+    0xF6: 'DW_OP_GNU_deref_type',
+    0xF7: 'DW_OP_GNU_convert',
+    0xF9: 'DW_OP_GNU_reinterpret',
+    0xFA: 'DW_OP_GNU_parameter_ref',
+    0xFB: 'DW_OP_GNU_addr_index',
+    0xFC: 'DW_OP_GNU_const_index',
+    0xFD: 'DW_OP_GNU_variable_value',
+    0xE1: 'DW_OP_HP_is_value',
+    0xE2: 'DW_OP_HP_fltconst4',
+    0xE3: 'DW_OP_HP_fltconst8',
+    0xE4: 'DW_OP_HP_mod_range',
+    0xE5: 'DW_OP_HP_unmod_range',
+    0xE6: 'DW_OP_HP_tls',
+    0xF8: 'DW_OP_PGI_omp_thread_num',
+    0xEA: 'DW_OP_AARCH64_operation',
 }
 
 DW_CHILDREN_no = 0x00
@@ -1163,23 +1163,23 @@ SHT_SYMTAB_SHNDX = 18
 SHT_RELR = 19
 SHT_NUM = 20
 SHT_LOOS = 0x60000000
-SHT_GNU_ATTRIBUTES = 0x6ffffff5
-SHT_GNU_HASH = 0x6ffffff6
-SHT_GNU_LIBLIST = 0x6ffffff7
-SHT_CHECKSUM = 0x6ffffff8
-SHT_LOSUNW = 0x6ffffffa
-SHT_SUNW_move = 0x6ffffffa
-SHT_SUNW_COMDAT = 0x6ffffffb
-SHT_SUNW_syminfo = 0x6ffffffc
-SHT_GNU_verdef = 0x6ffffffd
-SHT_GNU_verneed = 0x6ffffffe
-SHT_GNU_versym = 0x6fffffff
-SHT_HISUNW = 0x6fffffff
-SHT_HIOS = 0x6fffffff
+SHT_GNU_ATTRIBUTES = 0x6FFFFFF5
+SHT_GNU_HASH = 0x6FFFFFF6
+SHT_GNU_LIBLIST = 0x6FFFFFF7
+SHT_CHECKSUM = 0x6FFFFFF8
+SHT_LOSUNW = 0x6FFFFFFA
+SHT_SUNW_move = 0x6FFFFFFA
+SHT_SUNW_COMDAT = 0x6FFFFFFB
+SHT_SUNW_syminfo = 0x6FFFFFFC
+SHT_GNU_verdef = 0x6FFFFFFD
+SHT_GNU_verneed = 0x6FFFFFFE
+SHT_GNU_versym = 0x6FFFFFFF
+SHT_HISUNW = 0x6FFFFFFF
+SHT_HIOS = 0x6FFFFFFF
 SHT_LOPROC = 0x70000000
-SHT_HIPROC = 0x7fffffff
+SHT_HIPROC = 0x7FFFFFFF
 SHT_LOUSER = 0x80000000
-SHT_HIUSER = 0x8fffffff
+SHT_HIUSER = 0x8FFFFFFF
 
 
 SHT_NAME_MAP: Dict[int, str] = {
@@ -1294,35 +1294,35 @@ STV_NAME_MAP: Dict[int, str] = {
 
 # Special section indices
 SHN_UNDEF = 0
-SHN_LORESERVE = 0xff00
-SHN_LOPROC = 0xff00
-SHN_BEFORE = 0xff00
-SHN_AFTER = 0xff01
-SHN_HIPROC = 0xff1f
-SHN_LOOS = 0xff20
-SHN_HIOS = 0xff3f
-SHN_ABS = 0xfff1
-SHN_COMMON = 0xfff2
-SHN_XINDEX = 0xffff
-SHN_HIRESERVE = 0xffff
+SHN_LORESERVE = 0xFF00
+SHN_LOPROC = 0xFF00
+SHN_BEFORE = 0xFF00
+SHN_AFTER = 0xFF01
+SHN_HIPROC = 0xFF1F
+SHN_LOOS = 0xFF20
+SHN_HIOS = 0xFF3F
+SHN_ABS = 0xFFF1
+SHN_COMMON = 0xFFF2
+SHN_XINDEX = 0xFFFF
+SHN_HIRESERVE = 0xFFFF
 
 # Section header sh_flags values
-SHF_WRITE = (1 << 0)
-SHF_ALLOC = (1 << 1)
-SHF_EXECINSTR = (1 << 2)
-SHF_MERGE = (1 << 4)
-SHF_STRINGS = (1 << 5)
-SHF_INFO_LINK = (1 << 6)
-SHF_LINK_ORDER = (1 << 7)
-SHF_OS_NONCONFORMING = (1 << 8)
-SHF_GROUP = (1 << 9)
-SHF_TLS = (1 << 10)
-SHF_COMPRESSED = (1 << 11)
-SHF_MASKOS = 0x0ff00000
-SHF_MASKPROC = 0xf0000000
-SHF_GNU_RETAIN  = (1 << 21)
-SHF_ORDERED = (1 << 30)
-SHF_EXCLUDE = (1 << 31)
+SHF_WRITE = 1 << 0
+SHF_ALLOC = 1 << 1
+SHF_EXECINSTR = 1 << 2
+SHF_MERGE = 1 << 4
+SHF_STRINGS = 1 << 5
+SHF_INFO_LINK = 1 << 6
+SHF_LINK_ORDER = 1 << 7
+SHF_OS_NONCONFORMING = 1 << 8
+SHF_GROUP = 1 << 9
+SHF_TLS = 1 << 10
+SHF_COMPRESSED = 1 << 11
+SHF_MASKOS = 0x0FF00000
+SHF_MASKPROC = 0xF0000000
+SHF_GNU_RETAIN = 1 << 21
+SHF_ORDERED = 1 << 30
+SHF_EXCLUDE = 1 << 31
 
 
 class Elf_Exception(Exception):
@@ -1447,7 +1447,7 @@ class Elf_Sym:
 
     @property
     def type(self) -> int:
-        return self.st_info & 0xf
+        return self.st_info & 0xF
 
     @property
     def type_name(self) -> str:
@@ -1574,7 +1574,7 @@ class Dwarf_CU:
 
         self.get_offset = elf.get_uint32
 
-        if self.length == 0xffffffff:
+        if self.length == 0xFFFFFFFF:
             self.get_offset = elf.get_uint64
             unit_length, _ = elf.get_bytes(8, data, offset)
             self.unit_length += unit_length
@@ -1777,7 +1777,7 @@ class Dwarf_CU:
             evaluated = self._elf.lookup_string(shdr, int(value)).decode() if shdr else None
 
         elif form == DW_FORM_string:
-            assert type(value) == bytes
+            assert isinstance(value, bytes)
             evaluated = value.decode()
 
         elif form == DW_FORM_exprloc:
@@ -1786,7 +1786,7 @@ class Dwarf_CU:
             # Fully implement DWARF expressions is not possible, because some
             # expressions work with registers content, which is not available, unless
             # the real debugging is taking place.
-            assert type(value) == bytes
+            assert isinstance(value, bytes)
 
             stack: List[Any] = []
 
@@ -2044,80 +2044,80 @@ class Elf:
                 return shdr
         return None
 
-    def get_fmt(self, fmt: str, data: bytes, offset: int=0) -> Tuple[Tuple[Union[int, bytes], ...], int]:
+    def get_fmt(self, fmt: str, data: bytes, offset: int = 0) -> Tuple[Tuple[Union[int, bytes], ...], int]:
         endian = '<' if self._byteorder == 'little' else '>'
         return (struct.unpack_from(endian + fmt, data, offset), offset + struct.calcsize(endian + fmt))
 
-    def get_bytes(self, cnt: int, data: bytes, offset: int=0) -> Tuple[bytes, int]:
-        value = data[offset:offset + cnt]
+    def get_bytes(self, cnt: int, data: bytes, offset: int = 0) -> Tuple[bytes, int]:
+        value = data[offset : offset + cnt]
         offset += cnt
         return value, offset
 
-    def get_string(self, data: bytes, offset: int=0) -> Tuple[bytes, int]:
+    def get_string(self, data: bytes, offset: int = 0) -> Tuple[bytes, int]:
         end = data.index(b'\x00', offset)
         value = data[offset:end]
         return value, end + 1
 
-    def get_int(self, data: bytes, size: int, offset: int=0, signed: bool=False) -> Tuple[int, int]:
-        value = int.from_bytes(data[offset:offset + size], byteorder=self._byteorder, signed=signed)  # type: ignore
+    def get_int(self, data: bytes, size: int, offset: int = 0, signed: bool = False) -> Tuple[int, int]:
+        value = int.from_bytes(data[offset : offset + size], byteorder=self._byteorder, signed=signed)  # type: ignore
         offset += size
         return value, offset
 
-    def get_uint8(self, data: bytes, offset: int=0) -> Tuple[int, int]:
+    def get_uint8(self, data: bytes, offset: int = 0) -> Tuple[int, int]:
         return self.get_int(data, 1, offset)
 
-    def get_uint16(self, data: bytes, offset: int=0) -> Tuple[int, int]:
+    def get_uint16(self, data: bytes, offset: int = 0) -> Tuple[int, int]:
         return self.get_int(data, 2, offset)
 
-    def get_uint24(self, data: bytes, offset: int=0) -> Tuple[int, int]:
+    def get_uint24(self, data: bytes, offset: int = 0) -> Tuple[int, int]:
         return self.get_int(data, 3, offset)
 
-    def get_uint32(self, data: bytes, offset: int=0) -> Tuple[int, int]:
+    def get_uint32(self, data: bytes, offset: int = 0) -> Tuple[int, int]:
         return self.get_int(data, 4, offset)
 
-    def get_uint64(self, data: bytes, offset: int=0) -> Tuple[int, int]:
+    def get_uint64(self, data: bytes, offset: int = 0) -> Tuple[int, int]:
         return self.get_int(data, 8, offset)
 
-    def get_uint128(self, data: bytes, offset: int=0) -> Tuple[int, int]:
+    def get_uint128(self, data: bytes, offset: int = 0) -> Tuple[int, int]:
         return self.get_int(data, 16, offset)
 
-    def get_sint8(self, data: bytes, offset: int=0) -> Tuple[int, int]:
+    def get_sint8(self, data: bytes, offset: int = 0) -> Tuple[int, int]:
         return self.get_int(data, 1, offset, True)
 
-    def get_sint16(self, data: bytes, offset: int=0) -> Tuple[int, int]:
+    def get_sint16(self, data: bytes, offset: int = 0) -> Tuple[int, int]:
         return self.get_int(data, 2, offset, True)
 
-    def get_sint24(self, data: bytes, offset: int=0) -> Tuple[int, int]:
+    def get_sint24(self, data: bytes, offset: int = 0) -> Tuple[int, int]:
         return self.get_int(data, 3, offset, True)
 
-    def get_sint32(self, data: bytes, offset: int=0) -> Tuple[int, int]:
+    def get_sint32(self, data: bytes, offset: int = 0) -> Tuple[int, int]:
         return self.get_int(data, 4, offset, True)
 
-    def get_sint64(self, data: bytes, offset: int=0) -> Tuple[int, int]:
+    def get_sint64(self, data: bytes, offset: int = 0) -> Tuple[int, int]:
         return self.get_int(data, 8, offset, True)
 
-    def get_sint128(self, data: bytes, offset: int=0) -> Tuple[int, int]:
+    def get_sint128(self, data: bytes, offset: int = 0) -> Tuple[int, int]:
         return self.get_int(data, 16, offset, True)
 
-    def get_address(self, data: bytes, offset: int=0) -> Tuple[int, int]:
+    def get_address(self, data: bytes, offset: int = 0) -> Tuple[int, int]:
         ei_class = self.ehdr.e_ident[EI_CLASS]
         if ei_class == ELFCLASS32:
             return self.get_uint32(data, offset)
         else:
             return self.get_uint64(data, offset)
 
-    def get_uleb128(self, data: bytes, offset: int=0) -> Tuple[int, int]:
+    def get_uleb128(self, data: bytes, offset: int = 0) -> Tuple[int, int]:
         # Unsigned Little Endian Base 128
         # Dwarf5: Figure C.3: Algorithm to decode an unsigned LEB128 integer
         res = idx = 0
         while True:
-            res |= (data[offset + idx] & 0x7f) << (idx * 7)
+            res |= (data[offset + idx] & 0x7F) << (idx * 7)
             idx += 1
             if not data[offset + idx - 1] & 0x80:
                 break
         return res, offset + idx
 
-    def get_sleb128(self, data: bytes, offset: int=0) -> Tuple[int, int]:
+    def get_sleb128(self, data: bytes, offset: int = 0) -> Tuple[int, int]:
         # Signed Little Endian Base 128
         # Dwarf5: Figure C.4: Algorithm to decode a signed LEB128 integer
 
@@ -2131,7 +2131,7 @@ class Elf:
             return value, offset_new
 
         # Sign extend the value
-        value |= - (1 << ((offset_new - offset) * 7))
+        value |= -(1 << ((offset_new - offset) * 7))
         return value, offset_new
 
     def add_cus_to_symbols(self) -> Dict[int, Elf_Sym]:
@@ -2157,8 +2157,11 @@ class Elf:
 
         # Filter symbol table for functions and objects which address is not absolutely set(SHN_ABS).
         # Symbols with SHN_ABS section are mapped to first stage bootloader via linker scripts.
-        syms_dict = {sym.st_value: sym for sym in self.symbols
-                     if sym.st_size and sym.type in (STT_FUNC, STT_OBJECT) and sym.st_shndx != SHN_ABS}
+        syms_dict = {
+            sym.st_value: sym
+            for sym in self.symbols
+            if sym.st_size and sym.type in (STT_FUNC, STT_OBJECT) and sym.st_shndx != SHN_ABS
+        }
 
         for offset, die in dies.items():
             if die['tag'] == DW_TAG_subprogram:
@@ -2221,7 +2224,7 @@ class Elf:
                     value = cu.get_attr_str(attr)
                     print(f'    <{offset:#x}> {attr_name:30}{form_name:30} {value}')
 
-    def dump_symbol_table(self, symbols: Optional[List[Elf_Sym]]=None) -> None:
+    def dump_symbol_table(self, symbols: Optional[List[Elf_Sym]] = None) -> None:
         if symbols is None:
             symbols = self.symbols
 
@@ -2229,9 +2232,11 @@ class Elf:
         for idx, sym in enumerate(symbols):
             cu_name = f'{sym.cu_name}' if sym.cu_name is not None else 'NOCU'
             shdr_name = elf.shdrs[sym.st_shndx].name if sym.st_shndx < len(elf.shdrs) else 'SPECIAL'
-            print((f'{idx:<7} {sym.st_value:#010x} {sym.st_size:7} {sym.type_name:10} '
-                   f'{sym.bind_name:10} {sym.visibility_name:10} {sym.st_shndx:6} {shdr_name:20} {sym.name} '
-                   f'{cu_name}'))
+            print(
+                f'{idx:<7} {sym.st_value:#010x} {sym.st_size:7} {sym.type_name:10} '
+                f'{sym.bind_name:10} {sym.visibility_name:10} {sym.st_shndx:6} {shdr_name:20} {sym.name} '
+                f'{cu_name}'
+            )
 
     def dump_symbol_cu(self) -> None:
         syms_dict = self.add_cus_to_symbols()
@@ -2241,7 +2246,9 @@ class Elf:
         print(f'{"Nr":<3} {"Name":30} {"Type":15} {"Address":10} {"Off":8} {"Size":8}')
         for idx, shdr in enumerate(self.shdrs):
             sht_name = get_sht_name(shdr.sh_type)
-            print(f'{idx:<3} {shdr.name:30} {sht_name:15} {shdr.sh_addr:#010x} {shdr.sh_offset:#08x} {shdr.sh_size:#08x}')
+            print(
+                f'{idx:<3} {shdr.name:30} {sht_name:15} {shdr.sh_addr:#010x} {shdr.sh_offset:#08x} {shdr.sh_size:#08x}'
+            )
 
 
 if __name__ == '__main__':
@@ -2249,23 +2256,22 @@ if __name__ == '__main__':
     import argparse
     import sys
 
-    parser = argparse.ArgumentParser(
-        prog='elf',
-        description='Testing utility for the ELF/DWARF parser')
+    parser = argparse.ArgumentParser(prog='elf', description='Testing utility for the ELF/DWARF parser')
 
-    parser.add_argument('-S', '--sections',
-                        action='store_true',
-                        help='Displays  the  information contained in the section headers')
-    parser.add_argument('-s', '--symbols',
-                        action='store_true',
-                        help='Displays the entries in symbol table section')
-    parser.add_argument('-d', '--debug',
-                        choices=['info', 'abbrev', 'files'],
-                        help=('Displays the contents of the DWARF debug sections in the file. '
-                              'info: .debug_info, abbrev: .debug_info, files: .symtab with CUs'))
-    parser.add_argument('elf_file',
-                        metavar='FILE',
-                        help='ELF file')
+    parser.add_argument(
+        '-S', '--sections', action='store_true', help='Displays  the  information contained in the section headers'
+    )
+    parser.add_argument('-s', '--symbols', action='store_true', help='Displays the entries in symbol table section')
+    parser.add_argument(
+        '-d',
+        '--debug',
+        choices=['info', 'abbrev', 'files'],
+        help=(
+            'Displays the contents of the DWARF debug sections in the file. '
+            'info: .debug_info, abbrev: .debug_info, files: .symtab with CUs'
+        ),
+    )
+    parser.add_argument('elf_file', metavar='FILE', help='ELF file')
 
     args = parser.parse_args()
 

@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: 2023-2024 Espressif Systems (Shanghai) CO LTD
+# SPDX-FileCopyrightText: 2023-2026 Espressif Systems (Shanghai) CO LTD
 # SPDX-License-Identifier: Apache-2.0
 
 from argparse import Namespace
@@ -47,8 +47,9 @@ def show_symbols(memmap: Dict[str, Any], args: Namespace) -> None:
     show_table(table)
 
 
-def show_archives_dependencies(memmap: Dict[str, Any], map_file: mapfile.MapFile,
-                               elf: Optional[Elf], args: Namespace) -> None:
+def show_archives_dependencies(
+    memmap: Dict[str, Any], map_file: mapfile.MapFile, elf: Optional[Elf], args: Namespace
+) -> None:
     table = format_table.get_archives_dependencies_table(memmap, map_file, elf, args)
     show_table(table)
 

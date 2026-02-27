@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: 2023-2025 Espressif Systems (Shanghai) CO LTD
+# SPDX-FileCopyrightText: 2023-2026 Espressif Systems (Shanghai) CO LTD
 # SPDX-License-Identifier: Apache-2.0
 
 from argparse import Namespace
@@ -18,17 +18,20 @@ def show_diff_info(memmap: Dict[str, Any], args: Namespace) -> None:
         return
     log.eprint('[bold]CURRENT[/]   project file: "{}"'.format(memmap['project_path']))
     log.eprint('[bold]REFERENCE[/] project file: "{}"'.format(memmap['project_path_diff']))
-    log.eprint(('Difference is counted as [bold]CURRENT - REFERENCE[/], i.e. a positive '
-                r'number means that [bold]CURRENT[/] is larger.'))
+    log.eprint(
+        'Difference is counted as [bold]CURRENT - REFERENCE[/], i.e. a positive '
+        r'number means that [bold]CURRENT[/] is larger.'
+    )
 
 
 def show_image_info(memmap: Dict[str, Any], args: Namespace) -> None:
     msg = 'Total image size: {} bytes (.bin may be padded larger)'.format(
-        color_diff(memmap['image_size'], memmap['image_size_diff'], args.diff))
+        color_diff(memmap['image_size'], memmap['image_size_diff'], args.diff)
+    )
     log.eprint(msg)
 
 
-def color_diff(size: Union[int,float], size_diff: Union[int,float], diff: bool=False) -> str:
+def color_diff(size: Union[int, float], size_diff: Union[int, float], diff: bool = False) -> str:
     # Color diff values. Red if bigger than zero.
     if not diff:
         return f'{size}'
@@ -40,7 +43,7 @@ def color_diff(size: Union[int,float], size_diff: Union[int,float], diff: bool=F
         return f'{size} {size_diff:6}'
 
 
-def color_size(size: Union[int,float], size_diff: Union[int,float], diff: bool=False) -> str:
+def color_size(size: Union[int, float], size_diff: Union[int, float], diff: bool = False) -> str:
     # Color size values. Red if less than zero.
     if not diff:
         return f'{size}'
@@ -72,9 +75,11 @@ def get_summary_table(memmap: Dict[str, Any], args: Namespace) -> Table:
             mem_type_info['remain'] = 0
 
         if mem_type_info['size'] - mem_type_info['size_diff']:
-            mem_type_info['pct_diff'] = (mem_type_info['pct'] -
-                                         ((mem_type_info['used'] - mem_type_info['used_diff']) /
-                                          (mem_type_info['size'] - mem_type_info['size_diff']) * 100))
+            mem_type_info['pct_diff'] = mem_type_info['pct'] - (
+                (mem_type_info['used'] - mem_type_info['used_diff'])
+                / (mem_type_info['size'] - mem_type_info['size_diff'])
+                * 100
+            )
         else:
             mem_type_info['pct_diff'] = mem_type_info['pct'] - 0
 
@@ -89,9 +94,11 @@ def get_summary_table(memmap: Dict[str, Any], args: Namespace) -> Table:
                 section_info['pct'] = 0
 
             if mem_type_info['size'] - mem_type_info['size_diff']:
-                section_info['pct_diff'] = (section_info['pct'] -
-                                            ((section_info['size'] - section_info['size_diff']) /
-                                             (mem_type_info['size'] - mem_type_info['size_diff']) * 100))
+                section_info['pct_diff'] = section_info['pct'] - (
+                    (section_info['size'] - section_info['size_diff'])
+                    / (mem_type_info['size'] - mem_type_info['size_diff'])
+                    * 100
+                )
             else:
                 section_info['pct_diff'] = section_info['pct'] - 0
 
@@ -108,7 +115,7 @@ def get_summary_table(memmap: Dict[str, Any], args: Namespace) -> Table:
     except ValueError:
         for idx, column in enumerate(table.columns):
             # We are using rich markup, which uses square brackets, in column header names, so
-            # we need to covert them before comparison.
+            # we need to convert them before comparison.
             if str(Text.from_markup(column.header)) == args.sort:
                 args.sort = idx
                 break
@@ -122,8 +129,9 @@ def get_summary_table(memmap: Dict[str, Any], args: Namespace) -> Table:
         sort_keys = ['used', 'pct', 'remain', 'total']
         sort_key = sort_keys[args.sort - 1 if args.sort > 0 else args.sort]
     except IndexError:
-        log.die((f'Column index {args.sort} is out of range. '
-                 f'Please use 1..{len(sort_keys)} or {-len(sort_keys)}..-1 range.'))
+        log.die(
+            f'Column index {args.sort} is out of range. Please use 1..{len(sort_keys)} or {-len(sort_keys)}..-1 range.'
+        )
 
     if args.sort_diff:
         sort_key += '_diff'
@@ -133,19 +141,23 @@ def get_summary_table(memmap: Dict[str, Any], args: Namespace) -> Table:
 
     for mem_type_name, mem_type_info in mem_types_sorted.items():
         if mem_type_info['size']:
-            table.add_row(mem_type_name,
-                          color_diff(mem_type_info['used'], mem_type_info['used_diff'], args.diff),
-                          color_diff(round(mem_type_info['pct'], 2), round(mem_type_info['pct_diff'], 2), args.diff),
-                          color_size(mem_type_info['remain'], mem_type_info['remain_diff'], args.diff),
-                          color_size(mem_type_info['total'], mem_type_info['total_diff'], args.diff),
-                          style='dark_orange')
+            table.add_row(
+                mem_type_name,
+                color_diff(mem_type_info['used'], mem_type_info['used_diff'], args.diff),
+                color_diff(round(mem_type_info['pct'], 2), round(mem_type_info['pct_diff'], 2), args.diff),
+                color_size(mem_type_info['remain'], mem_type_info['remain_diff'], args.diff),
+                color_size(mem_type_info['total'], mem_type_info['total_diff'], args.diff),
+                style='dark_orange',
+            )
         else:
-            table.add_row(mem_type_name,
-                          color_diff(mem_type_info['used'], mem_type_info['used_diff'], args.diff),
-                          '',
-                          '',
-                          '',
-                          style='dark_orange')
+            table.add_row(
+                mem_type_name,
+                color_diff(mem_type_info['used'], mem_type_info['used_diff'], args.diff),
+                '',
+                '',
+                '',
+                style='dark_orange',
+            )
 
         sections_sorted = memorymap.sort_dict_by_key(mem_type_info['sections'], sort_key, args.sort_reverse)
 
@@ -153,19 +165,23 @@ def get_summary_table(memmap: Dict[str, Any], args: Namespace) -> Table:
             name = section_info['abbrev_name'] if args.abbrev else section_name
 
             if mem_type_info['size']:
-                table.add_row(f'   {name}',
-                              color_diff(section_info['used'], section_info['used_diff'], args.diff),
-                              color_diff(round(section_info['pct'], 2), round(section_info['pct_diff'], 2), args.diff),
-                              '',
-                              '',
-                              style='bright_blue')
+                table.add_row(
+                    f'   {name}',
+                    color_diff(section_info['used'], section_info['used_diff'], args.diff),
+                    color_diff(round(section_info['pct'], 2), round(section_info['pct_diff'], 2), args.diff),
+                    '',
+                    '',
+                    style='bright_blue',
+                )
             else:
-                table.add_row(f'   {name}',
-                              color_diff(section_info['used'], section_info['used_diff'], args.diff),
-                              '',
-                              '',
-                              '',
-                              style='bright_blue')
+                table.add_row(
+                    f'   {name}',
+                    color_diff(section_info['used'], section_info['used_diff'], args.diff),
+                    '',
+                    '',
+                    '',
+                    style='bright_blue',
+                )
 
     return table
 
@@ -231,8 +247,9 @@ def _get_table_sorted(summary: Dict[str, Any], table: Table, args: Namespace) ->
     try:
         rows = [row for row in sorted(rows, key=sort_key, reverse=args.sort_reverse)]
     except IndexError:
-        log.die((f'Column index {args.sort} is out of range. '
-                 f'Please use 1..{len(columns) - 1} or {-len(columns)}..-1 range.'))
+        log.die(
+            f'Column index {args.sort} is out of range. Please use 1..{len(columns) - 1} or {-len(columns)}..-1 range.'
+        )
 
     # Return only simple list of rows, where each row is a list
     # of columns to be printed in table.
@@ -312,8 +329,9 @@ def get_symbols_table(memmap: Dict[str, Any], args: Namespace) -> Table:
     return table
 
 
-def get_archives_dependencies_table(memmap: Dict[str, Any], map_file: mapfile.MapFile,
-                                    elf: Optional[Elf], args: Namespace) -> Table:
+def get_archives_dependencies_table(
+    memmap: Dict[str, Any], map_file: mapfile.MapFile, elf: Optional[Elf], args: Namespace
+) -> Table:
     arch_deps = deps.get_archives_dependencies(map_file, memmap, elf, args)
     arch_deps = memorymap.get_summary_filtered(arch_deps, args)
 
@@ -357,11 +375,13 @@ def show_summary(memmap: Dict[str, Any], args: Namespace) -> None:
     table = get_summary_table(memmap, args)
     log.print(table)
     show_image_info(memmap, args)
-    log.eprint(('[yellow]Note: The reported total sizes may be smaller than those '
-                'in the technical reference manual due to reserved memory and application '
-                'configuration. The total flash size available for the application is not '
-                'included by default, as it cannot be reliably determined due to the presence '
-                'of other data like the bootloader, partition table, and application partition size.'))
+    log.eprint(
+        '[yellow]Note: The reported total sizes may be smaller than those '
+        'in the technical reference manual due to reserved memory and application '
+        'configuration. The total flash size available for the application is not '
+        'included by default, as it cannot be reliably determined due to the presence '
+        'of other data like the bootloader, partition table, and application partition size.'
+    )
 
 
 def show_archives(memmap: Dict[str, Any], args: Namespace) -> None:
@@ -382,8 +402,9 @@ def show_object_files(memmap: Dict[str, Any], args: Namespace) -> None:
     log.print(table)
 
 
-def show_archives_dependencies(memmap: Dict[str, Any], map_file: mapfile.MapFile,
-                               elf: Optional[Elf], args: Namespace) -> None:
+def show_archives_dependencies(
+    memmap: Dict[str, Any], map_file: mapfile.MapFile, elf: Optional[Elf], args: Namespace
+) -> None:
     table = get_archives_dependencies_table(memmap, map_file, elf, args)
     log.print(table)
 

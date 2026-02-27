@@ -2,6 +2,15 @@ stages:
   - codecheck
   - test
 
+include:
+  - project: espressif/shared-ci-dangerjs
+    ref: master
+    file: danger.yaml
+run-danger-mr-linter:
+  stage: codecheck
+  variables:
+    ENABLE_CHECK_UPDATED_CHANGELOG: 'false'
+
 # WORKFLOW RULES
 # ------------------------------------------------------------------------------------------------------
 workflow:

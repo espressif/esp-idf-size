@@ -58,7 +58,7 @@ esp-idf-size can also show archives' dependencies or reverse dependencies
 
     Print archives' dependencies or reverse dependencies.
 
-### Formating Options
+### Formatting Options
 
 By default, the **table** format is used for all reports under **Reporting Options**.
 All formats are generated from the generic memory map dictionary, except for
