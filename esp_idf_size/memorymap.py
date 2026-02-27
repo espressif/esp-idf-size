@@ -1572,8 +1572,7 @@ def get_proj_desc(map_fn: str) -> Optional[Dict[str, Any]]:
     map_stem = os.path.splitext(os.path.basename(map_fn))[0]
     elf_stem = os.path.splitext(os.path.basename(app_elf))[0]
     if map_stem != elf_stem:
-        log.debug(f'project_description.json references {app_elf}, which does not '
-                  f'match map file {map_fn}')
+        log.debug(f'project_description.json references {app_elf}, which does not match map file {map_fn}')
         return None
 
     return proj_desc
