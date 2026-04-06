@@ -12,7 +12,7 @@ default_stages: [pre-commit]
 
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v5.0.0
+    rev: v6.0.0
     hooks:
       - id: trailing-whitespace
         exclude: &whitespace_excludes '.*\.(md|map|bin)$'
@@ -23,34 +23,34 @@ repos:
         args: ['-f=lf']
 
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.15.2
+    rev: v0.15.9
     hooks:
       - id: ruff-check
         args: [--fix, --exit-non-zero-on-fix]
       - id: ruff-format
 
   - repo: https://github.com/codespell-project/codespell
-    rev: v2.4.1
+    rev: v2.4.2
     hooks:
       - id: codespell
         additional_dependencies:
           - tomli
 
   - repo: https://github.com/pre-commit/mirrors-mypy
-    rev: 'v1.15.0'
+    rev: 'v1.20.0'
     hooks:
     -   id: mypy
         additional_dependencies:
           - 'types-PyYAML'
 
   - repo: https://github.com/espressif/conventional-precommit-linter
-    rev: v1.10.0
+    rev: v1.11.0
     hooks:
       - id: conventional-precommit-linter
         stages: [commit-msg]
 
   - repo: https://github.com/espressif/check-copyright/
-    rev: v1.0.3
+    rev: v1.1.2
     hooks:
       - id: check-copyright
         args: ['--config', 'check_copyright_config.yaml']
