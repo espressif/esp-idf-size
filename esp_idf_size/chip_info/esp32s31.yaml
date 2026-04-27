@@ -1,0 +1,21 @@
+# Data_type:
+#   primary_address: value
+#   length: value or equation
+#   secondary_address: value if exist
+DRAM:
+  primary_address: 0x2F000000
+  length: 0x80000
+  secondary_address: 0x2F000000
+  name: DIRAM
+CACHE_I_1:
+  primary_address: 0x40000000
+  length: 0x4000000
+  name: Flash
+CACHE_I_2:
+  primary_address: 0x50000000
+  length: 0x4000000
+  name: External RAM
+RTC_SLOW_D:
+  primary_address: 0x2E000000
+  length: 0x8000
+  name: LP SRAM
