@@ -1,3 +1,15 @@
+## v2.2.0 (2026-04-27)
+
+### ✨ New Features
+
+- initial esp32s31 support *(Frantisek Hrbata - 0ca6c51)*
+
+### 🐛 Bug Fixes
+
+- **ci**: remove checkout of PR head in dangerjs workflow *(Frantisek Hrbata - 09e97b0)*
+- validate that project_description.json matches the analyzed map file *(Frantisek Hrbata - a83d7fd)*
+
+
 ## v2.1.0 (2025-12-08)
 
 ### New Features
