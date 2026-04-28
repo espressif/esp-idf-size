@@ -65,7 +65,7 @@ esp_idf_size = ["chip_info/*", "docs/readme.md"]
 # --- Commitizen (czespressif) ---
 [tool.commitizen]
 name = "czespressif"
-version = "2.1.0"
+version = "2.2.0"
 update_changelog_on_bump = true
 tag_format = "v$version"
 changelog_start_rev = "v1.0.2"
