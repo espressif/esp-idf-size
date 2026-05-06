@@ -66,6 +66,22 @@ from .elf import SHF_ALLOC, SHT_PROGBITS, STT_FUNC, STT_OBJECT, Elf, Elf_Excepti
 
 VERSION = '1.0'
 
+# Memory type aliases (the chip_info `name:` field) that represent External RAM
+# (PSRAM). The naming has historically been inconsistent across chip_info YAMLs
+# (older targets use "SPI DRAM", newer ones use "External RAM"), so any of these
+# is treated as the External RAM bucket for routing and total-size purposes.
+EXT_RAM_TYPE_NAMES = ('External RAM', 'SPI DRAM')
+
+# Output section name prefixes that the IDF linker scripts place in the External
+# RAM (PSRAM) linker region (`extern_ram_seg` / `ext_ram_seg`). On chips where
+# that region shares its address window with a flash-mapped data region (e.g.
+# `extern_ram_seg` and `drom0_0_seg` both at 0x3c000020 on esp32s3), an
+# address-only assignment cannot tell PSRAM-bound sections from flash-mapped
+# ones. We route these sections to the External RAM memory type explicitly by
+# name. Matched with str.startswith, so subsection variants (e.g.
+# `.ext_ram.bss.0`) are covered.
+EXT_RAM_SECTION_NAMES = ('.ext_ram.bss', '.ext_ram_noinit')
+
 
 class MemMapException(Exception):
     """Raised for errors originating from memorymap module."""
@@ -1494,7 +1510,27 @@ def _get_mem_type_map(
 
     # Add linker output sections into memory types.
     memory_regions_sorted = [r for r in sorted(memory_regions, key=lambda r: r['origin'] or 0)]
+    # Resolve which alias (if any) represents the External RAM bucket on this
+    # chip, so we can route known PSRAM output sections to it explicitly. See
+    # EXT_RAM_TYPE_NAMES / EXT_RAM_SECTION_NAMES at the top of this module.
+    ext_ram_alias = next(
+        (mt['name'] for mt in memory_types.values() if mt['name'] in EXT_RAM_TYPE_NAMES),
+        None,
+    )
     for map_section in map_sections:
+        if ext_ram_alias and map_section['name'].startswith(EXT_RAM_SECTION_NAMES):
+            # Output section is known to belong to External RAM (PSRAM). Bypass
+            # the address-based region lookup, which cannot disambiguate on
+            # chips where the PSRAM and flash data linker regions share an
+            # address window.
+            memory_map[ext_ram_alias]['used'] += map_section['size']
+            memory_map[ext_ram_alias]['sections'][map_section['name']] = {
+                'abbrev_name': map_section['abbrev_name'],
+                'size': map_section['size'],
+                'size_diff': 0,
+                'archives': map_section['archives'],
+            }
+            continue
         prev_mem_reg = None
         for mem_reg in memory_regions_sorted:
             address = mem_reg['origin']
