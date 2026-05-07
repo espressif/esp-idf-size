@@ -22,6 +22,10 @@ CACHE_D:
   primary_address: 0x3C000000
   length: 0x2000000
   name: Flash Data
+EXT_RAM:
+  primary_address: 0x3C000000
+  length: 0x2000000
+  name: External RAM
 RTC_FAST_D:
   primary_address: 0x3ff80000
   length: 0x2000

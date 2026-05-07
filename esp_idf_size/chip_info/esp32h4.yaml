@@ -11,3 +11,7 @@ CACHE_I:
   primary_address: 0x42000020
   length: 0x2000000
   name: Flash
+EXT_RAM:
+  primary_address: 0x42000020
+  length: 0x2000000
+  name: External RAM
