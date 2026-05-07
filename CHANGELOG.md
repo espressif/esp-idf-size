@@ -1,3 +1,10 @@
+## v2.2.1 (2026-05-07)
+
+### 🐛 Bug Fixes
+
+- route external RAM sections by name to avoid flash/PSRAM overlap *(Frantisek Hrbata - 2dad66a)*
+
+
 ## v2.2.0 (2026-04-27)
 
 ### ✨ New Features
