@@ -4,6 +4,8 @@ import struct
 from dataclasses import dataclass
 from typing import Any, Callable, ClassVar, Dict, List, Optional, Tuple, Union
 
+from esp_pylib.errors import FatalError
+
 # Dwarf5: https://dwarfstd.org/doc/DWARF5.pdf
 
 # https://sourceware.org/git/?p=binutils-gdb.git;a=blob;f=include/dwarf2.def
@@ -1325,7 +1327,7 @@ SHF_ORDERED = 1 << 30
 SHF_EXCLUDE = 1 << 31
 
 
-class Elf_Exception(Exception):
+class Elf_Exception(FatalError):
     pass
 
 

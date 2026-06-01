@@ -2,7 +2,6 @@
 # SPDX-License-Identifier: Apache-2.0
 
 import os
-from argparse import Namespace
 from typing import Any, Dict, Optional
 
 from . import log, mapfile, memorymap
@@ -121,7 +120,7 @@ def _filter_crt(crt: Dict[str, Any], archives: Dict[str, Any], elf: Optional[Elf
 
 
 def get_archives_dependencies(
-    map_file: mapfile.MapFile, memmap: Dict[str, Any], elf: Optional[Elf], args: Namespace
+    map_file: mapfile.MapFile, memmap: Dict[str, Any], elf: Optional[Elf], args: Dict[str, Any]
 ) -> Dict[str, Any]:
     crt = map_file.cross_reference_table
     if crt is None:
@@ -133,7 +132,7 @@ def get_archives_dependencies(
 
     crt = _filter_crt(crt, archives, elf)
 
-    if args.dep_reverse:
+    if args['dep_reverse']:
         dependencies = get_archives_revdeps(crt, archives)
     else:
         dependencies = get_archives_deps(crt, archives)
