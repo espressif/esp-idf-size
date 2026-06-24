@@ -4,10 +4,12 @@
 import re
 from typing import Any, Dict, List, Optional, Tuple
 
+from esp_pylib.errors import FatalError
+
 from . import log
 
 
-class MapFileException(Exception):
+class MapFileException(FatalError):
     pass
 
 

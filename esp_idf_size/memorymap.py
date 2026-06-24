@@ -11,8 +11,8 @@ Usage examples:
     #       This is generally unnecessary, but configuring the console could assist in
     #       troubleshooting. For further details, refer to the esp_idf_size.log module
     #       documentation. To view any stderr output, please include the following lines.
-    #       from esp_idf_size import log
-    # log.set_console()
+    #       from esp_pylib.logger import log
+    # log.set_verbosity()
 
     Example1: Display memory type usage
 
@@ -54,12 +54,12 @@ __all__ = ['get', 'diff', 'unify', 'MemMapException']
 import copy
 import json
 import os
-from argparse import Namespace
 from fnmatch import fnmatch
 from pathlib import Path
 from typing import Any, Dict, Generator, List, Optional
 
 import yaml
+from esp_pylib.errors import FatalError
 
 from . import log, mapfile
 from .elf import SHF_ALLOC, SHT_PROGBITS, STT_FUNC, STT_OBJECT, Elf, Elf_Exception, Elf_Shdr, Elf_Sym
@@ -83,7 +83,7 @@ EXT_RAM_TYPE_NAMES = ('External RAM', 'SPI DRAM')
 EXT_RAM_SECTION_NAMES = ('.ext_ram.bss', '.ext_ram_noinit')
 
 
-class MemMapException(Exception):
+class MemMapException(FatalError):
     """Raised for errors originating from memorymap module."""
 
     pass
@@ -572,23 +572,23 @@ def ignore_flash_size(memory_map: Dict[str, Any]) -> None:
             mem_type_info['size'] = 0
 
 
-def trim(memory_map: Dict[str, Any], args: Namespace) -> None:
+def trim(memory_map: Dict[str, Any], args: Dict[str, Any]) -> None:
     """Trim the memory map tree based on command line arguments. This trims the
     dept of the tree if e.g. --archives is specified. It also removes all entries
     for the diff command if they were not changed."""
 
     def changed(diff: int) -> bool:
-        if not args.diff or args.show_unchanged:
+        if not args['diff'] or args['show_unchanged']:
             return True
         return True if diff else False
 
     ARCHIVE_DETAILS, ARCHIVES, OBJECTS, ALL = range(4)
 
-    if args.archive_details:
+    if args['archive_details']:
         depth = ARCHIVE_DETAILS
-    elif args.archives:
+    elif args['archives']:
         depth = ARCHIVES
-    elif args.files:
+    elif args['files']:
         depth = OBJECTS
     else:
         depth = ALL
@@ -603,7 +603,7 @@ def trim(memory_map: Dict[str, Any], args: Namespace) -> None:
                 section_info['archives'] = {
                     k: v
                     for k, v in section_info['archives'].items()
-                    if v['abbrev_name'] == args.archive_details and changed(v['size_diff'])
+                    if v['abbrev_name'] == args['archive_details'] and changed(v['size_diff'])
                 }
             else:
                 section_info['archives'] = {
@@ -627,11 +627,11 @@ def trim(memory_map: Dict[str, Any], args: Namespace) -> None:
                     }
 
 
-def sort(memory_map: Dict[str, Any], args: Namespace) -> None:
+def sort(memory_map: Dict[str, Any], args: Dict[str, Any]) -> None:
     # For memory types diff, sort based on used key, not size key.
-    sort_key_type = 'used_diff' if args.sort_diff else 'used'
-    sort_key = 'size_diff' if args.sort_diff else 'size'
-    reverse = args.sort_reverse
+    sort_key_type = 'used_diff' if args['sort_diff'] else 'used'
+    sort_key = 'size_diff' if args['sort_diff'] else 'size'
+    reverse = args['sort_reverse']
 
     memory_map['memory_types'] = sort_dict_by_key(memory_map['memory_types'], sort_key_type, reverse)
     for mem_type_name, mem_type_info in memory_map['memory_types'].items():
@@ -671,9 +671,9 @@ def sort_dict_by_key(dictionary: Dict[str, Any], key: str, reverse: bool) -> Dic
     return {k: v for k, v in sorted(dictionary.items(), key=lambda item: int(item[1][key]), reverse=reverse)}
 
 
-def get_summary_sorted(entries: Dict[str, Any], args: Namespace) -> Dict[str, Any]:
-    sort_key = 'size_diff' if args.sort_diff else 'size'
-    reverse = args.sort_reverse
+def get_summary_sorted(entries: Dict[str, Any], args: Dict[str, Any]) -> Dict[str, Any]:
+    sort_key = 'size_diff' if args['sort_diff'] else 'size'
+    reverse = args['sort_reverse']
 
     entries = {k: v for k, v in sorted(entries.items(), key=lambda item: int(item[1][sort_key]), reverse=reverse)}
 
@@ -686,21 +686,21 @@ def get_summary_sorted(entries: Dict[str, Any], args: Namespace) -> Dict[str, An
     return entries
 
 
-def get_summary_filtered(entries: Dict[str, Any], args: Namespace) -> Dict[str, Any]:
+def get_summary_filtered(entries: Dict[str, Any], args: Dict[str, Any]) -> Dict[str, Any]:
     # Helper to filter archives, files, and symbols for comprehensive reports
 
-    if args.filter is None:
+    if args['filter'] is None:
         return entries
 
     entries_filtered: Dict[str, Any] = {}
 
     for entry_name, entry_info in entries.items():
-        if args.abbrev:
+        if args['abbrev']:
             name = entry_info['abbrev_name']
         else:
             name = entry_name
 
-        for pattern in args.filter:
+        for pattern in args['filter']:
             if fnmatch(name, f'*{pattern}*'):
                 entries_filtered[entry_name] = entry_info
                 break
@@ -708,15 +708,15 @@ def get_summary_filtered(entries: Dict[str, Any], args: Namespace) -> Dict[str, 
     return entries_filtered
 
 
-def rem_summary_unchanged(entries: Dict[str, Any], args: Namespace) -> Dict[str, Any]:
-    if not args.diff or args.show_unchanged:
+def rem_summary_unchanged(entries: Dict[str, Any], args: Dict[str, Any]) -> Dict[str, Any]:
+    if not args['diff'] or args['show_unchanged']:
         return entries
 
     entries = {k: v for k, v in entries.items() if v['size_diff']}
     return entries
 
 
-def get_symbols_summary(memory_map: Dict[str, Any], args: Namespace) -> Dict[str, Any]:
+def get_symbols_summary(memory_map: Dict[str, Any], args: Dict[str, Any]) -> Dict[str, Any]:
     symbols: Dict[str, Any] = {}
 
     mem_types = _get_summary_memory_types(memory_map)
@@ -734,13 +734,13 @@ def get_symbols_summary(memory_map: Dict[str, Any], args: Namespace) -> Dict[str
         symbol_name,
         symbol_info,
     ) in walk(memory_map):
-        if archive_info['abbrev_name'] != args.archive_details:
+        if archive_info['abbrev_name'] != args['archive_details']:
             continue
 
         found = True
 
         symbol_name_full = ':'.join([archive_name, object_file_name, symbol_name])
-        if args.unify:
+        if args['unify']:
             symbol_name_full = symbol_info['abbrev_name']
         if symbol_name_full not in symbols:
             symbol: Dict[str, Any] = {
@@ -765,12 +765,12 @@ def get_symbols_summary(memory_map: Dict[str, Any], args: Namespace) -> Dict[str
         symbol['size_diff'] += size
 
     if not found:
-        log.die(f'Archive "{args.archive_details}" not found.')
+        log.die(f'Archive "{args["archive_details"]}" not found.')
 
     return rem_summary_unchanged(symbols, args)
 
 
-def get_object_files_summary(memory_map: Dict[str, Any], args: Namespace) -> Dict[str, Any]:
+def get_object_files_summary(memory_map: Dict[str, Any], args: Dict[str, Any]) -> Dict[str, Any]:
     object_files: Dict[str, Any] = {}
 
     mem_types = _get_summary_memory_types(memory_map)
@@ -788,7 +788,7 @@ def get_object_files_summary(memory_map: Dict[str, Any], args: Namespace) -> Dic
         _,
     ) in walk(memory_map, depth='objects'):
         object_file_name_full = ':'.join([archive_name, object_file_name])
-        if args.unify:
+        if args['unify']:
             object_file_name_full = object_file_info['abbrev_name']
         if object_file_name_full not in object_files:
             object_file: Dict[str, Any] = {
@@ -815,7 +815,7 @@ def get_object_files_summary(memory_map: Dict[str, Any], args: Namespace) -> Dic
     return rem_summary_unchanged(object_files, args)
 
 
-def get_archives_summary(memory_map: Dict[str, Any], args: Namespace) -> Dict[str, Any]:
+def get_archives_summary(memory_map: Dict[str, Any], args: Dict[str, Any]) -> Dict[str, Any]:
     archives: Dict[str, Any] = {}
 
     mem_types = _get_summary_memory_types(memory_map)

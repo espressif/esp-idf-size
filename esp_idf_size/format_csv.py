@@ -1,7 +1,6 @@
 # SPDX-FileCopyrightText: 2023-2026 Espressif Systems (Shanghai) CO LTD
 # SPDX-License-Identifier: Apache-2.0
 
-from argparse import Namespace
 from typing import Any, Dict, Optional
 
 from rich.table import Table
@@ -27,41 +26,41 @@ def show_table(table: Table) -> None:
         log.print(','.join(row))
 
 
-def show_summary(memmap: Dict[str, Any], args: Namespace) -> None:
+def show_summary(memmap: Dict[str, Any], args: Dict[str, Any]) -> None:
     table = format_table.get_summary_table(memmap, args)
     show_table(table)
 
 
-def show_object_files(memmap: Dict[str, Any], args: Namespace) -> None:
+def show_object_files(memmap: Dict[str, Any], args: Dict[str, Any]) -> None:
     table = format_table.get_object_files_table(memmap, args)
     show_table(table)
 
 
-def show_archives(memmap: Dict[str, Any], args: Namespace) -> None:
+def show_archives(memmap: Dict[str, Any], args: Dict[str, Any]) -> None:
     table = format_table.get_archives_table(memmap, args)
     show_table(table)
 
 
-def show_symbols(memmap: Dict[str, Any], args: Namespace) -> None:
+def show_symbols(memmap: Dict[str, Any], args: Dict[str, Any]) -> None:
     table = format_table.get_symbols_table(memmap, args)
     show_table(table)
 
 
 def show_archives_dependencies(
-    memmap: Dict[str, Any], map_file: mapfile.MapFile, elf: Optional[Elf], args: Namespace
+    memmap: Dict[str, Any], map_file: mapfile.MapFile, elf: Optional[Elf], args: Dict[str, Any]
 ) -> None:
     table = format_table.get_archives_dependencies_table(memmap, map_file, elf, args)
     show_table(table)
 
 
-def show(memmap: Dict[str, Any], map_file: mapfile.MapFile, elf: Optional[Elf], args: Namespace) -> None:
-    if args.archives:
+def show(memmap: Dict[str, Any], map_file: mapfile.MapFile, elf: Optional[Elf], args: Dict[str, Any]) -> None:
+    if args['archives']:
         show_archives(memmap, args)
-    elif args.archive_details:
+    elif args['archive_details']:
         show_symbols(memmap, args)
-    elif args.archive_dependencies:
+    elif args['archive_dependencies']:
         show_archives_dependencies(memmap, map_file, elf, args)
-    elif args.files:
+    elif args['files']:
         show_object_files(memmap, args)
     else:
         show_summary(memmap, args)

@@ -1,7 +1,6 @@
 # SPDX-FileCopyrightText: 2024-2026 Espressif Systems (Shanghai) CO LTD
 # SPDX-License-Identifier: Apache-2.0
 
-from argparse import Namespace
 from typing import Any, Dict, List, Optional
 
 from . import deps, log, mapfile, memorymap
@@ -9,7 +8,7 @@ from .elf import Elf
 
 
 def show_archives_dependencies(
-    map_file: mapfile.MapFile, memmap: Dict[str, Any], elf: Optional[Elf], args: Namespace
+    map_file: mapfile.MapFile, memmap: Dict[str, Any], elf: Optional[Elf], args: Dict[str, Any]
 ) -> None:
 
     arch_deps = deps.get_archives_dependencies(map_file, memmap, elf, args)
@@ -29,18 +28,18 @@ def show_archives_dependencies(
         seen.append(name)
 
     for arch_name, arch_info in arch_deps.items():
-        arch_name_abbrev = arch_info['abbrev_name'] if args.abbrev else arch_name
+        arch_name_abbrev = arch_info['abbrev_name'] if args['abbrev'] else arch_name
         add_node(arch_name, arch_name_abbrev, arch_info['size'])
 
         for arch_dep_name, arch_dep_info in arch_info['archives'].items():
-            arch_dep_name_abbrev = arch_dep_info['abbrev_name'] if args.abbrev else arch_dep_name
+            arch_dep_name_abbrev = arch_dep_info['abbrev_name'] if args['abbrev'] else arch_dep_name
             add_node(arch_dep_name, arch_dep_name_abbrev, arch_dep_info['size'])
 
-            if args.dep_reverse:
+            if args['dep_reverse']:
                 line = f'"{arch_dep_name}" -> "{arch_name}"'
             else:
                 line = f'"{arch_name}" -> "{arch_dep_name}"'
-            if args.dep_symbols:
+            if args['dep_symbols']:
                 syms_str = '\n'.join(arch_dep_info['symbols'])
                 line += rf' \[label="{syms_str}"]'
             lines += [line]
@@ -50,7 +49,7 @@ def show_archives_dependencies(
     log.print('\n'.join(lines))
 
 
-def show(memmap: Dict[str, Any], map_file: mapfile.MapFile, elf: Optional[Elf], args: Namespace) -> None:
-    if not args.archive_dependencies:
+def show(memmap: Dict[str, Any], map_file: mapfile.MapFile, elf: Optional[Elf], args: Dict[str, Any]) -> None:
+    if not args['archive_dependencies']:
         log.die('The DOT output format is available only for the --archive-dependencies option.')
     show_archives_dependencies(map_file, memmap, elf, args)
