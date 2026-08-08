@@ -3,6 +3,8 @@
 # SPDX-FileCopyrightText: 2023-2026 Espressif Systems (Shanghai) CO LTD
 # SPDX-License-Identifier: Apache-2.0
 
+import io
+import locale
 import os
 import sys
 from pathlib import Path
@@ -47,12 +49,38 @@ def _filter_callback(_ctx: click.Context, _param: click.Parameter, value: Tuple[
     return list(value) if value else None
 
 
-def _run(args: Dict[str, Any]) -> None:
-    ofile = None
+class _OutputBuffer(io.StringIO):
+    # rich substitutes characters, which cannot be represented in the encoding
+    # of the console file, with their ASCII counterparts. This applies e.g. to
+    # box drawing characters. io.StringIO reports no encoding, in which case
+    # rich assumes UTF-8. Report the encoding the buffer is written with by
+    # _write_output_file(), so the report is rendered as if it was streamed
+    # into the output file directly.
+    encoding = locale.getpreferredencoding(False)
+
+
+def _write_output_file(fn: str, data: str) -> None:
     try:
-        if args['output_file']:
+        path = Path(fn)
+        path.parent.mkdir(parents=True, exist_ok=True)
+        # Escape characters, which cannot be represented in the output file
+        # encoding, e.g. a symbol name with non-ASCII characters in a cp1252
+        # locale, so a single symbol doesn't abort the whole report.
+        path.write_text(data, encoding=_OutputBuffer.encoding, errors='backslashreplace')
+    except OSError as e:
+        log.die(f'cannot write to "{fn}": {e}')
+
+
+def _run(args: Dict[str, Any]) -> None:
+    # The report is rendered into a buffer and the output file is written only
+    # after everything succeeded. Creating the file upfront would leave an empty
+    # file behind on failure and, worse, destroy the output of a previous run.
+    # Note that the file cannot be opened just before the output is generated
+    # either, because the formatters may fail in the middle of rendering.
+    ofile = _OutputBuffer() if args['output_file'] else None
+    try:
+        if ofile is not None:
             args['force_terminal'] = False
-            ofile = open(args['output_file'], 'w')
 
         esp_log.set_verbosity(
             Verbosity.SILENT if args['quiet'] else (Verbosity.VERBOSE if args['debug'] else Verbosity.NORMAL)
@@ -122,13 +150,16 @@ def _run(args: Dict[str, Any]) -> None:
             format_tree.show(memmap, map_file, elf, args)
         elif args['format'] == 'dot':
             format_dot.show(memmap, map_file, elf, args)
+
+        if ofile is not None:
+            # Reached only if the whole report was generated. Note that log.die
+            # raises SystemExit, so it's not caught by the excepts below and
+            # the output file is not written.
+            _write_output_file(args['output_file'], ofile.getvalue())
     except (memorymap.MemMapException, mapfile.MapFileException) as e:
         log.die(str(e))
     except KeyboardInterrupt:
         sys.exit(1)
-    finally:
-        if ofile:
-            ofile.close()
 
 
 @click.command(
