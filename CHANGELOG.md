@@ -1,3 +1,14 @@
+## v2.3.0 (2026-08-11)
+
+### ✨ New Features
+
+- migrate esp-idf-size to esp-pylib *(Vojtech Piroch - 2eea850)*
+
+### 🐛 Bug Fixes
+
+- write the output file only after the report is generated *(Frantisek Hrbata - b74b906)*
+
+
 ## v2.2.1 (2026-05-07)
 
 ### 🐛 Bug Fixes
