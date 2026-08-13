@@ -1,3 +1,10 @@
+## v2.3.1 (2026-08-13)
+
+### 🐛 Bug Fixes
+
+- require esp-pylib 1.1.3 to keep the output file ANSI-free *(Frantisek Hrbata - cd4cb26)*
+
+
 ## v2.3.0 (2026-08-11)
 
 ### ✨ New Features
