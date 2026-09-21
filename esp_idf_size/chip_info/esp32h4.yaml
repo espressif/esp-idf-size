@@ -8,10 +8,10 @@ DRAM:
   secondary_address: 0x40808000
   name: DIRAM
 CACHE_I:
-  primary_address: 0x42000020
+  primary_address: 0x42000000
   length: 0x2000000
   name: Flash
 EXT_RAM:
-  primary_address: 0x42000020
+  primary_address: 0x42000000
   length: 0x2000000
   name: External RAM
