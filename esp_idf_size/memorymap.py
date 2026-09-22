@@ -559,16 +559,19 @@ def remove_unused(memory_map: Dict[str, Any]) -> None:
             mem_type_info['used'] += section_info['size']
 
 
-def ignore_flash_size(memory_map: Dict[str, Any]) -> None:
-    # Set the total size of each Flash memory type to zero. The total flash
-    # size specified in the link map file in Memory Configuration might not
-    # accurately represent the actual flash size available for the application.
-    # The flash could also include a bootloader, partition table, and other
-    # data. Additionally, the application's size is restricted by its partition
-    # size as defined in the partition table. This replicates the previous
-    # behavior of esp-idf-size.
+def ignore_linker_sizes(memory_map: Dict[str, Any]) -> None:
+    # Set the total size of each flash and external RAM memory type to zero. The
+    # sizes specified in the link map file in Memory Configuration are the address
+    # windows available to the linker, not the memory available for the application.
+    #
+    # The flash also holds a bootloader, partition table and other data, and the
+    # application size is further restricted by its partition size as defined in the
+    # partition table. The amount of external RAM connected to the chip is not known
+    # during the build at all, it is detected at boot. Reporting the address windows
+    # as totals would be misleading. For flash this replicates the previous behavior
+    # of esp-idf-size.
     for mem_type_name, mem_type_info in memory_map['memory_types'].items():
-        if 'flash' in mem_type_name.lower():
+        if 'flash' in mem_type_name.lower() or mem_type_name in EXT_RAM_TYPE_NAMES:
             mem_type_info['size'] = 0
 
 

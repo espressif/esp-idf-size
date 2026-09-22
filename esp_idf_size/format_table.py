@@ -381,7 +381,9 @@ def show_summary(memmap: Dict[str, Any], args: Dict[str, Any]) -> None:
         'in the technical reference manual due to reserved memory and application '
         'configuration. The total flash size available for the application is not '
         'included by default, as it cannot be reliably determined due to the presence '
-        'of other data like the bootloader, partition table, and application partition size.'
+        'of other data like the bootloader, partition table, and application partition size. '
+        'The total external RAM size is not included either, because the amount of RAM '
+        'connected to the chip is detected at boot and is not known during the build.'
     )
 
 
