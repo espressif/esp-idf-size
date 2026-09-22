@@ -127,7 +127,7 @@ def _run(args: Dict[str, Any]) -> None:
             if not args['show_unused']:
                 memorymap.remove_unused(memmap_ref)
             if not args['use_flash_size']:
-                memorymap.ignore_flash_size(memmap)
+                memorymap.ignore_flash_size(memmap_ref)
             memmap = memorymap.diff(memmap, memmap_ref)
             if memmap['target'] != memmap['target_diff']:
                 log.warn(
