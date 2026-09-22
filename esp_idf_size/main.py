@@ -87,11 +87,15 @@ def _run(args: Dict[str, Any]) -> None:
         )
         # width=10000 keeps wide tables/trees from being wrapped; highlight
         # matches the previous behaviour. emoji is disabled by esp_pylib by default.
+        # soft_wrap is set explicitly. The esp_pylib default is meant for single log
+        # lines. With soft wrap rich skips the justify pass in Text.wrap. That pass
+        # centers the table title by padding it to the table width.
         esp_log.set_console_options(
             file=ofile,
             no_color=args['no_color'],
             force_terminal=args['force_terminal'],
             width=10000,
+            soft_wrap=False,
             highlight=True,
             quiet=args['quiet'],
         )
