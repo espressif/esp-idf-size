@@ -559,16 +559,19 @@ def remove_unused(memory_map: Dict[str, Any]) -> None:
             mem_type_info['used'] += section_info['size']
 
 
-def ignore_flash_size(memory_map: Dict[str, Any]) -> None:
-    # Set the total size of each Flash memory type to zero. The total flash
-    # size specified in the link map file in Memory Configuration might not
-    # accurately represent the actual flash size available for the application.
-    # The flash could also include a bootloader, partition table, and other
-    # data. Additionally, the application's size is restricted by its partition
-    # size as defined in the partition table. This replicates the previous
-    # behavior of esp-idf-size.
+def ignore_linker_sizes(memory_map: Dict[str, Any]) -> None:
+    # Set the total size of each flash and external RAM memory type to zero. The
+    # sizes specified in the link map file in Memory Configuration are the address
+    # windows available to the linker, not the memory available for the application.
+    #
+    # The flash also holds a bootloader, partition table and other data, and the
+    # application size is further restricted by its partition size as defined in the
+    # partition table. The amount of external RAM connected to the chip is not known
+    # during the build at all, it is detected at boot. Reporting the address windows
+    # as totals would be misleading. For flash this replicates the previous behavior
+    # of esp-idf-size.
     for mem_type_name, mem_type_info in memory_map['memory_types'].items():
-        if 'flash' in mem_type_name.lower():
+        if 'flash' in mem_type_name.lower() or mem_type_name in EXT_RAM_TYPE_NAMES:
             mem_type_info['size'] = 0
 
 
@@ -1455,12 +1458,61 @@ def _get_memory_types(target: str) -> Dict[str, Any]:
     return memory_types
 
 
+def _get_mem_type_size(mem_type_info: Dict[str, Any], mem_regs: List[Dict[str, Any]]) -> int:
+    """Return the total size of a memory type, which is the size of the memory covered by its
+    memory regions.
+
+    Several memory regions may describe the same memory, so their sizes cannot be simply summed
+    up. There are two cases:
+
+    * The same memory is visible at two different addresses, e.g. DIRAM accessed through the data
+      and the instruction bus. Such memory regions do not overlap, so they are detected by the
+      offset between the memory type primary and secondary address.
+
+    * Several memory regions share one address window, e.g. extern_ram_seg and ext_ram_xip_seg on
+      esp32s31 and esp32p4 with CONFIG_SPIRAM_XIP_FROM_PSRAM, which describe the same PSRAM window
+      shifted by 0x20. Such memory regions overlap, so only the memory they cover together is
+      accounted.
+    """
+    mem_type_offset = 0
+    if mem_type_info['secondary_address']:
+        mem_type_offset = abs(mem_type_info['primary_address'] - mem_type_info['secondary_address'])
+
+    mem_regs_accounted: List[Dict[str, Any]] = []
+    for mem_reg in mem_regs:
+        if mem_type_offset and any(
+            abs(reg['origin'] - mem_reg['origin']) == mem_type_offset and reg['length'] == mem_reg['length']
+            for reg in mem_regs_accounted
+        ):
+            # This memory region is the secondary address view of an already accounted memory
+            # region, so it is mapped into the same memory. Skip it, so we don't account the same
+            # memory twice into the total memory type size.
+            log.debug('found memory region alias', mem_reg)
+            continue
+        mem_regs_accounted.append(mem_reg)
+
+    # Sum up the address ranges of the accounted memory regions, skipping the part of a memory
+    # region, which is already covered by a preceding one.
+    size = 0
+    covered_end: Optional[int] = None
+    for mem_reg in sorted(mem_regs_accounted, key=lambda reg: reg['origin']):
+        start = mem_reg['origin']
+        end = start + mem_reg['length']
+        if covered_end is not None:
+            start = max(start, covered_end)
+            end = max(end, covered_end)
+        size += end - start
+        covered_end = end
+
+    return size
+
+
 def _get_mem_type_map(
     memory_types: Dict[str, Any], memory_regions: List[Dict[str, Any]], map_sections: List[Dict[str, Any]]
 ) -> Dict[str, Any]:
     memory_map: Dict[str, Any] = {}
-    # Dictionary of memory types, where key is memory type alias and value is a list of memory regions, which
-    # were already assigned to this memory type.
+    # Dictionary of memory types, where key is memory type alias and value is a list of memory
+    # regions assigned to this memory type.
     memory_types_regions: Dict[str, Any] = {}
 
     # Create entry for each memory type found in the chip info yaml.
@@ -1475,38 +1527,14 @@ def _get_mem_type_map(
         }
         memory_types_regions[mem_type_alias] = []
 
-    # Calculate memory type sizes based on the memory regions found in linker map file
+    # Assign memory regions found in the linker map file to memory types.
     for mem_reg in memory_regions:
-        mem_type_info = mem_reg['type']
+        memory_types_regions[mem_reg['type']['name']].append(mem_reg)
+
+    # Calculate memory type sizes based on the assigned memory regions.
+    for mem_type_name, mem_type_info in memory_types.items():
         mem_type_alias = mem_type_info['name']
-        if not memory_types_regions[mem_type_alias]:
-            # This memory type does not yet have any memory region assigned
-            memory_map[mem_type_alias]['size'] = mem_reg['length']
-            memory_types_regions[mem_type_alias].append(mem_reg)
-        else:
-            # There are some memory regions assigned to this memory type. We need to check
-            # if the memory region, which is currently being added, isn't an alias for already
-            # added memory region. This is for example case of DIRAM.
-            mem_type_offset = 0
-            if mem_type_info['secondary_address']:
-                mem_type_offset = abs(mem_type_info['primary_address'] - mem_type_info['secondary_address'])
-            for mem_type_reg in memory_types_regions[mem_type_alias]:
-                mem_reg_offset = abs(mem_type_reg['origin'] - mem_reg['origin'])
-                if mem_type_offset == mem_reg_offset and mem_type_reg['length'] == mem_reg['length']:
-                    # The current memory region has the same offset to the already added memory region as
-                    # offset in memory type(primary and secondary address offset). The length also matches, so this
-                    # memory region is mapped into the same memory as region that was already added to the
-                    # memory type. Skip it, so we don't account the size of the memory region twice into the total
-                    # memory type size.
-                    memory_types_regions[mem_type_alias].append(mem_reg)
-                    log.debug('found memory region alias', mem_reg, mem_type_reg)
-                    break
-            else:
-                # Another memory region, which needs to be added to the memory type. We have not found
-                # any alias for this one and it does not overlap with already added memory regions, so
-                # account its size into the total memory type size.
-                memory_map[mem_type_alias]['size'] += mem_reg['length']
-                memory_types_regions[mem_type_alias].append(mem_reg)
+        memory_map[mem_type_alias]['size'] = _get_mem_type_size(mem_type_info, memory_types_regions[mem_type_alias])
 
     # Add linker output sections into memory types.
     memory_regions_sorted = [r for r in sorted(memory_regions, key=lambda r: r['origin'] or 0)]

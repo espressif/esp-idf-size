@@ -87,11 +87,15 @@ def _run(args: Dict[str, Any]) -> None:
         )
         # width=10000 keeps wide tables/trees from being wrapped; highlight
         # matches the previous behaviour. emoji is disabled by esp_pylib by default.
+        # soft_wrap is set explicitly. The esp_pylib default is meant for single log
+        # lines. With soft wrap rich skips the justify pass in Text.wrap. That pass
+        # centers the table title by padding it to the table width.
         esp_log.set_console_options(
             file=ofile,
             no_color=args['no_color'],
             force_terminal=args['force_terminal'],
             width=10000,
+            soft_wrap=False,
             highlight=True,
             quiet=args['quiet'],
         )
@@ -120,14 +124,14 @@ def _run(args: Dict[str, Any]) -> None:
         memmap = memorymap.get(args['input_file'], load_symbols, args['use_dwarf'], map_file, elf)
         if not args['show_unused']:
             memorymap.remove_unused(memmap)
-        if not args['use_flash_size']:
-            memorymap.ignore_flash_size(memmap)
+        if not args['use_linker_sizes']:
+            memorymap.ignore_linker_sizes(memmap)
         if args['diff']:
             memmap_ref = memorymap.get(args['diff'], load_symbols, args['use_dwarf'])
             if not args['show_unused']:
                 memorymap.remove_unused(memmap_ref)
-            if not args['use_flash_size']:
-                memorymap.ignore_flash_size(memmap)
+            if not args['use_linker_sizes']:
+                memorymap.ignore_linker_sizes(memmap_ref)
             memmap = memorymap.diff(memmap, memmap_ref)
             if memmap['target'] != memmap['target_diff']:
                 log.warn(
@@ -226,13 +230,18 @@ def _run(args: Dict[str, Any]) -> None:
 @click.option('--show-unused', is_flag=True, help='Show unused memory types and sections.')
 @click.option('--show-unchanged', is_flag=True, help='Show unchanged items for --diff operation.')
 @click.option(
+    '--use-linker-sizes',
     '--use-flash-size',
+    'use_linker_sizes',
     is_flag=True,
     help=(
-        'Show the total flash size as defined in the link map file. '
-        'The actual flash size available for the application depends on factors such as the '
-        'partition size for the application and other flash usage, so the total flash size '
-        'in the link map file might not accurately represent the true available size.'
+        'Show the total flash and external RAM sizes as defined in the link map file. '
+        'These are the address windows available to the linker. The flash size available '
+        'for the application depends on factors such as its partition size and other flash '
+        'usage, and the amount of external RAM connected to the chip is not known during '
+        'the build, so neither window represents the true available size. On chips where '
+        'external RAM shares its address window with flash, the external RAM total is not '
+        'available at all.'
     ),
 )
 @click.option(
