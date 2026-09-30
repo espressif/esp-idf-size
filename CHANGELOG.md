@@ -1,3 +1,15 @@
+## v2.3.2 (2026-09-30)
+
+### 🐛 Bug Fixes
+
+- set soft_wrap explicitly for the console *(Frantisek Hrbata - c369017)*
+- use the full flash address window for esp32s31 *(Frantisek Hrbata - 4de3fde)*
+- do not report the external RAM total size *(Frantisek Hrbata - d6c30a0)*
+- pass the reference memory map to ignore_flash_size *(Frantisek Hrbata - 511a782)*
+- do not count overlapping memory regions twice *(Frantisek Hrbata - 4ee528d)*
+- use bus base address for esp32h4 flash and external RAM *(Frantisek Hrbata - 62dc546)*
+
+
 ## v2.3.1 (2026-08-13)
 
 ### 🐛 Bug Fixes
