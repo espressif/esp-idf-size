@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: 2023-2025 Espressif Systems (Shanghai) CO LTD
+# SPDX-FileCopyrightText: 2023-2026 Espressif Systems (Shanghai) CO LTD
 # SPDX-License-Identifier: Apache-2.0
 
 import json
@@ -106,7 +106,17 @@ def test_misc_link_maps(artifacts_legacy: Path) -> None:
         cmp_files(output_path, ref_path)
 
 
-@pytest.mark.parametrize('target', utils.targets())
+# The legacy total size does not include RTC memory, and the legacy esp32p4 chip info
+# maps the SPM region (0x30100000) to RTC_FAST_D. With recent ESP-IDF versions,
+# hello_world has about 600 bytes in SPM (.spm.text and .spm.data), so the legacy
+# total size differs from the esptool size by more than MAX_SIZE_DIFF.
+TOTAL_SIZE_TARGETS = [
+    pytest.param(t, marks=pytest.mark.xfail(reason='SPM region is not counted in the legacy total size')) if t == 'esp32p4' else t
+    for t in utils.targets()
+]
+
+
+@pytest.mark.parametrize('target', TOTAL_SIZE_TARGETS)
 def test_total_size(target: str) -> None:
     # Compare the overall size with the size reported by esptool.
     MAX_SIZE_DIFF = 100
