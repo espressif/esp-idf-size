@@ -16,7 +16,8 @@ workflow:
 # TEMPLATES
 # ------------------------------------------------------------------------------------------------------
 .base_template:
-  image: "espressif/idf:latest"
+  # esp-idf-size 1.x is used by ESP-IDF v5.3, v5.4 and v5.5
+  image: "espressif/idf:release-v5.5"
   tags:
     - build
     - internet
