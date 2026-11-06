@@ -1,3 +1,9 @@
+## v1.8.0 (2026-11-06)
+
+### New Features
+
+- add total_size field into the json2 output format
+
 ## v1.7.1 (2025-06-03)
 
 ### Bug Fixes
