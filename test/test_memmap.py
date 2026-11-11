@@ -145,6 +145,8 @@ def test_memmap_target_option(target_option: bool, artifacts: Path) -> None:
         return
 
     assert p.returncode == 0, p.stderr
+    # The target missing in the map file is not reported, because it was set with the option.
+    assert 'cannot find target' not in p.stderr
     # No target was detected, so there is nothing to replace and to report.
     assert 'is replaced by the requested target' not in p.stderr
 

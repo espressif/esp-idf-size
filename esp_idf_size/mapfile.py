@@ -91,12 +91,7 @@ class MapFile:
         target = ''
         found = False
         for ln, line in enumerate(self.lines[self.line_idx :], start=self.line_idx):
-            if line.startswith('Cross Reference Table'):
-                # We have reached end of the "Linker script and memory map" section.
-                log.warn('cannot find target in linker map file')
-                break
-
-            elif not found:
+            if not found:
                 # Continue here till we find the beginning of linker scripts section.
                 if line.startswith('Linker script and memory map'):
                     found = True
@@ -116,6 +111,12 @@ class MapFile:
             if match_target:
                 target = match_target.group(1)
                 break
+
+        if not target:
+            # The map file does not always contain the target, e.g. the map file of
+            # a ULP binary. This is not an error, because the target may be found
+            # elsewhere, e.g. in project_description.json.
+            log.debug('cannot find target in linker map file')
 
         # Don't skip the lines, because the same lines will be scanned by follow-up _get_sections
         # self.line_idx += ln
