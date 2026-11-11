@@ -54,6 +54,7 @@ __all__ = ['get', 'diff', 'unify', 'MemMapException']
 import copy
 import json
 import os
+from collections import Counter
 from fnmatch import fnmatch
 from pathlib import Path
 from typing import Any, Dict, Generator, List, Optional
@@ -137,6 +138,11 @@ def get(
         Each memory type includes a tree hierarchy: sections, which contain archives; archives, which
         contain object files; and object files, which contain symbols. Every object in this hierarchy
         holds information about its size within the memory type.
+
+        Every object also has an abbreviated name. The abbreviated name of a section is unique within
+        its memory type. If several sections of one memory type would be abbreviated to the same name,
+        for example .iram.text and .iram_loader.text to .text, their abbreviated names are their
+        full names.
 
         Example:
             {
@@ -286,6 +292,9 @@ def get(
     # Generate the overall memory map representation
     memory_map['memory_types'] = _get_mem_type_map(memory_types, memory_regions_splitted, map_sections_splitted)
 
+    # Make the abbreviated section names unique within each memory type
+    _set_section_abbrev_names(memory_map)
+
     log.debug('memory map', memory_map)
 
     return memory_map
@@ -419,6 +428,11 @@ def diff(memory_map_cur: Dict[str, Any], memory_map_ref: Dict[str, Any]) -> Dict
                             symbol_info_diff['size'] = 0
                             symbol_info_diff['size_diff'] = 0 - symbol_info_ref['size']
 
+    # The memory types may now contain also the sections, which are only in the
+    # reference memory map. Such a section may have the same abbreviated name as
+    # a section of the current memory map, so set the abbreviated names again.
+    _set_section_abbrev_names(memory_map_diff)
+
     log.debug('memory map diff', memory_map_diff)
     return memory_map_diff
 
@@ -453,12 +467,18 @@ def unify(memory_map: Dict[str, Any]) -> None:
     def unify_items(original: Dict[str, Any], unified: Dict[str, Any], level: str) -> None:
         # Generic function which unifies all memory map levels
         for original_item_name, original_item_info in original.items():
-            original_item_name_abbrev = original_item_info['abbrev_name']
+            if level == 'sections':
+                # The sections with the same abbreviated name have their full names
+                # stored as the abbreviated names, so they would not be aggregated.
+                # Abbreviate the section name again.
+                original_item_name_abbrev = _abbrev(original_item_name)
+            else:
+                original_item_name_abbrev = original_item_info['abbrev_name']
             sublevel = level_map[level]
             unified_item_info = unified.get(original_item_name_abbrev)
             if unified_item_info is None:
                 unified_item_info = {
-                    'abbrev_name': original_item_info['abbrev_name'],
+                    'abbrev_name': original_item_name_abbrev,
                     'size': original_item_info['size'],
                     'size_diff': original_item_info['size_diff'],
                     sublevel: {},
@@ -551,6 +571,11 @@ def remove_unused(memory_map: Dict[str, Any]) -> None:
     # to mark the end of IRAM code segment and contains just an alignment.
     for mem_type_name, mem_type_info in memory_map['memory_types'].items():
         mem_type_info['sections'] = {k: v for k, v in mem_type_info['sections'].items() if v['archives']}
+
+    # A removed section may have had the same abbreviated name as a section, which
+    # stays, e.g. .iram0.data and .dram0.data. Set the abbreviated names again, so
+    # the remaining section is abbreviated.
+    _set_section_abbrev_names(memory_map)
 
     # Update memory type usage in case some unused sections have been removed.
     for mem_type_name, mem_type_info in memory_map['memory_types'].items():
@@ -1079,6 +1104,26 @@ def _split_map_sections(sections: List[Dict[str, Any]], regions: List[Dict[str, 
 def _abbrev(section_name: str) -> str:
     split = section_name.split('.')
     return f'.{split[-1]}'
+
+
+def _set_section_abbrev_names(memory_map: Dict[str, Any]) -> None:
+    # Set the abbreviated names of the sections in the memory map.
+    #
+    # Several sections of one memory type may be abbreviated to the same name,
+    # e.g. .iram.text and .iram_loader.text in the bootloader, or .text and
+    # .vector.text in the LP core binary. Such sections could not be told apart.
+    # In addition, where the abbreviated name is used as a key, like in the JSON
+    # summary, one section would replace the other. Use the full name as the
+    # abbreviated name of such sections. The other sections are abbreviated.
+    #
+    # The names depend on the sections present in the memory type, so they have
+    # to be set again when sections are added or removed.
+    for mem_type_info in memory_map['memory_types'].values():
+        sections = mem_type_info['sections']
+        counts = Counter(_abbrev(section_name) for section_name in sections)
+        for section_name, section_info in sections.items():
+            abbrev_name = _abbrev(section_name)
+            section_info['abbrev_name'] = abbrev_name if counts[abbrev_name] == 1 else section_name
 
 
 def _load_json_file(fn: str) -> Optional[Dict[str, Any]]:

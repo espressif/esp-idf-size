@@ -247,7 +247,10 @@ Items in the report can be modified using the following options.
 
 - **--no-abbrev**
 
-    Do not abbreviate section and file names.
+    Do not abbreviate section and file names. By default the names are
+    abbreviated, except for sections of the same memory type with the same
+    abbreviated name, for example *.iram.text* and *.iram_loader.text*. Such
+    sections are displayed under their full names.
 
 -  **--unify**
 
