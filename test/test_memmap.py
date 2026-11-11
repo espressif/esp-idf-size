@@ -9,8 +9,12 @@ from distutils.dir_util import copy_tree
 from pathlib import Path
 from subprocess import PIPE, run
 from tempfile import TemporaryDirectory
+from types import SimpleNamespace
 
 import pytest
+
+from esp_idf_size import memorymap
+from esp_idf_size.elf import STT_FUNC, STT_NOTYPE
 
 sys.path.append(str(Path(__file__).resolve().parent.parent))
 import utils  # noqa: E402
@@ -407,6 +411,34 @@ def test_memmap_ulp_fsm() -> None:
                 '.bss': {'size': 0x18},
             },
         }
+    ]
+
+
+@pytest.mark.parametrize('elf_symbol', [True, False])
+def test_memmap_input_section_symbols(elf_symbol: bool) -> None:
+    # An input section without any ELF symbol is used as a symbol itself, so
+    # the symbols of an object file add up to its size. This has to work also
+    # for an input section located after the last ELF symbol and for an ELF
+    # file without any usable symbol, e.g. the ELF file of a ULP FSM binary,
+    # which is written in assembly.
+    input_sections = [
+        {'name': '.text.first', 'address': 0x00, 'size': 0x10},
+        {'name': '.text.func', 'address': 0x10, 'size': 0x20},
+        {'name': '.text.last', 'address': 0x30, 'size': 0x08},
+    ]
+
+    if elf_symbol:
+        symbols = [SimpleNamespace(name='func', type=STT_FUNC, st_value=0x10, st_size=0x20)]
+    else:
+        # Label in assembly, which has no type and no size
+        symbols = [SimpleNamespace(name='func', type=STT_NOTYPE, st_value=0x10, st_size=0)]
+
+    memorymap._add_symbols_to_sections(SimpleNamespace(symbols=symbols), [{'input_sections': input_sections}])
+
+    assert [input_section['symbols'] for input_section in input_sections] == [
+        [{'name': '.text.first', 'address': 0x00, 'size': 0x10}],
+        [{'name': 'func()' if elf_symbol else '.text.func', 'address': 0x10, 'size': 0x20}],
+        [{'name': '.text.last', 'address': 0x30, 'size': 0x08}],
     ]
 
 

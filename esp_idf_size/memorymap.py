@@ -1207,26 +1207,6 @@ def _add_symbols_to_sections(elf: Optional[Elf], osections: List[Dict[str, Any]]
                 # Sanity check that we found input section for symbol
                 raise MemMapException(f'cannot find input section for symbol {sym_name}({sym_addr})')
 
-            if not isec['symbols']:
-                # Input section does not have any ELF symbols assigned.
-                # In e.g. .data or .rodata sections, there might be literals, which do not have symbols
-                # in symbol table. Since the binary is compiled with -fdata-sections, let's add the input
-                # section as "symbol". This should avoid displaying "holes" in the reports. Generally it's
-                # still possible that some libraries/objects, which are e.g. not compiled with -fdata-sections,
-                # may still be missing some "symbols". For example libc.a->lib_a-vfprintf.o: 657 != 117
-                # lib_a-vfprintf.o 657
-                # ├── blanks.1 16
-                # ├── zeroes.0 16
-                # ├── .rodata.str1.4 53
-                # └── .srodata.cst8 32
-                isec['symbols'].append(
-                    {
-                        'name': isec['name'],
-                        'address': isec['address'],
-                        'size': isec['size'],
-                    }
-                )
-
             # Jump to next input section
             isec = isections.pop(0)
 
@@ -1254,6 +1234,34 @@ def _add_symbols_to_sections(elf: Optional[Elf], osections: List[Dict[str, Any]]
                 'size': sym_size,
             }
         )
+
+    for osec in osections:
+        for isec in osec['input_sections']:
+            if isec['symbols']:
+                continue
+            # Input section does not have any ELF symbols assigned.
+            # In e.g. .data or .rodata sections, there might be literals, which do not have symbols
+            # in symbol table. Since the binary is compiled with -fdata-sections, let's add the input
+            # section as "symbol". This should avoid displaying "holes" in the reports. Generally it's
+            # still possible that some libraries/objects, which are e.g. not compiled with -fdata-sections,
+            # may still be missing some "symbols". For example libc.a->lib_a-vfprintf.o: 657 != 117
+            # lib_a-vfprintf.o 657
+            # ├── blanks.1 16
+            # ├── zeroes.0 16
+            # ├── .rodata.str1.4 53
+            # └── .srodata.cst8 32
+            #
+            # This is done for all input sections after the ELF symbols were assigned. It
+            # covers also the input sections located after the last ELF symbol and an ELF
+            # file without any usable symbol. For example a ULP FSM binary is written in
+            # assembly and its symbols have no type and no size.
+            isec['symbols'].append(
+                {
+                    'name': isec['name'],
+                    'address': isec['address'],
+                    'size': isec['size'],
+                }
+            )
 
     log.debug('linker map output sections filtered with symbols', osections)
 
