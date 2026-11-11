@@ -1644,11 +1644,16 @@ def get_proj_desc(map_fn: str) -> Optional[Dict[str, Any]]:
 
 def get_elf(map_fn: str, proj_desc: Optional[Dict[str, Any]] = None) -> Optional[Elf]:
     proj_desc = proj_desc or get_proj_desc(map_fn)
-    if proj_desc is None:
-        return None
-    # Avoid using build_dir from proj_desc, as the project might have been relocated to a different directory.
-    dirname = os.path.dirname(map_fn)
-    elf_fn = os.path.join(dirname, proj_desc['app_elf'])
+    if proj_desc is not None:
+        # Avoid using build_dir from proj_desc, as the project might have been relocated to a different directory.
+        dirname = os.path.dirname(map_fn)
+        elf_fn = os.path.join(dirname, proj_desc['app_elf'])
+    else:
+        # The project description is not available for this map file. For example, ESP-IDF
+        # may build a ULP binary without it, and in a project with several executables it
+        # describes only one of them. Use the ELF file next to the map file. The build
+        # system gives both files the same name, e.g. ulp_main.map and ulp_main.elf.
+        elf_fn = os.path.splitext(map_fn)[0] + '.elf'
     if not os.path.isfile(elf_fn):
         return None
     elf = _load_elf_file(elf_fn)

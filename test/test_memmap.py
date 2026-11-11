@@ -51,6 +51,56 @@ def test_memmap(target: str, artifacts: Path) -> None:
     assert memmap_ref == memmap_new
 
 
+@pytest.mark.parametrize('proj_desc_state', ['missing', 'mismatched'])
+def test_memmap_elf_next_to_map(proj_desc_state: str, artifacts: Path) -> None:
+    # The ELF file name is normally taken from project_description.json. If the
+    # project description is not available for the map file, the ELF file located
+    # next to the map file under the same name has to be used. The memory map must
+    # be the same as the reference one, which was generated with the project
+    # description.
+
+    # Temporary directory for testing
+    tmp_dir = TemporaryDirectory()
+    tmp_dir_path = Path(tmp_dir.name)
+
+    # Directory with artifacts for the esp32 target
+    artifacts_dir = artifacts / 'test_memmap' / 'esp32'
+
+    with open(artifacts_dir / 'project_description.json') as f:
+        proj_desc = json.load(f)
+
+    # Copy only the map file and the ELF file, so the project description from
+    # the artifacts directory is not found next to the map file.
+    map_fn = proj_desc['project_name'] + '.map'
+    shutil.copy(artifacts_dir / map_fn, tmp_dir_path)
+    shutil.copy(artifacts_dir / proj_desc['app_elf'], tmp_dir_path)
+
+    if proj_desc_state == 'mismatched':
+        # The project description describes another executable of the project,
+        # so it is ignored for the tested map file.
+        proj_desc['app_elf'] = 'other.elf'
+        with open(tmp_dir_path / 'project_description.json', 'w') as f:
+            json.dump(proj_desc, f)
+
+    run(
+        [sys.executable, '-m', 'esp_idf_size', '--format', 'raw', '-o', 'memmap.json', map_fn],
+        cwd=tmp_dir_path,
+        check=True,
+    )
+
+    with open(artifacts_dir / 'memmap.json') as f:
+        memmap_ref = json.load(f)
+
+    with open(tmp_dir_path / 'memmap.json') as f:
+        memmap_new = json.load(f)
+
+    # Fix project_path in the reference memory map. The rest of it should
+    # match newly generated memory map.
+    memmap_ref['project_path'] = memmap_new['project_path']
+
+    assert memmap_ref == memmap_new
+
+
 if __name__ == '__main__':
     import argparse
 
