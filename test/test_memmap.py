@@ -246,6 +246,78 @@ def test_memmap_target_option_override(artifacts: Path) -> None:
     assert 'is replaced by the requested target' not in p.stderr
 
 
+# Minimal map file of a ULP binary. The ULP coprocessor accesses its memory
+# from address 0x0, so the memory region and the sections start there.
+ULP_MAP = """\
+Memory Configuration
+
+Name             Origin             Length             Attributes
+ram              0x00000000         0x00001000         rw
+*default*        0x00000000         0xffffffff
+
+Linker script and memory map
+
+.text           0x00000000       0x80
+ *(.text)
+ .text          0x00000000       0x80 CMakeFiles/ulp_main.dir/start.S.obj
+                0x00000000                __start
+
+.bss            0x00000080        0x4
+ *(.bss)
+ .bss           0x00000080        0x4 CMakeFiles/ulp_main.dir/main.c.obj
+
+OUTPUT(ulp_main.elf elf32-littleriscv)
+"""
+
+
+@pytest.mark.parametrize('target', ['esp32', 'esp32s2', 'esp32s3'])
+def test_memmap_ulp_address(target: str) -> None:
+    # The ULP FSM and ULP RISC-V coprocessors access the RTC slow memory from
+    # address 0x0, while the main CPU accesses it from address 0x50000000. The
+    # memory region at address 0x0 in the map file of a ULP binary has to be
+    # assigned to the RTC SLOW memory type.
+
+    # Temporary directory for testing
+    tmp_dir = TemporaryDirectory()
+    tmp_dir_path = Path(tmp_dir.name)
+
+    (tmp_dir_path / 'ulp_main.map').write_text(ULP_MAP)
+
+    # The map file of a ULP binary does not contain the target, so it is set with the option.
+    run(
+        [
+            sys.executable,
+            '-m',
+            'esp_idf_size',
+            '--target',
+            target,
+            '--format',
+            'json2',
+            '-o',
+            'summary.json',
+            'ulp_main.map',
+        ],
+        cwd=tmp_dir_path,
+        check=True,
+    )
+
+    with open(tmp_dir_path / 'summary.json') as f:
+        summary = json.load(f)
+
+    assert summary['layout'] == [
+        {
+            'name': 'RTC SLOW',
+            'total': 0x1000,
+            'used': 0x84,
+            'free': 0x1000 - 0x84,
+            'parts': {
+                '.text': {'size': 0x80},
+                '.bss': {'size': 0x4},
+            },
+        }
+    ]
+
+
 if __name__ == '__main__':
     import argparse
 

@@ -920,7 +920,7 @@ def _split_memory_regions(memory_regions: List[Dict[str, Any]], memory_types: Di
                 mem_type_length = mem_type_info['length']
                 if mem_type_addr <= mem_reg_origin < mem_type_addr + mem_type_length:
                     found = True
-                elif mem_type_info['secondary_address']:
+                elif mem_type_info['secondary_address'] is not None:
                     mem_type_addr = mem_type_info['secondary_address']
                     if mem_type_addr <= mem_reg_origin < mem_type_addr + mem_type_length:
                         found = True
@@ -1509,7 +1509,10 @@ def _get_memory_types(target: str) -> Dict[str, Any]:
         if 'secondary_address' in info:
             info['secondary_address'] = eval(str(info['secondary_address']))
         else:
-            info['secondary_address'] = 0
+            # The secondary address may be zero, e.g. the ULP coprocessor accesses
+            # the RTC slow memory from address 0x0. So a missing secondary address
+            # cannot be represented as zero.
+            info['secondary_address'] = None
 
         if 'name' not in info:
             info['name'] = name
@@ -1536,7 +1539,7 @@ def _get_mem_type_size(mem_type_info: Dict[str, Any], mem_regs: List[Dict[str, A
       accounted.
     """
     mem_type_offset = 0
-    if mem_type_info['secondary_address']:
+    if mem_type_info['secondary_address'] is not None:
         mem_type_offset = abs(mem_type_info['primary_address'] - mem_type_info['secondary_address'])
 
     mem_regs_accounted: List[Dict[str, Any]] = []
