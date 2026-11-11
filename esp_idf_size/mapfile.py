@@ -122,6 +122,20 @@ class MapFile:
         # self.line_idx += ln
         return target
 
+    def _strip_load_address(self, split: List[str]) -> List[str]:
+        # The linker adds "load address <address>" after the address and size of an
+        # output section, if the section is loaded at a different address than the
+        # one it is running at. For example .text in the ULP FSM binary is running
+        # at address 0x0, but it is stored after the header of the binary file.
+        #
+        #    .text           0x0000000000000000       0xd4 load address 0x000000000000000c
+        #
+        # The memory map is created from the addresses at which the sections are
+        # running, so the load address is not needed.
+        if split[-3:-1] == ['load', 'address']:
+            return split[:-3]
+        return split
+
     def _get_archive_object_file(self, s: str) -> Tuple[str, str]:
         idx = s.find('(')
         if idx == -1:
@@ -257,7 +271,7 @@ class MapFile:
                     output_section['address'] = 0
                     output_section['size'] = 0
 
-                    split = line.split()
+                    split = self._strip_load_address(line.split())
                     if len(split) == 2:
                         try:
                             address = int(split[0], 0)
@@ -360,7 +374,7 @@ class MapFile:
                     'input_sections': [],
                 }
 
-                split = line.split()
+                split = self._strip_load_address(line.split())
                 if len(split) == 1:
                     output_section['name'] = split[0]
                 elif len(split) == 3:

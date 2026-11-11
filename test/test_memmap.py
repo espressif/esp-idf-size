@@ -318,6 +318,98 @@ def test_memmap_ulp_address(target: str) -> None:
     ]
 
 
+# Map file of a ULP FSM binary. The binary file starts with a header and the
+# sections are stored after it, so the linker reports a load address for them.
+ULP_FSM_MAP = """\
+Memory Configuration
+
+Name             Origin             Length             Attributes
+ram              0x0000000000000000 0x0000000000000400 rw
+*default*        0x0000000000000000 0xffffffffffffffff
+
+Linker script and memory map
+
+
+.text           0x0000000000000000       0xd4 load address 0x000000000000000c
+ *(.text)
+ .text          0x0000000000000000       0xb8 CMakeFiles/ulp_main.dir/pulse_cnt.ulp.S.obj
+                0x0000000000000000                entry
+ .text          0x00000000000000b8       0x1c CMakeFiles/ulp_main.dir/wake_up.ulp.S.obj
+                0x00000000000000b8                wake_up
+
+.data           0x00000000000000d4        0x0 load address 0x00000000000000e0
+                0x00000000000000d4                . = ALIGN (0x4)
+ *(.data)
+ .data          0x00000000000000d4        0x0 CMakeFiles/ulp_main.dir/pulse_cnt.ulp.S.obj
+ .data          0x00000000000000d4        0x0 CMakeFiles/ulp_main.dir/wake_up.ulp.S.obj
+
+.bss            0x00000000000000d4       0x18 load address 0x00000000000000e0
+                0x00000000000000d4                . = ALIGN (0x4)
+ *(.bss)
+ .bss           0x00000000000000d4       0x18 CMakeFiles/ulp_main.dir/pulse_cnt.ulp.S.obj
+                0x00000000000000d4                next_edge
+ .bss           0x00000000000000ec        0x0 CMakeFiles/ulp_main.dir/wake_up.ulp.S.obj
+
+.header         0x00000000000000ec        0xc load address 0x0000000000000000
+                0x00000000000000ec        0x4 LONG 0x706c75
+                0x00000000000000f0        0x2 SHORT 0xc LOADADDR (.text)
+                0x00000000000000f2        0x2 SHORT 0xd4 SIZEOF (.text)
+                0x00000000000000f4        0x2 SHORT 0x0 SIZEOF (.data)
+                0x00000000000000f6        0x2 SHORT 0x18 SIZEOF (.bss)
+LOAD CMakeFiles/ulp_main.dir/pulse_cnt.ulp.S.obj
+LOAD CMakeFiles/ulp_main.dir/wake_up.ulp.S.obj
+OUTPUT(ulp_main.elf elf32-esp32ulp)
+"""
+
+
+def test_memmap_ulp_fsm() -> None:
+    # The map file of a ULP FSM binary has a load address for each output
+    # section. The sections have to be reported with the size and at the
+    # address, at which they are running.
+
+    # Temporary directory for testing
+    tmp_dir = TemporaryDirectory()
+    tmp_dir_path = Path(tmp_dir.name)
+
+    (tmp_dir_path / 'ulp_main.map').write_text(ULP_FSM_MAP)
+
+    # The map file of a ULP binary does not contain the target, so it is set with the option.
+    run(
+        [
+            sys.executable,
+            '-m',
+            'esp_idf_size',
+            '--target',
+            'esp32',
+            '--format',
+            'json2',
+            '-o',
+            'summary.json',
+            'ulp_main.map',
+        ],
+        cwd=tmp_dir_path,
+        check=True,
+    )
+
+    with open(tmp_dir_path / 'summary.json') as f:
+        summary = json.load(f)
+
+    # The .header section is not reported. It is only the header of the binary
+    # file, which is not loaded into the RTC slow memory.
+    assert summary['layout'] == [
+        {
+            'name': 'RTC SLOW',
+            'total': 0x400,
+            'used': 0xD4 + 0x18,
+            'free': 0x400 - 0xD4 - 0x18,
+            'parts': {
+                '.text': {'size': 0xD4},
+                '.bss': {'size': 0x18},
+            },
+        }
+    ]
+
+
 if __name__ == '__main__':
     import argparse
 
