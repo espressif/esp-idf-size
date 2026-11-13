@@ -209,7 +209,7 @@ def get(
         'memory_types': {},
     }
 
-    proj_desc = map_fn = elf = detected_target = None
+    proj_desc = map_fn = detected_target = None
 
     map_fn = os.path.abspath(input_fn)
 
