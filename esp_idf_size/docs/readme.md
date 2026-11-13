@@ -31,6 +31,18 @@ python -m esp_idf_size [<options>] MAP_FILE
 
 **Note:** The `--ng` flag and `ESP_IDF_SIZE_NG` environment variable are no longer needed as of version 2.0.0.
 
+Besides the *MAP_FILE*, the following files are used if they are located in
+the same directory:
+
+- *project_description.json*: The chip target and the ELF file name are read
+  from it.
+- ELF file: If *project_description.json* is not available, the ELF file with
+  the same name as the *MAP_FILE* is used, for example *hello_world.elf* for
+  *hello_world.map*.
+
+If the chip target cannot be detected, for example for the link map file of a
+ULP binary, set it with the **--target** option.
+
 ## Options
 
 **esp-idf-size** provides options to customize the output in various ways.
@@ -348,6 +360,15 @@ Applies only to **table** and **csv** formats, except when
 
     Enable terminal control codes even if out is not attached to terminal. This
     option is ignored if used along with the **--output-file** option.
+
+-  **--target** *TARGET*
+
+    Set the chip target, for example *esp32c6*. By default the target is
+    detected from *project_description.json* or from the *MAP_FILE*. This
+    option is needed for a *MAP_FILE* without the target information, for
+    example the link map file of a ULP binary. It is used also for the
+    *REFERENCE_MAP_FILE* specified with the **--diff** option. If the detected
+    target is different, it is replaced and a warning is printed.
 
 -  **--lto** or **--no-lto**
 

@@ -7,7 +7,7 @@ import shutil
 import sys
 from distutils.dir_util import copy_tree
 from pathlib import Path
-from subprocess import run
+from subprocess import PIPE, run
 from tempfile import TemporaryDirectory
 
 import pytest
@@ -99,6 +99,149 @@ def test_memmap_elf_next_to_map(proj_desc_state: str, artifacts: Path) -> None:
     memmap_ref['project_path'] = memmap_new['project_path']
 
     assert memmap_ref == memmap_new
+
+
+@pytest.mark.parametrize('target_option', [True, False])
+def test_memmap_target_option(target_option: bool, artifacts: Path) -> None:
+    # The target is normally found in project_description.json or in the map
+    # file. If it is in neither of them, as for a ULP binary, it has to be set
+    # with the --target option.
+
+    # Temporary directory for testing
+    tmp_dir = TemporaryDirectory()
+    tmp_dir_path = Path(tmp_dir.name)
+
+    # Directory with artifacts for the esp32c6 target
+    target = 'esp32c6'
+    artifacts_dir = artifacts / 'test_memmap' / target
+
+    with open(artifacts_dir / 'project_description.json') as f:
+        proj_desc = json.load(f)
+
+    # Copy only the ELF file, so the project description from the artifacts
+    # directory is not found next to the map file.
+    map_fn = proj_desc['project_name'] + '.map'
+    shutil.copy(artifacts_dir / proj_desc['app_elf'], tmp_dir_path)
+
+    # Create a map file without the target information. Rename the symbol and
+    # the object file, which the map file parser uses to detect the target.
+    map_text = (artifacts_dir / map_fn).read_text(encoding='utf-8')
+    map_text = map_text.replace('IDF_TARGET_', 'XDF_TARGET_').replace('project_elf_src_', 'project_elf_xrc_')
+    (tmp_dir_path / map_fn).write_text(map_text, encoding='utf-8')
+
+    target_args = ['--target', target] if target_option else []
+
+    p = run(
+        [sys.executable, '-m', 'esp_idf_size', *target_args, '--format', 'raw', '-o', 'memmap.json', map_fn],
+        cwd=tmp_dir_path,
+        stderr=PIPE,
+        text=True,
+    )
+
+    if not target_option:
+        # There is no other source of the target
+        assert p.returncode != 0
+        assert 'cannot determine chip target' in p.stderr
+        return
+
+    assert p.returncode == 0, p.stderr
+    # No target was detected, so there is nothing to replace and to report.
+    assert 'is replaced by the requested target' not in p.stderr
+
+    with open(artifacts_dir / 'memmap.json') as f:
+        memmap_ref = json.load(f)
+
+    with open(tmp_dir_path / 'memmap.json') as f:
+        memmap_new = json.load(f)
+
+    # Fix project_path in the reference memory map. The rest of it should
+    # match newly generated memory map.
+    memmap_ref['project_path'] = memmap_new['project_path']
+
+    assert memmap_ref == memmap_new
+
+    # The target is used also for the map file specified with the --diff option.
+    run(
+        [
+            sys.executable,
+            '-m',
+            'esp_idf_size',
+            *target_args,
+            '--diff',
+            map_fn,
+            '--format',
+            'raw',
+            '-o',
+            'memmap_diff.json',
+            map_fn,
+        ],
+        cwd=tmp_dir_path,
+        check=True,
+    )
+
+    with open(tmp_dir_path / 'memmap_diff.json') as f:
+        memmap_diff = json.load(f)
+
+    assert memmap_diff['target'] == target
+    assert memmap_diff['target_diff'] == target
+
+
+def test_memmap_target_option_override(artifacts: Path) -> None:
+    # The target set with the --target option has priority over the detected
+    # one. The detected target is replaced and a warning is printed.
+
+    # Temporary directory for testing
+    tmp_dir = TemporaryDirectory()
+    tmp_dir_path = Path(tmp_dir.name)
+
+    # Directory with artifacts for the esp32c6 target
+    target = 'esp32c6'
+    artifacts_dir = artifacts / 'test_memmap' / target
+
+    with open(artifacts_dir / 'project_description.json') as f:
+        proj_desc = json.load(f)
+
+    map_fn = os.path.join(proj_desc['build_dir'], proj_desc['project_name'] + '.map')
+
+    requested_target = 'esp32c5'
+
+    p = run(
+        [
+            sys.executable,
+            '-m',
+            'esp_idf_size',
+            '--target',
+            requested_target,
+            '--format',
+            'raw',
+            '-o',
+            'memmap.json',
+            map_fn,
+        ],
+        cwd=tmp_dir_path,
+        stderr=PIPE,
+        text=True,
+    )
+
+    assert p.returncode == 0, p.stderr
+    assert f'The chip target {target} detected for' in p.stderr
+    assert f'is replaced by the requested target {requested_target}' in p.stderr
+
+    with open(tmp_dir_path / 'memmap.json') as f:
+        memmap = json.load(f)
+
+    assert memmap['target'] == requested_target
+
+    # No warning is printed if the requested target is the same as the detected one.
+    p = run(
+        [sys.executable, '-m', 'esp_idf_size', '--target', target, '--format', 'raw', '-o', 'memmap.json', map_fn],
+        cwd=tmp_dir_path,
+        stderr=PIPE,
+        text=True,
+    )
+
+    assert p.returncode == 0, p.stderr
+    assert 'is replaced by the requested target' not in p.stderr
 
 
 if __name__ == '__main__':

@@ -96,6 +96,7 @@ def get(
     use_dwarf: Optional[bool] = None,
     map_file: Optional[mapfile.MapFile] = None,
     elf: Optional[Elf] = None,
+    target: Optional[str] = None,
 ) -> Dict[str, Any]:
     """Generate memory map representing the static allocations in ESP-IDF project.
 
@@ -122,6 +123,13 @@ def get(
             An instance of the  mapfile.MapFile class. If not provided, it will be created.
         elf:
             An instance of the elf.Elf class. If required but not provided, it will be created.
+        target:
+            The chip target, e.g. "esp32c6". If not provided, the target is detected from
+            project_description.json or from the link map file. It has to be provided for a link
+            map file without the target information, e.g. the link map file of a ULP binary. If
+            provided, it is used instead of the detected target, and a warning is printed if they
+            differ.
+            The default setting is None.
 
     Returns:
         Dictionary with memory map containing metadata and a `memory_types` key that organizes
@@ -201,7 +209,7 @@ def get(
         'memory_types': {},
     }
 
-    proj_desc = map_fn = elf = target = None
+    proj_desc = map_fn = elf = detected_target = None
 
     map_fn = os.path.abspath(input_fn)
 
@@ -221,7 +229,7 @@ def get(
             use_dwarf = False
 
     if proj_desc:
-        target = proj_desc['target']
+        detected_target = proj_desc['target']
 
     # Parse linker map file memory regions, target, output sections and
     # cross reference table
@@ -245,9 +253,17 @@ def get(
         # Try to expand input sections without archive based on DWARF info.
         _expand_input_sections(map_file, proj_desc, elf)
 
-    if not target:
+    if not detected_target:
         # Target from project_description.json is not available, use target detected in map file.
-        target = map_file.target
+        detected_target = map_file.target
+
+    if not target:
+        # The target is not requested explicitly, use the detected one.
+        target = detected_target
+    elif detected_target and detected_target != target:
+        log.warn(
+            f'The chip target {detected_target} detected for "{map_fn}" is replaced by the requested target {target}.'
+        )
 
     if not target:
         raise MemMapException('cannot determine chip target')
