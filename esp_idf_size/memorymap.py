@@ -126,7 +126,7 @@ def get(
         target:
             The chip target, e.g. "esp32c6". If not provided, the target is detected from
             project_description.json or from the link map file. It has to be provided for a link
-            map file without the target information, e.g. the link map file of a ULP binary. If
+            map file without the target information, e.g. the link map file of a ULP FSM binary. If
             provided, it is used instead of the detected target, and a warning is printed if they
             differ.
             The default setting is None.

@@ -322,6 +322,37 @@ def test_memmap_ulp_address(target: str) -> None:
     ]
 
 
+@pytest.mark.parametrize('target', ['esp32s2', 'esp32s3'])
+def test_memmap_target_from_peripherals(target: str) -> None:
+    # The map file of a ULP RISC-V or LP core binary does not contain the
+    # IDF_TARGET symbol, but ESP-IDF passes the peripherals linker script of
+    # the target to the link and the map file lists it. The target has to be
+    # detected from its name, so the --target option is not needed.
+
+    # Temporary directory for testing
+    tmp_dir = TemporaryDirectory()
+    tmp_dir_path = Path(tmp_dir.name)
+
+    load_line = f'LOAD /esp-idf/components/ulp/subproject/components/ulp_riscv/ld/{target}.peripherals.ld\n'
+    map_text = ULP_MAP.replace('Linker script and memory map\n\n', 'Linker script and memory map\n\n' + load_line)
+    assert load_line in map_text
+    (tmp_dir_path / 'ulp_main.map').write_text(map_text)
+
+    run(
+        [sys.executable, '-m', 'esp_idf_size', '--format', 'raw', '-o', 'memmap.json', 'ulp_main.map'],
+        cwd=tmp_dir_path,
+        check=True,
+    )
+
+    with open(tmp_dir_path / 'memmap.json') as f:
+        memmap = json.load(f)
+
+    assert memmap['target'] == target
+    assert {name: (info['used'], info['size']) for name, info in memmap['memory_types'].items() if info['used']} == {
+        'RTC SLOW': (0x84, 0x1000)
+    }
+
+
 # Map file of a ULP FSM binary. The binary file starts with a header and the
 # sections are stored after it, so the linker reports a load address for them.
 ULP_FSM_MAP = """\

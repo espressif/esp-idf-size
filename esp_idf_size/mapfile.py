@@ -87,8 +87,15 @@ class MapFile:
         RE_TARGET_CMAKEv4x = re.compile(r'project_elf_src_(\S*)\.c.obj')
         # For back-compatible with make
         RE_TARGET_MAKE = re.compile(r'^LOAD .*?/xtensa-(esp[^-]+)-elf/')
+        # The map file of a ULP binary has none of the above. ESP-IDF passes the
+        # peripherals linker script of the target to the LP core and ULP RISC-V
+        # link, and the map file lists it, e.g.
+        # LOAD /path/esp-idf/components/soc/esp32c6/ld/esp32c6.peripherals.ld
+        # It is used only if none of the above is found in the whole map file.
+        RE_TARGET_PERIPHERALS = re.compile(r'^LOAD .*[/\\](esp[a-z0-9]+)\.peripherals\.ld\s*$')
 
         target = ''
+        peripherals_target = ''
         found = False
         for ln, line in enumerate(self.lines[self.line_idx :], start=self.line_idx):
             if not found:
@@ -112,10 +119,20 @@ class MapFile:
                 target = match_target.group(1)
                 break
 
+            if not peripherals_target:
+                match_target = RE_TARGET_PERIPHERALS.search(line)
+                if match_target:
+                    peripherals_target = match_target.group(1)
+
+        if not target and peripherals_target:
+            target = peripherals_target
+            log.debug(f'target {target} found in the name of the peripherals linker script')
+
         if not target:
             # The map file does not always contain the target, e.g. the map file of
-            # a ULP binary. This is not an error, because the target may be found
-            # elsewhere, e.g. in project_description.json.
+            # a ULP FSM binary. This is not an error, because the target may be found
+            # elsewhere, e.g. in project_description.json, or set with the --target
+            # option.
             log.debug('cannot find target in linker map file')
 
         # Don't skip the lines, because the same lines will be scanned by follow-up _get_sections

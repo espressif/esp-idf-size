@@ -228,7 +228,7 @@ def _run(args: Dict[str, Any]) -> None:
     help=(
         'Set the chip target, for example esp32c6. By default the target is detected from '
         'project_description.json or from the link map file. This option is needed for a link '
-        'map file without the target information, for example the link map file of a ULP binary. '
+        'map file without the target information, for example the link map file of a ULP FSM binary. '
         'It is used also for the link map file specified with the --diff option. If the detected '
         'target is different, it is replaced and a warning is printed.'
     ),

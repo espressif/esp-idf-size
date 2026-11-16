@@ -5,6 +5,8 @@ import logging
 from pathlib import Path
 from tempfile import TemporaryDirectory
 
+import pytest
+
 from esp_idf_size import mapfile
 
 
@@ -59,3 +61,61 @@ def test_parser_load_address() -> None:
         ('.text', 0x0, 0xD4),
         ('.long_section_name.data', 0xD4, 0x8),
     ]
+
+
+# Map file of a ULP binary without the IDF_TARGET symbol. The {lines} are
+# replaced with the LOAD line of the peripherals linker script and other lines
+# at the beginning of the "Linker script and memory map" part.
+PERIPHERALS_MAP = """\
+Memory Configuration
+
+Name             Origin             Length             Attributes
+ram              0x00000000         0x00001000         rw
+*default*        0x00000000         0xffffffff
+
+Linker script and memory map
+
+{lines}
+                0x60000000                        PROVIDE (UART0 = 0x60000000)
+
+.text           0x00000000       0x80
+ *(.text)
+ .text          0x00000000       0x80 CMakeFiles/ulp_main.dir/start.S.obj
+
+OUTPUT(ulp_main.elf elf32-littleriscv)
+"""
+
+
+@pytest.mark.parametrize(
+    'lines,target',
+    [
+        # LP core binary
+        ('LOAD /esp-idf/components/soc/esp32c6/ld/esp32c6.peripherals.ld', 'esp32c6'),
+        # ULP RISC-V binary
+        ('LOAD /esp-idf/components/ulp/subproject/components/ulp_riscv/ld/esp32s3.peripherals.ld', 'esp32s3'),
+        # Path with backslashes
+        ('LOAD C:\\esp-idf\\components\\soc\\esp32c5\\ld\\esp32c5.peripherals.ld', 'esp32c5'),
+        # ULP FSM binary, which has no peripherals linker script
+        ('LOAD CMakeFiles/ulp_main.dir/main.ulp.S.obj', ''),
+        # The IDF_TARGET symbol has priority, even if it comes after the LOAD line
+        (
+            'LOAD /esp-idf/components/soc/esp32c6/ld/esp32c6.peripherals.ld\n'
+            '                0x00000000                        IDF_TARGET_ESP32C5 = 0x0',
+            'esp32c5',
+        ),
+    ],
+)
+def test_parser_target_from_peripherals(lines: str, target: str) -> None:
+    # The map file of a ULP binary does not contain the IDF_TARGET symbol. If
+    # the target is not found otherwise, it is taken from the name of the
+    # peripherals linker script, which ESP-IDF passes to the LP core and ULP
+    # RISC-V link.
+
+    # Temporary directory for testing
+    tmp_dir = TemporaryDirectory()
+    map_fn = Path(tmp_dir.name) / 'ulp_main.map'
+    map_fn.write_text(PERIPHERALS_MAP.format(lines=lines))
+
+    map_file = mapfile.MapFile(str(map_fn))
+
+    assert map_file.target == target
