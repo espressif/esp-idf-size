@@ -54,6 +54,7 @@ __all__ = ['get', 'diff', 'unify', 'MemMapException']
 import copy
 import json
 import os
+from collections import Counter
 from fnmatch import fnmatch
 from pathlib import Path
 from typing import Any, Dict, Generator, List, Optional
@@ -95,6 +96,7 @@ def get(
     use_dwarf: Optional[bool] = None,
     map_file: Optional[mapfile.MapFile] = None,
     elf: Optional[Elf] = None,
+    target: Optional[str] = None,
 ) -> Dict[str, Any]:
     """Generate memory map representing the static allocations in ESP-IDF project.
 
@@ -121,6 +123,13 @@ def get(
             An instance of the  mapfile.MapFile class. If not provided, it will be created.
         elf:
             An instance of the elf.Elf class. If required but not provided, it will be created.
+        target:
+            The chip target, e.g. "esp32c6". If not provided, the target is detected from
+            project_description.json or from the link map file. It has to be provided for a link
+            map file without the target information, e.g. the link map file of a ULP FSM binary. If
+            provided, it is used instead of the detected target, and a warning is printed if they
+            differ.
+            The default setting is None.
 
     Returns:
         Dictionary with memory map containing metadata and a `memory_types` key that organizes
@@ -137,6 +146,11 @@ def get(
         Each memory type includes a tree hierarchy: sections, which contain archives; archives, which
         contain object files; and object files, which contain symbols. Every object in this hierarchy
         holds information about its size within the memory type.
+
+        Every object also has an abbreviated name. The abbreviated name of a section is unique within
+        its memory type. If several sections of one memory type would be abbreviated to the same name,
+        for example .iram.text and .iram_loader.text to .text, their abbreviated names are their
+        full names.
 
         Example:
             {
@@ -195,7 +209,7 @@ def get(
         'memory_types': {},
     }
 
-    proj_desc = map_fn = elf = target = None
+    proj_desc = map_fn = detected_target = None
 
     map_fn = os.path.abspath(input_fn)
 
@@ -215,7 +229,7 @@ def get(
             use_dwarf = False
 
     if proj_desc:
-        target = proj_desc['target']
+        detected_target = proj_desc['target']
 
     # Parse linker map file memory regions, target, output sections and
     # cross reference table
@@ -239,9 +253,17 @@ def get(
         # Try to expand input sections without archive based on DWARF info.
         _expand_input_sections(map_file, proj_desc, elf)
 
-    if not target:
+    if not detected_target:
         # Target from project_description.json is not available, use target detected in map file.
-        target = map_file.target
+        detected_target = map_file.target
+
+    if not target:
+        # The target is not requested explicitly, use the detected one.
+        target = detected_target
+    elif detected_target and detected_target != target:
+        log.warn(
+            f'The chip target {detected_target} detected for "{map_fn}" is replaced by the requested target {target}.'
+        )
 
     if not target:
         raise MemMapException('cannot determine chip target')
@@ -285,6 +307,9 @@ def get(
 
     # Generate the overall memory map representation
     memory_map['memory_types'] = _get_mem_type_map(memory_types, memory_regions_splitted, map_sections_splitted)
+
+    # Make the abbreviated section names unique within each memory type
+    _set_section_abbrev_names(memory_map)
 
     log.debug('memory map', memory_map)
 
@@ -419,6 +444,11 @@ def diff(memory_map_cur: Dict[str, Any], memory_map_ref: Dict[str, Any]) -> Dict
                             symbol_info_diff['size'] = 0
                             symbol_info_diff['size_diff'] = 0 - symbol_info_ref['size']
 
+    # The memory types may now contain also the sections, which are only in the
+    # reference memory map. Such a section may have the same abbreviated name as
+    # a section of the current memory map, so set the abbreviated names again.
+    _set_section_abbrev_names(memory_map_diff)
+
     log.debug('memory map diff', memory_map_diff)
     return memory_map_diff
 
@@ -453,12 +483,18 @@ def unify(memory_map: Dict[str, Any]) -> None:
     def unify_items(original: Dict[str, Any], unified: Dict[str, Any], level: str) -> None:
         # Generic function which unifies all memory map levels
         for original_item_name, original_item_info in original.items():
-            original_item_name_abbrev = original_item_info['abbrev_name']
+            if level == 'sections':
+                # The sections with the same abbreviated name have their full names
+                # stored as the abbreviated names, so they would not be aggregated.
+                # Abbreviate the section name again.
+                original_item_name_abbrev = _abbrev(original_item_name)
+            else:
+                original_item_name_abbrev = original_item_info['abbrev_name']
             sublevel = level_map[level]
             unified_item_info = unified.get(original_item_name_abbrev)
             if unified_item_info is None:
                 unified_item_info = {
-                    'abbrev_name': original_item_info['abbrev_name'],
+                    'abbrev_name': original_item_name_abbrev,
                     'size': original_item_info['size'],
                     'size_diff': original_item_info['size_diff'],
                     sublevel: {},
@@ -551,6 +587,11 @@ def remove_unused(memory_map: Dict[str, Any]) -> None:
     # to mark the end of IRAM code segment and contains just an alignment.
     for mem_type_name, mem_type_info in memory_map['memory_types'].items():
         mem_type_info['sections'] = {k: v for k, v in mem_type_info['sections'].items() if v['archives']}
+
+    # A removed section may have had the same abbreviated name as a section, which
+    # stays, e.g. .iram0.data and .dram0.data. Set the abbreviated names again, so
+    # the remaining section is abbreviated.
+    _set_section_abbrev_names(memory_map)
 
     # Update memory type usage in case some unused sections have been removed.
     for mem_type_name, mem_type_info in memory_map['memory_types'].items():
@@ -879,7 +920,7 @@ def _split_memory_regions(memory_regions: List[Dict[str, Any]], memory_types: Di
                 mem_type_length = mem_type_info['length']
                 if mem_type_addr <= mem_reg_origin < mem_type_addr + mem_type_length:
                     found = True
-                elif mem_type_info['secondary_address']:
+                elif mem_type_info['secondary_address'] is not None:
                     mem_type_addr = mem_type_info['secondary_address']
                     if mem_type_addr <= mem_reg_origin < mem_type_addr + mem_type_length:
                         found = True
@@ -1081,6 +1122,26 @@ def _abbrev(section_name: str) -> str:
     return f'.{split[-1]}'
 
 
+def _set_section_abbrev_names(memory_map: Dict[str, Any]) -> None:
+    # Set the abbreviated names of the sections in the memory map.
+    #
+    # Several sections of one memory type may be abbreviated to the same name,
+    # e.g. .iram.text and .iram_loader.text in the bootloader, or .text and
+    # .vector.text in the LP core binary. Such sections could not be told apart.
+    # In addition, where the abbreviated name is used as a key, like in the JSON
+    # summary, one section would replace the other. Use the full name as the
+    # abbreviated name of such sections. The other sections are abbreviated.
+    #
+    # The names depend on the sections present in the memory type, so they have
+    # to be set again when sections are added or removed.
+    for mem_type_info in memory_map['memory_types'].values():
+        sections = mem_type_info['sections']
+        counts = Counter(_abbrev(section_name) for section_name in sections)
+        for section_name, section_info in sections.items():
+            abbrev_name = _abbrev(section_name)
+            section_info['abbrev_name'] = abbrev_name if counts[abbrev_name] == 1 else section_name
+
+
 def _load_json_file(fn: str) -> Optional[Dict[str, Any]]:
     data = None
     try:
@@ -1146,26 +1207,6 @@ def _add_symbols_to_sections(elf: Optional[Elf], osections: List[Dict[str, Any]]
                 # Sanity check that we found input section for symbol
                 raise MemMapException(f'cannot find input section for symbol {sym_name}({sym_addr})')
 
-            if not isec['symbols']:
-                # Input section does not have any ELF symbols assigned.
-                # In e.g. .data or .rodata sections, there might be literals, which do not have symbols
-                # in symbol table. Since the binary is compiled with -fdata-sections, let's add the input
-                # section as "symbol". This should avoid displaying "holes" in the reports. Generally it's
-                # still possible that some libraries/objects, which are e.g. not compiled with -fdata-sections,
-                # may still be missing some "symbols". For example libc.a->lib_a-vfprintf.o: 657 != 117
-                # lib_a-vfprintf.o 657
-                # ├── blanks.1 16
-                # ├── zeroes.0 16
-                # ├── .rodata.str1.4 53
-                # └── .srodata.cst8 32
-                isec['symbols'].append(
-                    {
-                        'name': isec['name'],
-                        'address': isec['address'],
-                        'size': isec['size'],
-                    }
-                )
-
             # Jump to next input section
             isec = isections.pop(0)
 
@@ -1193,6 +1234,34 @@ def _add_symbols_to_sections(elf: Optional[Elf], osections: List[Dict[str, Any]]
                 'size': sym_size,
             }
         )
+
+    for osec in osections:
+        for isec in osec['input_sections']:
+            if isec['symbols']:
+                continue
+            # Input section does not have any ELF symbols assigned.
+            # In e.g. .data or .rodata sections, there might be literals, which do not have symbols
+            # in symbol table. Since the binary is compiled with -fdata-sections, let's add the input
+            # section as "symbol". This should avoid displaying "holes" in the reports. Generally it's
+            # still possible that some libraries/objects, which are e.g. not compiled with -fdata-sections,
+            # may still be missing some "symbols". For example libc.a->lib_a-vfprintf.o: 657 != 117
+            # lib_a-vfprintf.o 657
+            # ├── blanks.1 16
+            # ├── zeroes.0 16
+            # ├── .rodata.str1.4 53
+            # └── .srodata.cst8 32
+            #
+            # This is done for all input sections after the ELF symbols were assigned. It
+            # covers also the input sections located after the last ELF symbol and an ELF
+            # file without any usable symbol. For example a ULP FSM binary is written in
+            # assembly and its symbols have no type and no size.
+            isec['symbols'].append(
+                {
+                    'name': isec['name'],
+                    'address': isec['address'],
+                    'size': isec['size'],
+                }
+            )
 
     log.debug('linker map output sections filtered with symbols', osections)
 
@@ -1448,7 +1517,10 @@ def _get_memory_types(target: str) -> Dict[str, Any]:
         if 'secondary_address' in info:
             info['secondary_address'] = eval(str(info['secondary_address']))
         else:
-            info['secondary_address'] = 0
+            # The secondary address may be zero, e.g. the ULP coprocessor accesses
+            # the RTC slow memory from address 0x0. So a missing secondary address
+            # cannot be represented as zero.
+            info['secondary_address'] = None
 
         if 'name' not in info:
             info['name'] = name
@@ -1475,7 +1547,7 @@ def _get_mem_type_size(mem_type_info: Dict[str, Any], mem_regs: List[Dict[str, A
       accounted.
     """
     mem_type_offset = 0
-    if mem_type_info['secondary_address']:
+    if mem_type_info['secondary_address'] is not None:
         mem_type_offset = abs(mem_type_info['primary_address'] - mem_type_info['secondary_address'])
 
     mem_regs_accounted: List[Dict[str, Any]] = []
@@ -1644,11 +1716,16 @@ def get_proj_desc(map_fn: str) -> Optional[Dict[str, Any]]:
 
 def get_elf(map_fn: str, proj_desc: Optional[Dict[str, Any]] = None) -> Optional[Elf]:
     proj_desc = proj_desc or get_proj_desc(map_fn)
-    if proj_desc is None:
-        return None
-    # Avoid using build_dir from proj_desc, as the project might have been relocated to a different directory.
-    dirname = os.path.dirname(map_fn)
-    elf_fn = os.path.join(dirname, proj_desc['app_elf'])
+    if proj_desc is not None:
+        # Avoid using build_dir from proj_desc, as the project might have been relocated to a different directory.
+        dirname = os.path.dirname(map_fn)
+        elf_fn = os.path.join(dirname, proj_desc['app_elf'])
+    else:
+        # The project description is not available for this map file. For example, ESP-IDF
+        # may build a ULP binary without it, and in a project with several executables it
+        # describes only one of them. Use the ELF file next to the map file. The build
+        # system gives both files the same name, e.g. ulp_main.map and ulp_main.elf.
+        elf_fn = os.path.splitext(map_fn)[0] + '.elf'
     if not os.path.isfile(elf_fn):
         return None
     elf = _load_elf_file(elf_fn)

@@ -27,4 +27,5 @@ RTC_FAST_D:
 RTC_SLOW_D:
   primary_address: 0x50000000
   length: 0x2000
+  secondary_address: 0x0 # The ULP coprocessor accesses the RTC slow memory from address 0x0
   name: RTC SLOW

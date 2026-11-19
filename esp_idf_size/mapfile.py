@@ -87,16 +87,18 @@ class MapFile:
         RE_TARGET_CMAKEv4x = re.compile(r'project_elf_src_(\S*)\.c.obj')
         # For back-compatible with make
         RE_TARGET_MAKE = re.compile(r'^LOAD .*?/xtensa-(esp[^-]+)-elf/')
+        # The map file of a ULP binary has none of the above. ESP-IDF passes the
+        # peripherals linker script of the target to the LP core and ULP RISC-V
+        # link, and the map file lists it, e.g.
+        # LOAD /path/esp-idf/components/soc/esp32c6/ld/esp32c6.peripherals.ld
+        # It is used only if none of the above is found in the whole map file.
+        RE_TARGET_PERIPHERALS = re.compile(r'^LOAD .*[/\\](esp[a-z0-9]+)\.peripherals\.ld\s*$')
 
         target = ''
+        peripherals_target = ''
         found = False
         for ln, line in enumerate(self.lines[self.line_idx :], start=self.line_idx):
-            if line.startswith('Cross Reference Table'):
-                # We have reached end of the "Linker script and memory map" section.
-                log.warn('cannot find target in linker map file')
-                break
-
-            elif not found:
+            if not found:
                 # Continue here till we find the beginning of linker scripts section.
                 if line.startswith('Linker script and memory map'):
                     found = True
@@ -117,9 +119,39 @@ class MapFile:
                 target = match_target.group(1)
                 break
 
+            if not peripherals_target:
+                match_target = RE_TARGET_PERIPHERALS.search(line)
+                if match_target:
+                    peripherals_target = match_target.group(1)
+
+        if not target and peripherals_target:
+            target = peripherals_target
+            log.debug(f'target {target} found in the name of the peripherals linker script')
+
+        if not target:
+            # The map file does not always contain the target, e.g. the map file of
+            # a ULP FSM binary. This is not an error, because the target may be found
+            # elsewhere, e.g. in project_description.json, or set with the --target
+            # option.
+            log.debug('cannot find target in linker map file')
+
         # Don't skip the lines, because the same lines will be scanned by follow-up _get_sections
         # self.line_idx += ln
         return target
+
+    def _strip_load_address(self, split: List[str]) -> List[str]:
+        # The linker adds "load address <address>" after the address and size of an
+        # output section, if the section is loaded at a different address than the
+        # one it is running at. For example .text in the ULP FSM binary is running
+        # at address 0x0, but it is stored after the header of the binary file.
+        #
+        #    .text           0x0000000000000000       0xd4 load address 0x000000000000000c
+        #
+        # The memory map is created from the addresses at which the sections are
+        # running, so the load address is not needed.
+        if split[-3:-1] == ['load', 'address']:
+            return split[:-3]
+        return split
 
     def _get_archive_object_file(self, s: str) -> Tuple[str, str]:
         idx = s.find('(')
@@ -256,7 +288,7 @@ class MapFile:
                     output_section['address'] = 0
                     output_section['size'] = 0
 
-                    split = line.split()
+                    split = self._strip_load_address(line.split())
                     if len(split) == 2:
                         try:
                             address = int(split[0], 0)
@@ -359,7 +391,7 @@ class MapFile:
                     'input_sections': [],
                 }
 
-                split = line.split()
+                split = self._strip_load_address(line.split())
                 if len(split) == 1:
                     output_section['name'] = split[0]
                 elif len(split) == 3:

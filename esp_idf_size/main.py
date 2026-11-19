@@ -41,6 +41,12 @@ def _doc_callback(ctx: click.Context, _param: click.Parameter, value: bool) -> N
     ctx.exit()
 
 
+def _get_targets() -> List[str]:
+    # Return the supported chip targets. A target is supported if it has a chip info file.
+    chip_info_path = Path(os.path.realpath(os.path.dirname(__file__))) / 'chip_info'
+    return sorted(path.stem for path in chip_info_path.glob('*.yaml'))
+
+
 def _filter_callback(_ctx: click.Context, _param: click.Parameter, value: Tuple[str, ...]) -> Optional[List[str]]:
     # The -F/--filter option uses multiple=True, so click yields a tuple of
     # patterns (an empty tuple when the option is not used). The rest of the
@@ -121,13 +127,13 @@ def _run(args: Dict[str, Any]) -> None:
 
         map_file = mapfile.MapFile(args['input_file'])
         elf = memorymap.get_elf(args['input_file'])
-        memmap = memorymap.get(args['input_file'], load_symbols, args['use_dwarf'], map_file, elf)
+        memmap = memorymap.get(args['input_file'], load_symbols, args['use_dwarf'], map_file, elf, args['target'])
         if not args['show_unused']:
             memorymap.remove_unused(memmap)
         if not args['use_linker_sizes']:
             memorymap.ignore_linker_sizes(memmap)
         if args['diff']:
-            memmap_ref = memorymap.get(args['diff'], load_symbols, args['use_dwarf'])
+            memmap_ref = memorymap.get(args['diff'], load_symbols, args['use_dwarf'], target=args['target'])
             if not args['show_unused']:
                 memorymap.remove_unused(memmap_ref)
             if not args['use_linker_sizes']:
@@ -215,6 +221,18 @@ def _run(args: Dict[str, Any]) -> None:
 )
 @click.option('--files', is_flag=True, help='Print per-file sizes.')
 @click.option('--diff', metavar='MAP_FILE', help='Compare sizes with another project.')
+@click.option(
+    '--target',
+    metavar='TARGET',
+    type=click.Choice(_get_targets(), case_sensitive=False),
+    help=(
+        'Set the chip target, for example esp32c6. By default the target is detected from '
+        'project_description.json or from the link map file. This option is needed for a link '
+        'map file without the target information, for example the link map file of a ULP FSM binary. '
+        'It is used also for the link map file specified with the --diff option. If the detected '
+        'target is different, it is replaced and a warning is printed.'
+    ),
+)
 @click.option('--no-abbrev', is_flag=True, help='Do not abbreviate section and file names.')
 @click.option(
     '--unify',
