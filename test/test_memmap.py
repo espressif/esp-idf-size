@@ -10,11 +10,12 @@ from pathlib import Path
 from subprocess import PIPE, run
 from tempfile import TemporaryDirectory
 from types import SimpleNamespace
+from typing import cast
 
 import pytest
 
 from esp_idf_size import memorymap
-from esp_idf_size.elf import STT_FUNC, STT_NOTYPE
+from esp_idf_size.elf import STT_FUNC, STT_NOTYPE, Elf
 
 sys.path.append(str(Path(__file__).resolve().parent.parent))
 import utils  # noqa: E402
@@ -464,7 +465,8 @@ def test_memmap_input_section_symbols(elf_symbol: bool) -> None:
         # Label in assembly, which has no type and no size
         symbols = [SimpleNamespace(name='func', type=STT_NOTYPE, st_value=0x10, st_size=0)]
 
-    memorymap._add_symbols_to_sections(SimpleNamespace(symbols=symbols), [{'input_sections': input_sections}])
+    elf = cast(Elf, SimpleNamespace(symbols=symbols))
+    memorymap._add_symbols_to_sections(elf, [{'input_sections': input_sections}])
 
     assert [input_section['symbols'] for input_section in input_sections] == [
         [{'name': '.text.first', 'address': 0x00, 'size': 0x10}],
